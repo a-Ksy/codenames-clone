@@ -1,146 +1,139 @@
 /* eslint-disable no-undef */
 import * as actionTypes from './actionTypes';
-import moment from 'moment';
-import momentTimezone from 'moment-timezone';
 
 import {
   apiGetInfectionTree,
   apiGetSimulationTree,
-  apiGetOfficeStatistics,
-  apiGetWristbandData,
-  apiGetUserList,
-  apiGetPeopleStatistics,
-  apiGetRoomStatistics
 } from '../../api/api';
 
 export const showLoading = () => ({
-  type: actionTypes.SHOW_LOADING
+  type: actionTypes.SHOW_LOADING,
 });
 
 export const hideLoading = () => ({
-  type: actionTypes.HIDE_LOADING
+  type: actionTypes.HIDE_LOADING,
 });
 
-export const setName = name => ({
+export const setName = (name) => ({
   type: actionTypes.ACTION_TEST,
   payload: {
-    name
-  }
+    name,
+  },
 });
 
-export const setInfectionTree = payload => ({
+export const setInfectionTree = (payload) => ({
   type: actionTypes.SET_INFECTION_TREE,
-  payload
+  payload,
 });
 
-export const getInfectionTree = (startDate, timeline, idToken) => dispatch => {
+export const getInfectionTree = (startDate, timeline, idToken) => (dispatch) => {
   dispatch({ type: actionTypes.SHOW_LOADING });
   apiGetInfectionTree(
     startDate,
     timeline,
     idToken,
-    response => {
+    (response) => {
       dispatch(setInfectionTree(response.data));
       dispatch({ type: actionTypes.HIDE_LOADING });
     },
-    err => {
+    (err) => {
       console.log(`Error when retrieving infection tree:\n${err}`);
       dispatch({ type: actionTypes.HIDE_LOADING });
-    }
+    },
   );
 };
 
-export const setSimulationTree = payload => ({
+export const setSimulationTree = (payload) => ({
   type: actionTypes.SET_SIMULATION_TREE,
-  payload
+  payload,
 });
 
-export const getSimulationTree = (startDate, userID, idToken) => dispatch => {
+export const getSimulationTree = (startDate, userID, idToken) => (dispatch) => {
   dispatch({ type: actionTypes.SHOW_LOADING });
   apiGetSimulationTree(
     startDate,
     userID,
     idToken,
-    response => {
+    (response) => {
       dispatch(setSimulationTree(response.data));
       dispatch({ type: actionTypes.HIDE_LOADING });
     },
-    err => {
+    (err) => {
       console.log(`Error when retrieving simulation tree:\n${err}`);
       dispatch({ type: actionTypes.HIDE_LOADING });
-    }
+    },
   );
 };
 
-export const setOfficeStatistics = payload => ({
+export const setOfficeStatistics = (payload) => ({
   type: actionTypes.SET_OFFICE_STATISTICS,
-  payload
+  payload,
 });
 
-export const setWristbandData = payload => ({
+export const setWristbandData = (payload) => ({
   type: actionTypes.SET_WRISTBAND_DATA,
-  payload
+  payload,
 });
 
-export const setUserList = payload => ({
+export const setUserList = (payload) => ({
   type: actionTypes.SET_USER_LIST,
-  payload
+  payload,
 });
 
-export const setPeopleStatistics = payload => ({
+export const setPeopleStatistics = (payload) => ({
   type: actionTypes.SET_PEOPLE_STATISTICS,
-  payload
+  payload,
 });
 
-export const getPeopleStatistics = (startDate, endDate, userList, idToken) => dispatch => {
+export const getPeopleStatistics = (startDate, endDate, userList, idToken) => (dispatch) => {
   apiGetPeopleStatistics(
     startDate,
     endDate,
     userList,
     idToken,
-    response => {
+    (response) => {
       dispatch(setPeopleStatistics(response.data.payload));
     },
-    err => {
+    (err) => {
       console.log(`Error when retrieving people statistics:\n${err}`);
-    }
+    },
   );
 };
 
-export const setRoomStatistics = payload => ({
+export const setRoomStatistics = (payload) => ({
   type: actionTypes.SET_ROOM_STATISTICS,
-  payload
+  payload,
 });
 
-export const getRoomStatistics = (startDate, endDate, idToken) => dispatch => {
+export const getRoomStatistics = (startDate, endDate, idToken) => (dispatch) => {
   console.log('gelen startdate', startDate);
   console.log('gelen enddate', endDate);
   apiGetRoomStatistics(
     startDate,
     endDate,
     idToken,
-    response => {
+    (response) => {
       dispatch(setRoomStatistics(response.data.payload));
     },
-    err => {
+    (err) => {
       console.log(`Error when retrieving room statistics:\n${err}`);
-    }
+    },
   );
 };
 
-export const getDashboardData = idToken => dispatch => {
+export const getDashboardData = (idToken) => (dispatch) => {
   dispatch({ type: actionTypes.SHOW_LOADING });
   apiGetWristbandData(
     idToken,
-    response => {
+    (response) => {
       dispatch(setWristbandData(response.data));
       apiGetOfficeStatistics(
         idToken,
-        responseStatistics => {
+        (responseStatistics) => {
           dispatch(setOfficeStatistics(responseStatistics.data.payload));
           apiGetUserList(
             idToken,
-            responseUserList => {
+            (responseUserList) => {
               dispatch(setUserList(responseUserList.data));
               apiGetPeopleStatistics(
                 moment()
@@ -152,7 +145,7 @@ export const getDashboardData = idToken => dispatch => {
                   .format('YYYY-MM-DD'),
                 [],
                 idToken,
-                responsePeopleStatistics => {
+                (responsePeopleStatistics) => {
                   dispatch(setPeopleStatistics(responsePeopleStatistics.data.payload));
                   apiGetRoomStatistics(
                     moment()
@@ -163,41 +156,41 @@ export const getDashboardData = idToken => dispatch => {
                       .tz('Europe/Istanbul')
                       .format('YYYY-MM-DD'),
                     idToken,
-                    responseRoomStatistics => {
+                    (responseRoomStatistics) => {
                       dispatch(setRoomStatistics(responseRoomStatistics.data.payload));
                       dispatch({ type: actionTypes.HIDE_LOADING });
                     },
-                    err => {
+                    (err) => {
                       console.log(`Error when retrieving room statistics:\n${err}`);
                       dispatch({ type: actionTypes.HIDE_LOADING });
-                    }
+                    },
                   );
                 },
-                err => {
+                (err) => {
                   console.log(`Error when retrieving people statistics:\n${err}`);
                   dispatch({ type: actionTypes.HIDE_LOADING });
-                }
+                },
               );
             },
-            err => {
+            (err) => {
               console.log(`Error when retrieving user list:\n${err}`);
               dispatch({ type: actionTypes.HIDE_LOADING });
-            }
+            },
           );
         },
-        err => {
+        (err) => {
           console.log(`Error when retrieving office statistics:\n${err}`);
           dispatch({ type: actionTypes.HIDE_LOADING });
-        }
+        },
       );
     },
-    err => {
+    (err) => {
       console.log(`Error when retrieving wristband data:\n${err}`);
       dispatch({ type: actionTypes.HIDE_LOADING });
-    }
+    },
   );
 };
 
 export const exitSimulation = () => ({
-  type: actionTypes.EXIT_SIMULATION
+  type: actionTypes.EXIT_SIMULATION,
 });

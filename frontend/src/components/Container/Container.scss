@@ -1,0 +1,14 @@
+@import "../../sass/breakpoints";
+
+.container-lg {
+    height: 100vh;
+    width: 100%;
+    padding: 3rem 1.5rem 3rem 1.5rem;
+}
+
+@include media (">=desktop") {
+    .container-lg {
+        max-width: 1600px!important;
+    }
+}
+

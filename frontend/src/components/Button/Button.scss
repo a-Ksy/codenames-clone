@@ -1,0 +1,40 @@
+@import "../../sass/variables";
+@import "../../sass/breakpoints";
+
+.Button {
+  background-color: $primary;
+  color: $headline;
+  border-radius: 3px;
+  outline: none;
+  border: none;
+  padding: 0.5rem 2rem;
+  transition: 0.3s ease;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.primary {
+  background-color: $primary;
+}
+
+.tertiary {
+  background-color: $tertiary;
+}
+
+
+
+button:active, button:hover, button:focus {
+  outline:none;
+  border:none;
+}
+
+button:hover {
+  background-color: $primaryDark;
+
+}
+
+@include media("<=collapse") {
+  .Button {
+    font-size: 1rem;
+  }
+}
