@@ -3,9 +3,9 @@ import React from 'react';
 import './Button.scss';
 
 function Button(props) {
-  const { title, type } = props;
+  const { title, type, onClick } = props;
   return (
-    <button type="button" className={`Button ${type}`}>
+    <button type="button" className={`Button ${type}`} onClick={onClick}>
       {title}
     </button>
   );
