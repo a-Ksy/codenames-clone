@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 /* eslint-disable max-len */
 /* eslint-disable func-names */
 /* eslint-disable prefer-rest-params */
@@ -10,8 +11,7 @@ const methods = {
 };
 
 const urls = {
-  INFECTIONTREE_URL: 'https://hgals5hlyj.execute-api.eu-central-1.amazonaws.com/prod/getstructures',
-  SIMULATION_URL: 'https://hgals5hlyj.execute-api.eu-central-1.amazonaws.com/prod/simulationcreate',
+  GAME_DATA_URL: 'https://jsonplaceholder.typicode.com/todos/1',
 };
 
 const apiCall = (
@@ -39,22 +39,8 @@ const apiCall = (
     });
 };
 
-export const apiGetInfectionTree = (startDate, timeline, idToken, callback, onError) => {
+export const apiGetGameData = (nickname, callback, onError) => {
   const params = new URLSearchParams();
-  params.append('start_date', startDate);
-  params.append('timeline', timeline);
-  apiCall(urls.INFECTIONTREE_URL, methods.GET, params, null, callback, onError, {
-    Authorization: `Bearer ${idToken}`,
-  });
-};
-
-export const apiGetSimulationTree = (startDate, userID, idToken, callback, onError) => {
-  const data = {
-    SimulationId: userID,
-    date: startDate,
-    userid: userID,
-  };
-  apiCall(urls.SIMULATION_URL, methods.POST, null, data, callback, onError, {
-    Authorization: `Bearer ${idToken}`,
-  });
+  params.append('nickname', nickname);
+  apiCall(urls.GAME_DATA_URL, methods.GET, params, null, callback, onError);
 };
