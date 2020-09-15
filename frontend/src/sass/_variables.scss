@@ -1,6 +1,22 @@
-$bg_borda: #ff5a00;
+$background: #16161a;
+$backgroundLight: #242629;
+$headline: #fffffe;
+$paragraph: #94a1b2;
+$primary: #7f5af0;
+$primaryDark: #6336ec;
+$secondary: #72757e;
+$tertiary: #2cb67d;
+$stroke: #010101;
 
 
 :export {
-  bg_borda: $bg_borda;
+  background: $background;
+  backgroundLight: $backgroundLight;
+  headline: $headline;
+  paragraph: $paragraph;
+  primary: $primary;
+  primaryDark: $primaryDark;
+  secondary: $secondary;
+  tertiary: $tertiary;
+  stroke: $stroke;
 }
