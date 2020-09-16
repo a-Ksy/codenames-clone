@@ -3,9 +3,9 @@ import React from 'react';
 import './Container.scss';
 
 function Container(props) {
-  const { children } = props;
+  const { children, type } = props;
   return (
-    <div className="container-lg">
+    <div className={`container-lg ${type}`}>
       {children}
     </div>
   );

@@ -5,6 +5,7 @@ import updateObject from '../utility';
 
 const initialState = {
   loading: false,
+  loggedIn: false,
 };
 
 const dataReducer = (state = initialState, action) => {
@@ -14,7 +15,7 @@ const dataReducer = (state = initialState, action) => {
     case actionTypes.HIDE_LOADING:
       return updateObject(state, { loading: false });
     case actionTypes.SET_GAME_DATA:
-      return updateObject(state, { gameData: action.payload });
+      return updateObject(state, { gameData: action.payload, loggedIn: true });
     default:
       return state;
   }

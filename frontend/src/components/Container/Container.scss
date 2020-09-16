@@ -4,11 +4,21 @@
     height: 100vh;
     width: 100%;
     padding: 3rem 1.5rem 3rem 1.5rem;
+    
+    @include media ("<=collapse") {
+        padding: 1rem 1rem 1rem 1rem;
+
+    }
 }
+
 
 @include media (">=desktop") {
     .container-lg {
         max-width: 1600px!important;
     }
+    .container-lg.game {
+         max-width: 1800px!important;
+    }
 }
+
 
