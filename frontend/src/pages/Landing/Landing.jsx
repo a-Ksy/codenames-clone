@@ -12,7 +12,7 @@ function Landing() {
         <div className="header">
           <h1 className="title">code names</h1>
           <h2 className="subtitle">Play with your friends</h2>
-          <NavLink to="/room"><Button title="play now" /></NavLink>
+          <NavLink to="/join"><Button title="play now" /></NavLink>
         </div>
         <div className="rules">
           <h3 className="title">How to play:</h3>

@@ -9,6 +9,7 @@ import Container from './components/Container/Container';
 import LandingPage from './pages/Landing/Landing';
 import EnterNamePage from './pages/EnterName/EnterName';
 import RoomsPage from './pages/Rooms/Rooms';
+import GamePage from './pages/Game/Game';
 import './App.scss';
 
 class App extends React.Component {
@@ -17,7 +18,7 @@ class App extends React.Component {
 
   render() {
 
-    const { isLoggedIn } = this.props;
+    const { isLoggedIn, room } = this.props;
     let routes = (
       <Container>
         <Switch>
@@ -32,7 +33,7 @@ class App extends React.Component {
           />
           <Route
             exact
-            path="/room"
+            path="/join"
             render={() => (
               <>
                 <EnterNamePage />
@@ -57,6 +58,15 @@ class App extends React.Component {
                 </>
               )}
             />
+            <Route
+              exact
+              path={`/game/${room.roomId}`}
+              render={() => (
+                <>
+                  <GamePage />
+                </>
+              )}
+            />
             <Redirect to="/rooms" />
           </Switch> 
         </Container>
@@ -76,6 +86,7 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => ({
   isLoggedIn: state.data.loggedIn,
+  room: state.data.room,
 });
 
 const mapDispatchToProps = (dispatch) => ({

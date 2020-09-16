@@ -3,7 +3,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
-import { getGameData } from '../../store/actions/data';
+import { getRoomsData } from '../../store/actions/data';
 import Page from '../../components/Page/Page';
 import Button from '../../components/Button/Button';
 import './EnterName.scss';
@@ -18,8 +18,8 @@ class EnterName extends React.Component {
 
   handleNickname = () => {
     const { nickname } = this.state;
-    const { retrieveGameData } = this.props;
-    retrieveGameData(nickname);
+    const { retrieveRoomsData } = this.props;
+    retrieveRoomsData(nickname);
   }
 
   render() {
@@ -43,11 +43,10 @@ class EnterName extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  gameData: state.data.gameData,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  retrieveGameData: (nickname) => dispatch(getGameData(nickname)),
+  retrieveRoomsData: (nickname) => dispatch(getRoomsData(nickname)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EnterName);

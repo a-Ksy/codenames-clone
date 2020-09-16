@@ -2,9 +2,10 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect } from 'react-redux';
+import { NavLink, withRouter } from 'react-router-dom';
 import * as actions from '../../store/actions';
 import Button from '../../components/Button/Button';
-import { getGameData } from '../../store/actions/data';
+import { getRoomsData, createRoom } from '../../store/actions/data';
 import './Rooms.scss';
 
 
@@ -63,8 +64,13 @@ class Rooms extends React.Component {
 
   handleCreateRoom = () => {
     const { roomName } = this.state;
-/*     const { retrieveGameData } = this.props;
-    retrieveGameData(nickname); */
+    const { createRoom, userId } = this.props;
+    //createRoom(userId, roomName); 
+  }
+
+  handleJoinRoom = (roomId) => {
+    const { retrieveRoomData, userId } = this.props;
+    //retrieveRoomData(userId, roomId);
   }
 
   statusPrettier = (status) => {
@@ -77,6 +83,9 @@ class Rooms extends React.Component {
   }
 
   render() {
+
+    const { room } = this.props;
+
     return (
         <div className="Rooms">
           <div className="row">
@@ -98,7 +107,12 @@ class Rooms extends React.Component {
                       <td>{room.owner}</td>
                       <td>{room.players}</td>
                       <td>{this.statusPrettier(room.status)}</td>
-                      <td className="joinButton"><i className="fa fa-sign-in" aria-hidden="true"></i>Join</td>
+                      <td className="joinButton" onClick={() => this.handleJoinRoom(room.id)}>
+                        <NavLink to={`/game/${room.id}`}>
+                        <i className="fa fa-sign-in" aria-hidden="true"></i>
+                        Join
+                        </NavLink>
+                      </td>
                   </tr>
                   )}
                 </tbody>
@@ -108,7 +122,7 @@ class Rooms extends React.Component {
               <h1 className="title">Create a room</h1>
               <label className="label">Room Name</label>
               <input required type="text" id="roomNameInput" placeholder="Enter a room name" onChange={(e) => this.setState({ roomName: e.target.value })} />
-              <Button title="create a room" onClick={() => this.handleCreateRoom()} />
+                <NavLink to={`/game/${room.roomId}`}><Button title="create a room" onClick={() => this.handleCreateRoom()} /></NavLink>
             </div>
           </div>
         </div>
@@ -117,11 +131,13 @@ class Rooms extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  gameData: state.data.gameData,
+  userId: state.data.userId,
+  room: state.data.room,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  retrieveGameData: (nickname) => dispatch(getGameData(nickname)),
+  createRoom: (userId, roomName) => dispatch(createRoom(roomName)),
+  retrieveRoomData: (userId, roomId) => dispatch(actions.getRoomData(userId, roomId))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Rooms);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Rooms));
