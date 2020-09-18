@@ -1,0 +1,101 @@
+@import "../../sass/variables";
+@import  "../../sass/breakpoints";
+
+
+.Rooms {
+  height: 100%;
+  display: flex;
+  align-items: center;
+
+  .row {
+    width: 100%;
+  }
+
+  .title {
+    font-size: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  th {
+    font-size: 1.1rem;
+    color: $headline;
+  }
+
+  td {
+    border-width:1px 0 1px 0;
+    border-color: $stroke;
+    border-style: solid;
+    font-size: 1.1rem;
+    color: $paragraph;
+  }
+
+  .fa-sign-in {
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+  }
+
+  .joinButton {
+    transition: 0.3s ease;
+  }
+
+  .joinButton:hover {
+    cursor: pointer;
+    color: $headline;
+  }
+
+  td,th {
+    padding: 0.75rem 0 0.75rem 0;
+  }
+
+  label {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  input {
+    border-radius: 3px;
+    border: none;
+    outline:none;
+    font-size: 1rem;
+    margin-bottom: 3rem;
+  }
+
+
+  .roomsColumn {
+    background-color: $backgroundLight;
+    padding:2.5rem;
+    border-radius: 3px;
+  }
+
+  .createRoomColumn {
+    background-color: $backgroundLight;
+    padding:2.5rem;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+  }
+
+  @include media("<=collapse") {
+    display: inherit;
+
+    .createRoomColumn {
+      margin-top: 2.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    th {
+      font-size: 0.9rem;
+    }
+
+    td {
+      border-width:1px 0 1px 0;
+      border-color: $stroke;
+      border-style: solid;
+      font-size: 0.9rem;
+    }
+
+  }
+
+}

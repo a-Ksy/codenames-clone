@@ -11,7 +11,9 @@ const methods = {
 };
 
 const urls = {
-  GAME_DATA_URL: 'https://jsonplaceholder.typicode.com/todos/1',
+  ROOMS_DATA_URL: 'https://jsonplaceholder.typicode.com/todos/1',
+  CREATE_ROOM_URL: 'https://jsonplaceholder.typicode.com/todos/1',
+  ROOM_DATA_URL: 'https://jsonplaceholder.typicode.com/todos/1',
 };
 
 const apiCall = (
@@ -39,8 +41,18 @@ const apiCall = (
     });
 };
 
-export const apiGetGameData = (nickname, callback, onError) => {
+export const apiGetRoomsData = (nickname, callback, onError) => {
   const params = new URLSearchParams();
   params.append('nickname', nickname);
-  apiCall(urls.GAME_DATA_URL, methods.GET, params, null, callback, onError);
+  apiCall(urls.ROOMS_DATA_URL, methods.GET, params, null, callback, onError);
+};
+
+export const apiCreateRoom = (userId, roomName, callback, onError) => {
+  const data = { userId: userId, roomName: roomName };
+  apiCall(urls.CREATE_ROOM_URL, methods.POST, null, data, callback, onError);
+};
+
+export const apiGetRoomData = (userId ,roomId, callback, onError) => {
+  const data = { roomId: roomId, userId: userId };
+  apiCall(urls.ROOM_DATA_URL, methods.POST, null, data, callback, onError);
 };

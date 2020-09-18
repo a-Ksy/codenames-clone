@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
 export {
-  getGameData,
+  getRoomsData,
+  getRoomData,
 } from './data';
