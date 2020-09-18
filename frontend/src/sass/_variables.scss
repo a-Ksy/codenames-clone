@@ -8,6 +8,11 @@ $secondary: #72757e;
 $tertiary: #2cb67d;
 $stroke: #010101;
 
+$redTeam: #e45858;
+$redTeamDark: #e23636;
+$neutral: #8c7851;
+$blueTeam: #5624ec;
+$blueTeamDark: #4611e7;
 
 :export {
   background: $background;
@@ -19,4 +24,9 @@ $stroke: #010101;
   secondary: $secondary;
   tertiary: $tertiary;
   stroke: $stroke;
+  redTeam: $redTeam;
+  blueTeam: $blueTeam;
+  redTeamDark: $redTeamDark;
+  blueTeamDark: $blueTeamDark;
+  neutral: $neutral;
 }

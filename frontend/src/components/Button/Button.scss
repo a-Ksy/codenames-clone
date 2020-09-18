@@ -13,15 +13,11 @@
   font-size: 1.2rem;
 }
 
-.primary {
-  background-color: $primary;
+.Button.TeamCard {
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
 }
-
-.tertiary {
-  background-color: $tertiary;
-}
-
-
 
 button:active, button:hover, button:focus {
   outline:none;
