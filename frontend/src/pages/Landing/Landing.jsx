@@ -12,12 +12,12 @@ function Landing() {
         <div className="header">
           <h1 className="title">code names</h1>
           <h2 className="subtitle">Play with your friends</h2>
-          <NavLink to="/room/create"><Button title="create room" /></NavLink>
+          <NavLink to="/join"><Button title="play now" /></NavLink>
         </div>
         <div className="rules">
           <h3 className="title">How to play:</h3>
-          <p className="subtitle">1. Click on the create room button.</p>
-          <p className="subtitle">2. Choose the language of the word cards and start the game.</p>
+          <p className="subtitle">1. Click on the play now button.</p>
+          <p className="subtitle">2. Enter a room or create a new room.</p>
           <p className="subtitle">3. Share the room URL with your friends.</p>
           <p className="subtitle">4. Enjoy the game!</p>
         </div>

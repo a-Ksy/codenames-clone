@@ -2,7 +2,9 @@
 import * as actionTypes from './actionTypes';
 
 import {
-  apiGetGameData,
+  apiCreateRoom,
+  apiGetRoomData,
+  apiGetRoomsData,
 } from '../../api/api';
 
 export const showLoading = () => ({
@@ -13,21 +15,59 @@ export const hideLoading = () => ({
   type: actionTypes.HIDE_LOADING,
 });
 
-export const setGameData = (payload) => ({
-  type: actionTypes.SET_GAME_DATA,
+export const setRoomsData = (payload) => ({
+  type: actionTypes.SET_ROOMS_DATA,
   payload,
 });
 
-export const getGameData = (nickname) => (dispatch) => {
+export const getRoomsData = (nickname) => (dispatch) => {
   dispatch({ type: actionTypes.SHOW_LOADING });
-  apiGetGameData(
+  apiGetRoomsData(
     nickname,
     (response) => {
-      dispatch(setGameData(response.data));
+      dispatch(setRoomsData(response.data));
       dispatch({ type: actionTypes.HIDE_LOADING });
     },
     (err) => {
-      console.log(`Error when retrieving infection tree:\n${err}`);
+      console.log(`Error when retrieving rooms data:\n${err}`);
+      dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+  );
+};
+
+export const setRoomData = (payload) => ({
+  type: actionTypes.SET_ROOM_DATA,
+  payload,
+});
+
+
+export const createRoom = (userId, roomName) => (dispatch) => {
+  dispatch({ type: actionTypes.SHOW_LOADING });
+  apiCreateRoom(
+    userId,
+    roomName,
+    (response) => {
+      dispatch(setRoomData(response.data));
+      dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+    (err) => {
+      console.log(`Error when creating room:\n${err}`);
+      dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+  );
+};
+
+export const getRoomData = (userId, roomId) => (dispatch) => {
+  dispatch({ type: actionTypes.SHOW_LOADING });
+  apiGetRoomData(
+    userId,
+    roomId,
+    (response) => {
+      dispatch(setRoomData(response.data));
+      dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+    (err) => {
+      console.log(`Error when getting room:\n${err}`);
       dispatch({ type: actionTypes.HIDE_LOADING });
     },
   );
