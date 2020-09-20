@@ -43,7 +43,7 @@ public class Game {
     @OneToMany
     private List<Player> players;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Card> cards;
 
     @OneToMany
@@ -51,4 +51,13 @@ public class Game {
 
     @OneToOne
     private Player owner;
+
+    public boolean containsPlayerWithId(int id){
+        for(int i = 0; i<players.size(); i++){
+            if (players.get(i).getId() == id){
+                return true;
+            }
+        }
+        return false;
+    }
 }
