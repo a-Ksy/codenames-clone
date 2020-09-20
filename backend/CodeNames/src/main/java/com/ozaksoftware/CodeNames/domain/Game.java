@@ -22,8 +22,6 @@ import java.util.List;
 @Check(constraints = "game_status = 'WAITS_FOR_PLAYER' or game_status = 'IN_PROGRESS'" +
         " or game_status = 'BLUE_TEAM_WON' or game_status = 'RED_TEAM_WON'")
 public class Game {
-    @Autowired
-    CardService cardService;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
