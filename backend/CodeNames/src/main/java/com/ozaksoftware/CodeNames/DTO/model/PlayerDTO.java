@@ -15,10 +15,8 @@ import lombok.experimental.Accessors;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PlayerDTO {
-
     private int id;
     private String nickName;
     private PlayerType playerType;
     private Team team;
-
 }

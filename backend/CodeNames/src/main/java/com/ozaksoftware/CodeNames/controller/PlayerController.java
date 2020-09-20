@@ -1,10 +1,8 @@
 package com.ozaksoftware.CodeNames.controller;
 
 
-import com.ozaksoftware.CodeNames.DTO.mapper.PlayerMapper;
 import com.ozaksoftware.CodeNames.DTO.model.PlayerDTO;
 import com.ozaksoftware.CodeNames.DTO.response.Response;
-import com.ozaksoftware.CodeNames.domain.Player;
 import com.ozaksoftware.CodeNames.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,12 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/player")
 public class PlayerController {
-
     @Autowired
     PlayerService playerService;
 

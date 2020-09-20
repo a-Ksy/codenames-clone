@@ -18,7 +18,6 @@ import javax.persistence.*;
 @Check(constraints = "player_type = 'UNKNOWN' or player_type = 'OPERATIVE' or player_type = 'SPYMASTER'" +
         " and team = 'UNKNOWN' or team = 'BLUE' or team = 'RED'")
 public class Player {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
