@@ -3,12 +3,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
-import { getGameData } from '../../store/actions/data';
+import { getRoomsData } from '../../store/actions/data';
 import Page from '../../components/Page/Page';
 import Button from '../../components/Button/Button';
-import './CreateRoom.scss';
+import './EnterName.scss';
 
-class CreateRoom extends React.Component {
+class EnterName extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,23 +18,22 @@ class CreateRoom extends React.Component {
 
   handleNickname = () => {
     const { nickname } = this.state;
-    const { retrieveGameData } = this.props;
-    console.log('buraya girdi');
-    retrieveGameData(nickname);
+    const { retrieveRoomsData } = this.props;
+    retrieveRoomsData(nickname);
   }
 
   render() {
     return (
       <Page>
-        <div className="CreateRoom">
+        <div className="EnterName">
           <div className="card">
             <div className="card-body">
               <h4 className="title">Welcome to code names</h4>
-              <p className="subtitle">To enter a room, choose a nickname.</p>
+              <p className="subtitle">To enter or create a room, choose a nickname.</p>
               <label className="label">Nickname</label>
               <input required type="text" id="nicknameInput" placeholder="Enter your nickname" onChange={(e) => this.setState({ nickname: e.target.value })} />
               <br />
-              <Button title="create room" onClick={() => this.handleNickname()} />
+              <Button title="play now" onClick={() => this.handleNickname()} />
             </div>
           </div>
         </div>
@@ -44,11 +43,10 @@ class CreateRoom extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  gameData: state.data.gameData,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  retrieveGameData: (nickname) => dispatch(getGameData(nickname)),
+  retrieveRoomsData: (nickname) => dispatch(getRoomsData(nickname)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateRoom);
+export default connect(mapStateToProps, mapDispatchToProps)(EnterName);
