@@ -18,31 +18,31 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Response<T> {
 
-    private Status status;
+    private int status;
     private T payload;
     private Object errors;
 
     public static <T> Response<T> badRequest() {
         Response<T> response = new Response<>();
-        response.setStatus(Status.BAD_REQUEST);
+        response.setStatus(400);
         return response;
     }
 
     public static <T> Response<T> ok() {
         Response<T> response = new Response<>();
-        response.setStatus(Status.OK);
+        response.setStatus(200);
         return response;
     }
 
     public static <T> Response<T> exception() {
         Response<T> response = new Response<>();
-        response.setStatus(Status.EXCEPTION);
+        response.setStatus(500);
         return response;
     }
 
     public static <T> Response<T> notFound() {
         Response<T> response = new Response<>();
-        response.setStatus(Status.NOT_FOUND);
+        response.setStatus(404);
         return response;
     }
 
@@ -54,7 +54,4 @@ public class Response<T> {
         setErrors(error);
     }
 
-    public enum Status {
-        OK, BAD_REQUEST, EXCEPTION, NOT_FOUND
-    }
 }

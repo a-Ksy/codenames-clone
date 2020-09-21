@@ -1,6 +1,8 @@
+/* eslint-disable no-undef */
+/* eslint-disable react/prop-types */
 import React from 'react';
 import {
-  Route, Switch, Redirect,
+  Route, Switch, Redirect, useHistory,
 } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from './store/actions';
@@ -14,11 +16,18 @@ import './App.scss';
 
 class App extends React.Component {
   componentDidMount() {
+    const { retrieveCheckSession } = this.props;
+    const userId = localStorage.getItem('userId');
+    const nickName = localStorage.getItem('nickName');
+
+    if (userId !== null && nickName !== null) {
+      retrieveCheckSession(userId, nickName);
+    }
   }
 
   render() {
+    const { isLoggedIn, room, user } = this.props;
 
-    const { isLoggedIn, room } = this.props;
     let routes = (
       <Container>
         <Switch>
@@ -39,13 +48,15 @@ class App extends React.Component {
                 <EnterNamePage />
               </>
             )}
-        />
-        <Redirect to="/" />
+          />
+          <Redirect to="/" />
         </Switch>
       </Container>
     );
 
     if (isLoggedIn) {
+      localStorage.setItem('userId', user.id);
+      localStorage.setItem('nickName', user.nickName);
       routes = (
         <Container type="game">
           <Switch>
@@ -59,26 +70,20 @@ class App extends React.Component {
               )}
             />
             <Route
-              exact
-              path={`/game/${room.roomId}`}
-              render={() => (
-                <>
-                  <GamePage />
-                </>
-              )}
+              path="/game"
+              render={() => room !== undefined
+                  && <GamePage />}
             />
             <Redirect to="/rooms" />
-          </Switch> 
+          </Switch>
         </Container>
       );
     }
 
-
-
     return (
       <div className="App">
         <LoadingPage />
-          {routes}
+        {routes}
       </div>
     );
   }
@@ -87,10 +92,11 @@ class App extends React.Component {
 const mapStateToProps = (state) => ({
   isLoggedIn: state.data.loggedIn,
   room: state.data.room,
+  user: state.data.user,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  // checkSession: () => dispatch(actions.checkSession()),
+  retrieveCheckSession: (userId, nickName) => dispatch(actions.checkSession(userId, nickName)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

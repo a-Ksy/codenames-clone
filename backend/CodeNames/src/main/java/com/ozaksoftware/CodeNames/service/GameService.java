@@ -50,12 +50,22 @@ public class GameService {
         gameDTO.setOwner(owner);
         return gameDTO;
     }
+
     public Game getGame(int id) {
         return gameRepository.findOneById(id);
     }
+
     public List<GameDTO> listGameDTOs() {
         List<Game> games = (List<Game>) gameRepository.findAll();
         return GameMapper.toGameDTOList(games);
     }
 
+    public GameDTO checkGame(int userId, int gameId) {
+        Game game = gameRepository.findOneById(gameId);
+        if(game == null) return null;
+        if(game.getPlayers().stream().anyMatch(player -> player.getId() == userId)) {
+            return GameMapper.toGameDTO(game);
+        }
+        return null;
+    }
 }

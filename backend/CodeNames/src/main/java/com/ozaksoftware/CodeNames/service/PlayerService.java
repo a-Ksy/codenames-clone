@@ -31,13 +31,26 @@ public class PlayerService {
         playerDTO.setId(newPlayer.getId());
         return playerDTO;
     }
+
     public Player getPlayer(int id) {
         return playerRepository.findOneById(id);
     }
+
     public List<PlayerDTO> listPlayerDTOs() {
         List<Player> players = (List<Player>) playerRepository.findAll();
         return PlayerMapper.toPlayerDTOList(players);
     }
+
+    public PlayerDTO checkPlayer(int userId, String nickName) {
+        if(nickName == null || nickName == "") return null;
+        Player player = playerRepository.findOneById(userId);
+        if(player == null) return null;
+        if(player.getNickName().equals(nickName)) {
+            return PlayerMapper.toPlayerDTO(player);
+        }
+        return null;
+    }
+
 }
 
 

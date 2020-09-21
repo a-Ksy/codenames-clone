@@ -2,9 +2,12 @@
 import * as actionTypes from './actionTypes';
 
 import {
+  apiCreateUser,
   apiCreateRoom,
   apiGetRoomData,
   apiGetRoomsData,
+  apiCheckSession,
+  apiCheckRoomSession,
 } from '../../api/api';
 
 export const showLoading = () => ({
@@ -15,21 +18,59 @@ export const hideLoading = () => ({
   type: actionTypes.HIDE_LOADING,
 });
 
+export const setUserData = (payload) => ({
+  type: actionTypes.SET_USER_DATA,
+  payload,
+});
+
 export const setRoomsData = (payload) => ({
   type: actionTypes.SET_ROOMS_DATA,
   payload,
 });
 
-export const getRoomsData = (nickname) => (dispatch) => {
+export const createUser = (nickname) => (dispatch) => {
   dispatch({ type: actionTypes.SHOW_LOADING });
-  apiGetRoomsData(
+  apiCreateUser(
     nickname,
-    (response) => {
-      dispatch(setRoomsData(response.data));
-      dispatch({ type: actionTypes.HIDE_LOADING });
+    (response1) => {
+      dispatch(setUserData(response1.data));
+      apiGetRoomsData(
+        (response2) => {
+          dispatch(setRoomsData(response2.data));
+          dispatch({ type: actionTypes.HIDE_LOADING });
+        },
+        (err) => {
+          console.log(`Error when creating user:\n${err}`);
+          dispatch({ type: actionTypes.HIDE_LOADING });
+        },
+      );
     },
     (err) => {
       console.log(`Error when retrieving rooms data:\n${err}`);
+      dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+  );
+};
+
+export const checkSession = (userId, nickName) => (dispatch) => {
+  dispatch({ type: actionTypes.SHOW_LOADING });
+  apiCheckSession(
+    userId,
+    nickName,
+    (response) => {
+      dispatch(setUserData(response.data));
+      apiGetRoomsData(
+        (response2) => {
+          dispatch(setRoomsData(response2.data));
+          dispatch({ type: actionTypes.HIDE_LOADING });
+        },
+        (err) => {
+          console.log(`Error when retrieving rooms data:\n${err}`);
+          dispatch({ type: actionTypes.HIDE_LOADING });
+        },
+      );
+    },
+    (err) => {
       dispatch({ type: actionTypes.HIDE_LOADING });
     },
   );
@@ -40,18 +81,30 @@ export const setRoomData = (payload) => ({
   payload,
 });
 
-
-export const createRoom = (userId, roomName) => (dispatch) => {
+export const checkRoomSession = (userId, roomId) => (dispatch) => {
   dispatch({ type: actionTypes.SHOW_LOADING });
-  apiCreateRoom(
+  apiCheckRoomSession(
     userId,
-    roomName,
+    roomId,
     (response) => {
       dispatch(setRoomData(response.data));
       dispatch({ type: actionTypes.HIDE_LOADING });
     },
     (err) => {
-      console.log(`Error when creating room:\n${err}`);
+      dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+  );
+};
+
+export const getRoomsData = () => (dispatch) => {
+  dispatch({ type: actionTypes.SHOW_LOADING });
+  apiGetRoomsData(
+    (response) => {
+      dispatch(setRoomsData(response.data));
+      dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+    (err) => {
+      console.log(`Error when retrieving rooms data:\n${err}`);
       dispatch({ type: actionTypes.HIDE_LOADING });
     },
   );
@@ -68,6 +121,22 @@ export const getRoomData = (userId, roomId) => (dispatch) => {
     },
     (err) => {
       console.log(`Error when getting room:\n${err}`);
+      dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+  );
+};
+
+export const createRoom = (userId, roomName) => (dispatch) => {
+  dispatch({ type: actionTypes.SHOW_LOADING });
+  apiCreateRoom(
+    userId,
+    roomName,
+    (response) => {
+      dispatch(setRoomData(response.data));
+      dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+    (err) => {
+      console.log(`Error when creating room:\n${err}`);
       dispatch({ type: actionTypes.HIDE_LOADING });
     },
   );
