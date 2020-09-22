@@ -3,6 +3,8 @@ package com.ozaksoftware.CodeNames.service;
 import com.ozaksoftware.CodeNames.DTO.mapper.PlayerMapper;
 import com.ozaksoftware.CodeNames.DTO.model.PlayerDTO;
 import com.ozaksoftware.CodeNames.domain.Player;
+import com.ozaksoftware.CodeNames.enums.PlayerType;
+import com.ozaksoftware.CodeNames.enums.Team;
 import com.ozaksoftware.CodeNames.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,8 @@ public class PlayerService {
         }
         Player newPlayer = new Player();
         newPlayer.setNickName(playerDTO.getNickName());
+        newPlayer.setPlayerType(PlayerType.SPECTATOR);
+        newPlayer.setTeam(Team.SPECTATOR);
         playerRepository.save(newPlayer);
         playerDTO.setId(newPlayer.getId());
         return playerDTO;

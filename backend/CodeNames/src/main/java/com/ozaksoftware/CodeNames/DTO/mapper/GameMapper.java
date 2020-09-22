@@ -11,7 +11,7 @@ public class GameMapper {
         return new GameDTO()
                 .setId(game.getId())
                 .setOwner(game.getOwner())
-                .setCards(game.getCards())
+                .setCards(CardMapper.toCardDTOList(game.getCards()))
                 .setClueNumber(game.getClueNumber())
                 .setClueWord(game.getClueWord())
                 .setGameName(game.getGameName())

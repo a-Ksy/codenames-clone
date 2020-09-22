@@ -1,0 +1,48 @@
+@import "../../sass/variables";
+@import "../../sass/breakpoints";
+
+
+.Dropdown {
+  margin-bottom: 3rem;
+  border-radius: 3px;
+  transition: 0.3s ease;
+
+  .btn-custom {
+    transition: 0.3s ease;
+    background-color: $primary;
+    color: $headline;
+    font-size: 1.2rem;
+    font-weight: 600;
+    outline: none;
+    border: none;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .btn-custom, .btn-custom:hover, .btn-custom:active, .btn-custom:focus {
+    outline: none;
+    border: none;
+    box-shadow: none;
+  }
+
+  .dropdown-menu {
+    -webkit-user-select: none; /* Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+    padding: 1.5rem;
+    color: $headline;
+    border-radius: 3px;
+    border: none;
+    outline: none;
+    background-color: $backgroundLight;
+    min-width: 15rem;
+  }
+
+  @include media("<=collapse") {
+    .btn-custom {
+      font-size: 1rem;
+    }
+  }
+  
+}

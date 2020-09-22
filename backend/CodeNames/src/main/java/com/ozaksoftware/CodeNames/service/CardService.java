@@ -5,8 +5,12 @@ import com.google.gson.reflect.TypeToken;
 import com.ozaksoftware.CodeNames.domain.Card;
 import com.ozaksoftware.CodeNames.enums.CardColor;
 import com.ozaksoftware.CodeNames.enums.CardStatus;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
 import java.util.Random;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -28,8 +32,9 @@ public class CardService {
         try {
             Gson gson = new Gson();
             Type type = new TypeToken<Map<String, String>>(){}.getType();
-            //todo: absolute path to relative path
-            Map<String, String> myMap = gson.fromJson(new FileReader("/Users/barisozcan/Documents/GitHub/codenames-clone/backend/CodeNames/src/main/resources/static/wordList"), type);
+            Resource resource = new ClassPathResource("/static/wordList");
+            String path = resource.getURL().getPath().toString();
+            Map<String, String> myMap = gson.fromJson(new FileReader(path), type);
             Set<String> wordListSet = new HashSet<>();
             Random rand = new Random();
             List<Card> randomCards = new ArrayList<>();
@@ -55,9 +60,12 @@ public class CardService {
             }
             Collections.shuffle(randomCards);
             return randomCards;
+
         } catch (FileNotFoundException e) {
             System.out.println(e);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    return new ArrayList<Card>();
+        return new ArrayList<Card>();
     }
 }

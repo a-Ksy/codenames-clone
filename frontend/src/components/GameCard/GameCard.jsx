@@ -6,7 +6,7 @@ import './GameCard.scss';
 
 const propTypes = {
   type: PropTypes.string,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
 };
 
 const defaultProps = {

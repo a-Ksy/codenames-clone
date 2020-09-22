@@ -16,14 +16,22 @@ import './App.scss';
 
 class App extends React.Component {
   componentDidMount() {
-    const { retrieveCheckSession, retrieveCheckGameSession } = this.props;
+    const {
+      retrieveCheckSession, retrieveCheckGameSession, isLoggedIn, isInGame,
+    } = this.props;
     const userId = localStorage.getItem('userId');
     const nickName = localStorage.getItem('nickName');
     const gameId = localStorage.getItem('gameId');
     if (userId !== null && nickName !== null) {
       retrieveCheckSession(userId, nickName);
+      if (!isLoggedIn) {
+        localStorage.removeItem('userId');
+        localStorage.removeItem('nickName');
+        localStorage.removeItem('gameId');
+      }
       if (gameId !== null) {
         retrieveCheckGameSession(userId, gameId);
+        if (!isInGame) localStorage.removeItem('gameId');
       }
     }
   }
@@ -33,9 +41,6 @@ class App extends React.Component {
       isLoggedIn, room, user, isInGame,
     } = this.props;
 
-    console.log(`loglu mu=${isLoggedIn}`);
-    console.log(`oyunda mı= ${isInGame}`);
-    console.log(`room bu=${room}`);
     let routes = (
       <Container>
         <Switch>

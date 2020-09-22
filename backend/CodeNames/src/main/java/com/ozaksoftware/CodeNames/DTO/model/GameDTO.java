@@ -13,6 +13,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -28,7 +29,11 @@ public class GameDTO {
     private String clueWord;
     private int clueNumber;
     private List<Player> players;
-    private List<Card> cards;
+    private Map<String,List<Player>> redTeam;
+    private Map<String,List<Player>> blueTeam;
+    private List<CardDTO> cards;
+    private int redCardsLeft;
+    private int blueCardsLeft;
     private List<Move> moves;
     private Player owner;
 }

@@ -1,10 +1,14 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+// eslint-disable-next-line import/named
+import { capitalizeFirstLetterOfCapitalized } from '../../helpers/helpers';
 import TeamCard from '../../components/TeamCard/TeamCard';
 import GameCard from '../../components/GameCard/GameCard';
+import Dropdown from '../../components/Dropdown/Dropdown';
 import './Game.scss';
 
 const dummyData = {
@@ -150,34 +154,55 @@ class Game extends React.Component {
   render() {
     const { room } = this.props;
     localStorage.setItem('gameId', room.id);
+
     return (
-      <div className="Game">
-        <div className="row">
-          <div className="redTeamColumn col-lg-2">
-            <TeamCard
-              type="red"
-              cardsLeft="9"
-              operativeList={dummyData.operativeList}
-              spymasterList={dummyData.spymasterList}
-            />
-          </div>
-          <div className="gameColumn col-lg-8">
-            <div className="gameOverlay">
-              {dummyData.cards.map((card) => (
-                <GameCard id={card.id} title={card.title} />
-              ))}
+      <>
+        <div className="header row justify-content-between">
+          <Dropdown title="Players">
+            <p className="dropdownMenuTitle">Players in this room</p>
+            {room.players.map((player) => (
+              <p>
+                <span className="dropdownMenuNickname">
+                  {player.nickName}
+                  {' '}
+                  :
+                </span>
+                {' '}
+                <span className="dropdownMenuPlayerType">
+                  {capitalizeFirstLetterOfCapitalized(player.playerType)}
+                </span>
+              </p>
+            ))}
+          </Dropdown>
+        </div>
+        <div className="Game">
+          <div className="row">
+            <div className="redTeamColumn col-lg-2">
+              <TeamCard
+                type="red"
+                cardsLeft={room.redCardsLeft}
+                operativeList={room.redTeam.operatives}
+                spymasterList={room.redTeam.spymasters}
+              />
+            </div>
+            <div className="gameColumn col-lg-8">
+              <div className="gameOverlay">
+                {room.cards.map((card) => (
+                  <GameCard id={card.id} type={card.cardColor} title={card.word} />
+                ))}
+              </div>
+            </div>
+            <div className="blueTeamColumn col-lg-2">
+              <TeamCard
+                type="blue"
+                cardsLeft={room.blueCardsLeft}
+                operativeList={room.blueTeam.operatives}
+                spymasterList={room.blueTeam.spymasters}
+              />
             </div>
           </div>
-          <div className="blueTeamColumn col-lg-2">
-            <TeamCard
-              type="blue"
-              cardsLeft="8"
-              operativeList={dummyData.operativeList}
-              spymasterList={dummyData.spymasterList}
-            />
-          </div>
         </div>
-      </div>
+      </>
     );
   }
 }
