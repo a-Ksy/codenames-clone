@@ -37,9 +37,7 @@ public class GameService {
         newGame.setGameName(gameDTO.getGameName());
         newGame.setGameStatus(GameStatus.WAITS_FOR_PLAYER);
         Player owner = playerRepository.findOneById(ownerId);
-        if(owner==null){
-            return null;
-        }
+        if(owner==null) return null;
         newGame.setOwner(owner);
         List<Player> players = new ArrayList<Player>();
         players.add(owner);
@@ -51,8 +49,16 @@ public class GameService {
         return gameDTO;
     }
 
-    public Game getGame(int id) {
-        return gameRepository.findOneById(id);
+    public GameDTO getGame(int gameId, int playerId) {
+        Game game = gameRepository.findOneById(gameId);
+        if(game == null) return null;
+        if(game.getPlayers().stream().anyMatch(player -> player.getId() != playerId)) {
+            List<Player> playerList = game.getPlayers();
+            Player player = playerRepository.findOneById(playerId);
+            playerList.add(player);
+            game.setPlayers(playerList);
+        }
+        return GameMapper.toGameDTO(game);
     }
 
     public List<GameDTO> listGameDTOs() {
@@ -60,10 +66,10 @@ public class GameService {
         return GameMapper.toGameDTOList(games);
     }
 
-    public GameDTO checkGame(int userId, int gameId) {
+    public GameDTO checkGame(int playerId, int gameId) {
         Game game = gameRepository.findOneById(gameId);
         if(game == null) return null;
-        if(game.getPlayers().stream().anyMatch(player -> player.getId() == userId)) {
+        if(game.getPlayers().stream().anyMatch(player -> player.getId() == playerId)) {
             return GameMapper.toGameDTO(game);
         }
         return null;

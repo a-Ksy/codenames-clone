@@ -16,7 +16,7 @@ const urls = {
   CREATE_ROOM_URL: 'http://localhost:8080/game/create',
   ROOM_DATA_URL: 'http://localhost:8080/game',
   CHECK_SESSION_URL: 'http://localhost:8080/player/check',
-  CHECK_ROOM_SESSION_URL: 'http://localhost:8080/room/check',
+  CHECK_ROOM_SESSION_URL: 'http://localhost:8080/game/check',
 
 };
 
@@ -81,6 +81,6 @@ export const apiCheckSession = (userId, nickname, callback, onError) => {
 export const apiCheckRoomSession = (userId, roomId, callback, onError) => {
   const params = new URLSearchParams();
   params.append('userId', userId);
-  params.append('roomId', roomId);
+  params.append('gameId', roomId);
   apiCall(urls.CHECK_ROOM_SESSION_URL, methods.GET, params, null, callback, onError);
 };

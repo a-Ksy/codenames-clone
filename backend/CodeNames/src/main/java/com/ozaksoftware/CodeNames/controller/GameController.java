@@ -41,7 +41,7 @@ public class GameController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
         public ResponseEntity getGame(@RequestParam int gameId, @RequestParam int playerId) {
-        Optional<Game> gameOptional = Optional.ofNullable(gameService.getGame(gameId));
+        Optional<GameDTO> gameOptional = Optional.ofNullable(gameService.getGame(gameId, playerId));
         if(gameOptional.isPresent()){
             return ResponseEntity.ok().body(gameOptional);
         }

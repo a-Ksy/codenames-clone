@@ -4,4 +4,5 @@ export {
   getRoomsData,
   getRoomData,
   checkSession,
+  checkRoomSession,
 } from './data';

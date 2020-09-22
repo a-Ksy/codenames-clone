@@ -16,18 +16,26 @@ import './App.scss';
 
 class App extends React.Component {
   componentDidMount() {
-    const { retrieveCheckSession } = this.props;
+    const { retrieveCheckSession, retrieveCheckGameSession } = this.props;
     const userId = localStorage.getItem('userId');
     const nickName = localStorage.getItem('nickName');
-
+    const gameId = localStorage.getItem('gameId');
     if (userId !== null && nickName !== null) {
       retrieveCheckSession(userId, nickName);
+      if (gameId !== null) {
+        retrieveCheckGameSession(userId, gameId);
+      }
     }
   }
 
   render() {
-    const { isLoggedIn, room, user } = this.props;
+    const {
+      isLoggedIn, room, user, isInGame,
+    } = this.props;
 
+    console.log(`loglu mu=${isLoggedIn}`);
+    console.log(`oyunda mı= ${isInGame}`);
+    console.log(`room bu=${room}`);
     let routes = (
       <Container>
         <Switch>
@@ -60,21 +68,30 @@ class App extends React.Component {
       routes = (
         <Container type="game">
           <Switch>
-            <Route
-              exact
-              path="/rooms"
-              render={() => (
+            {isInGame
+              ? (
                 <>
-                  <RoomsPage />
+                  <Route
+                    path="/game"
+                    render={() => room !== undefined
+                      && <GamePage />}
+                  />
+                  <Redirect to="/game" />
+                </>
+              ) : (
+                <>
+                  <Route
+                    exact
+                    path="/rooms"
+                    render={() => (
+                      <>
+                        <RoomsPage />
+                      </>
+                    )}
+                  />
+                  <Redirect to="/rooms" />
                 </>
               )}
-            />
-            <Route
-              path="/game"
-              render={() => room !== undefined
-                  && <GamePage />}
-            />
-            <Redirect to="/rooms" />
           </Switch>
         </Container>
       );
@@ -93,10 +110,12 @@ const mapStateToProps = (state) => ({
   isLoggedIn: state.data.loggedIn,
   room: state.data.room,
   user: state.data.user,
+  isInGame: state.data.isInGame,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   retrieveCheckSession: (userId, nickName) => dispatch(actions.checkSession(userId, nickName)),
+  retrieveCheckGameSession: (userId, gameId) => dispatch(actions.checkRoomSession(userId, gameId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

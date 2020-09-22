@@ -6,6 +6,7 @@ import updateObject from '../utility';
 const initialState = {
   loading: false,
   loggedIn: false,
+  isInGame: false,
   rooms: [],
 };
 
@@ -20,7 +21,7 @@ const dataReducer = (state = initialState, action) => {
     case actionTypes.SET_ROOMS_DATA:
       return updateObject(state, { rooms: action.payload });
     case actionTypes.SET_ROOM_DATA:
-      return updateObject(state, { room: action.payload });
+      return updateObject(state, { isInGame: true, room: action.payload });
     default:
       return state;
   }
