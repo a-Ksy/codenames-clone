@@ -41,12 +41,23 @@ class Game extends React.Component {
   }
 
   handleResetGame = () => {
-    const { room, user, retrieveResetGame, retrieveSetUserData } = this.props;
+    const {
+      room, user, retrieveResetGame, retrieveSetUserData,
+    } = this.props;
     retrieveResetGame(room.id, user.id);
     const tempUser = user;
     tempUser.playerType = 'SPECTATOR';
     tempUser.team = 'SPECTATOR';
     retrieveSetUserData(tempUser);
+    this.handleModal(false, 'RESET');
+  }
+
+  handleLeaveGame = () => {
+    const {
+      room, user,
+    } = this.props;
+    // call dispatch function here
+    this.handleModal(false, 'LEAVE');
   }
 
   render() {
@@ -67,6 +78,7 @@ class Game extends React.Component {
         <Modal
           title="Are you sure to leave game?"
           buttonTitle="Leave game"
+          onClick={() => this.handleLeaveGame()}
           show={isLeaveModalVisible}
           handleModalVisibility={this.handleModalVisibility}
         />

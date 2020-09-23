@@ -42,7 +42,7 @@ function TeamCard(props) {
         {operativeList.map((operative) => (
           <p className="playerNickname">{operative.nickName}</p>
         ))}
-        {((room.gameStatus === 'WAITS_FOR_PLAYER') && (user.playerType !== 'SPYMASTER' && user.team !== type))
+        {((user.playerType !== 'SPYMASTER' && user.team !== type))
           && (
           <Button
             title="Join as operative"
