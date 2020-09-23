@@ -1,9 +1,29 @@
 @import "../../sass/variables";
 @import "../../sass/breakpoints";
 
+.header {
+  .dropdownMenuTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    margin-bottom: 0.25rem;
+  }
+
+  .dropdownMenuNickname {
+    font-size: 0.9rem;
+  }
+  .dropdownMenuPlayerType {
+    font-size: 0.9rem;
+    color: $paragraph;
+  }
+}
+
+
 .Game {
   height: 100%;
-
   .row {
     height: 100%;
   }
@@ -19,6 +39,8 @@
   }
 
   .gameOverlay {
+    height: 80%;
+    width: 100%;
     display: grid;
     grid-template-columns: 20% 20% 20% 20% 20%;
     grid-template-rows: 20% 20% 20% 20% 20%;
@@ -39,6 +61,12 @@
 
     .gameColumn {
       order: 1;
+      padding: 0;
+      margin-bottom: 3rem;
+    }
+
+    .gameOverlay {
+      height: 100%;
     }
   }
 }

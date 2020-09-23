@@ -2,36 +2,83 @@
 @import "../../sass/breakpoints";
 
 .GameCard {
-  padding: 0 0.5rem 1rem 0.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
   width: 100%;
-  height: 90%;
+  height: 100%;
   margin: 0;
   box-sizing: border-box;
   text-align: center;
 
   .title {
-    font-size: 1.5rem;
+    transition: 0.3s ease;
+    font-size: 1.3rem;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
+
+  @include media("<=desktop") {
+    .title {
+      transition: 0.3s ease;
+      font-size: 1rem;
+    }
+  }
+
+
+  @include media("<=collapse") {
+    padding: 0 0.25rem 0.5rem 0.25rem;
+    .title {    
+      transition: 0.3s ease;
+      font-size: 0.9rem;
+    }
+  }
+
+  @include media("<=tablet") {
+    .title {    
+      transition: 0.3s ease;
+      font-size: 0.7rem;
+    }
+  }
+
+    @include media("<=phone") {
+    .title {    
+      transition: 0.3s ease;
+      font-size: 0.6rem;
+    }
+  }
+
 }
 
+
 .GameCardPlot {
-  padding: 2rem;
+  height: 100%;
+  width: 100%;
   background-color: $secondary;
   border-radius: 3px;
 }
 
-.GameCardPlot.neutral {
+.GameCardPlot.NEUTRAL {
   background-color: $neutral;
 }
 
-.GameCardPlot.red {
+.GameCardPlot.RED {
   background-color: $redTeam;
 }
 
-.GameCardPlot.blue {
+.GameCardPlot.BLUE {
   background-color: $blueTeam;
 }
 
-.GameCardPlot.black {
+.GameCardPlot.BLACK {
   background-color: $backgroundLight;
+}
+
+@include media("<=collapse") {
+  .GameCardPlot {
+    background-color: $secondary;
+    border-radius: 3px;
+  }
 }

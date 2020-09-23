@@ -13,9 +13,4 @@ public class CodeNamesApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CodeNamesApplication.class, args);
 	}
-	@GetMapping("/hello")
-	public String sayHello(@RequestParam(value = "myName", defaultValue = "World") String name) {
-		return String.format("Hello %s!", name);
-	}
-
 }

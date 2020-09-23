@@ -6,9 +6,8 @@ import updateObject from '../utility';
 const initialState = {
   loading: false,
   loggedIn: false,
+  isInGame: false,
   rooms: [],
-  room: {roomId: 0},
-  userId: undefined,
 };
 
 const dataReducer = (state = initialState, action) => {
@@ -17,10 +16,12 @@ const dataReducer = (state = initialState, action) => {
       return updateObject(state, { loading: true });
     case actionTypes.HIDE_LOADING:
       return updateObject(state, { loading: false });
+    case actionTypes.SET_USER_DATA:
+      return updateObject(state, { loggedIn: true, user: action.payload });
     case actionTypes.SET_ROOMS_DATA:
-      return updateObject(state, { userId: 0, loggedIn: true, rooms: action.payload});
+      return updateObject(state, { rooms: action.payload });
     case actionTypes.SET_ROOM_DATA:
-      return updateObject(state, { room: action.payload });
+      return updateObject(state, { isInGame: true, room: action.payload });
     default:
       return state;
   }

@@ -15,10 +15,9 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @Accessors(chain = true)
-@Check(constraints = "player_type = 'UNKNOWN' or player_type = 'OPERATIVE' or player_type = 'SPYMASTER'" +
-        " and team = 'UNKNOWN' or team = 'BLUE' or team = 'RED'")
+@Check(constraints = "player_type = 'SPECTATOR' or player_type = 'OPERATIVE' or player_type = 'SPYMASTER'" +
+        " and team = 'SPECTATOR' or team = 'BLUE' or team = 'RED'")
 public class Player {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)

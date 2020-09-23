@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.Check;
 
 import javax.persistence.*;
@@ -14,9 +15,9 @@ import java.util.ArrayList;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Check(constraints = "card_color = 'RED' or card_color = 'BLUE' or card_color = 'BLACK' or card_color = 'NEUTRAL'" +
+@Accessors(chain = true)
+@Check(constraints = "card_color = 'RED' or card_color = 'BLUE' or card_color = 'BLACK' or card_color = 'NEUTRAL' or card_color = 'HIDDEN'" +
         " and card_status = 'CLOSED' or card_status = 'OPEN'")
 public class Card {
     @Id
@@ -32,16 +33,4 @@ public class Card {
 
     @Enumerated(EnumType.STRING)
     private CardStatus cardStatus;
-
-    public void setWord(String word) {
-        this.word = word;
-    }
-
-    public void setCardColor(CardColor cardColor) {
-        this.cardColor = cardColor;
-    }
-
-    public void setCardStatus(CardStatus cardStatus) {
-        this.cardStatus = cardStatus;
-    }
 }

@@ -6,8 +6,10 @@
     padding: 3rem 1.5rem 3rem 1.5rem;
     
     @include media ("<=collapse") {
-        padding: 1rem 1rem 1rem 1rem;
-
+        padding: 1rem;
+    }
+    @include media("<=phone") {
+        padding: 0.5rem;
     }
 }
 
