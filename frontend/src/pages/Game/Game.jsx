@@ -179,7 +179,7 @@ class Game extends React.Component {
           <div className="row">
             <div className="redTeamColumn col-lg-2">
               <TeamCard
-                type="red"
+                type="RED"
                 cardsLeft={room.redCardsLeft}
                 operativeList={room.redTeam.operatives}
                 spymasterList={room.redTeam.spymasters}
@@ -194,7 +194,7 @@ class Game extends React.Component {
             </div>
             <div className="blueTeamColumn col-lg-2">
               <TeamCard
-                type="blue"
+                type="BLUE"
                 cardsLeft={room.blueCardsLeft}
                 operativeList={room.blueTeam.operatives}
                 spymasterList={room.blueTeam.spymasters}

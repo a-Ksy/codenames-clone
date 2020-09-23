@@ -32,8 +32,8 @@ public class PlayerService {
         newPlayer.setPlayerType(PlayerType.SPECTATOR);
         newPlayer.setTeam(Team.SPECTATOR);
         playerRepository.save(newPlayer);
-        playerDTO.setId(newPlayer.getId());
-        return playerDTO;
+        PlayerDTO updatedPlayerDTO = PlayerMapper.toPlayerDTO(newPlayer);
+        return updatedPlayerDTO;
     }
 
     public Player getPlayer(int id) {

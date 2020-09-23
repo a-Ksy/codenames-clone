@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -134,7 +131,7 @@ public class GameService {
         if(game == null || player  == null) return null;
 
         //Adding player to the game if the player is not in the game.
-        if(game.getPlayers().stream().anyMatch(pl -> pl.getId() != playerId)) {
+        if(!game.getPlayers().stream().anyMatch(pl -> Objects.equals(pl.getId(), playerId))) {
             List<Player> playerList = game.getPlayers();
             playerList.add(player);
             game.setPlayers(playerList);
@@ -161,7 +158,7 @@ public class GameService {
     public GameDTO checkGame(int playerId, int gameId) {
         Game game = gameRepository.findOneById(gameId);
         if(game == null) return null;
-        if(game.getPlayers().stream().anyMatch(player -> player.getId() == playerId)) {
+        if(game.getPlayers().stream().anyMatch(pl -> Objects.equals(pl.getId(), playerId))) {
             Player player = playerRepository.findOneById(playerId);
             GameDTO gameDTO = GameMapper.toGameDTO(game);
 
@@ -173,9 +170,32 @@ public class GameService {
 
             //Mapping each card color to hidden if the player who sent the request is not the spymaster.
             if(player.getPlayerType() != PlayerType.SPYMASTER) gameDTO = setDTOCardsHidden(gameDTO);
-            
+
             return gameDTO;
         }
         return null;
     }
+
+    public GameDTO changePlayerType(GameDTO gameDTO, Integer playerId, PlayerType playerType, Team team) {
+        Game game = gameRepository.findOneById(gameDTO.getId());
+        if(game == null) return null;
+        if(!game.getPlayers().stream().anyMatch(pl -> Objects.equals(pl.getId(), playerId))) return null;
+        Player player = playerRepository.findOneById(playerId);
+        if(player == null) return null;
+        player.setPlayerType(playerType);
+        player.setTeam(team);
+        playerRepository.save(player);
+        game = gameRepository.findOneById(gameDTO.getId());
+        GameDTO updatedGameDTO = GameMapper.toGameDTO(game);
+        //Putting each player into teams.
+        updatedGameDTO = setDTOTeams(updatedGameDTO);
+
+        //Calculating the remaining cards for each team.
+        updatedGameDTO = setDTOCardsRemaining(updatedGameDTO);
+
+        //Mapping each card color to hidden if the player who sent the request is not the spymaster.
+        if(player.getPlayerType() != PlayerType.SPYMASTER) updatedGameDTO = setDTOCardsHidden(updatedGameDTO);
+        return updatedGameDTO;
+    }
+
 }

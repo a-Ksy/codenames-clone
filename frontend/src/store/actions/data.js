@@ -8,6 +8,7 @@ import {
   apiGetRoomsData,
   apiCheckSession,
   apiCheckRoomSession,
+  apiChangePlayerType,
 } from '../../api/api';
 
 export const showLoading = () => ({
@@ -82,16 +83,13 @@ export const setRoomData = (payload) => ({
 });
 
 export const checkRoomSession = (userId, roomId) => (dispatch) => {
-  dispatch({ type: actionTypes.SHOW_LOADING });
   apiCheckRoomSession(
     userId,
     roomId,
     (response) => {
       dispatch(setRoomData(response.data));
-      dispatch({ type: actionTypes.HIDE_LOADING });
     },
     (err) => {
-      dispatch({ type: actionTypes.HIDE_LOADING });
     },
   );
 };
@@ -111,17 +109,14 @@ export const getRoomsData = () => (dispatch) => {
 };
 
 export const getRoomData = (userId, roomId) => (dispatch) => {
-  dispatch({ type: actionTypes.SHOW_LOADING });
   apiGetRoomData(
     userId,
     roomId,
     (response) => {
       dispatch(setRoomData(response.data));
-      dispatch({ type: actionTypes.HIDE_LOADING });
     },
     (err) => {
       console.log(`Error when getting room:\n${err}`);
-      dispatch({ type: actionTypes.HIDE_LOADING });
     },
   );
 };
@@ -138,6 +133,21 @@ export const createRoom = (userId, roomName) => (dispatch) => {
     (err) => {
       console.log(`Error when creating room:\n${err}`);
       dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+  );
+};
+
+export const changePlayerType = (roomId, playerId, playerType, team) => (dispatch) => {
+  apiChangePlayerType(
+    roomId,
+    playerId,
+    playerType,
+    team,
+    (response) => {
+      dispatch(setRoomData(response.data));
+    },
+    (err) => {
+      console.log(`Error when changing player type:\n${err}`);
     },
   );
 };

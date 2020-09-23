@@ -3,6 +3,7 @@ package com.ozaksoftware.CodeNames.controller;
 import com.ozaksoftware.CodeNames.DTO.model.GameDTO;
 import com.ozaksoftware.CodeNames.DTO.model.PlayerDTO;
 import com.ozaksoftware.CodeNames.DTO.response.Response;
+import com.ozaksoftware.CodeNames.controller.request.GamePlayerTypeRequest;
 import com.ozaksoftware.CodeNames.controller.request.GameRequest;
 import com.ozaksoftware.CodeNames.domain.Game;
 import com.ozaksoftware.CodeNames.service.GameService;
@@ -55,6 +56,20 @@ public class GameController {
             return ResponseEntity.ok().body(gameDTOOptional);
         }
         return ResponseEntity.badRequest().body("There is no game with the id " + gameId + " or user id " + userId + " is not in the game");
+    }
+
+    @RequestMapping(value = "/changePlayerType", method = RequestMethod.POST)
+    public ResponseEntity changePlayerType(@RequestBody GamePlayerTypeRequest gameRequest) {
+        if(gameRequest == null || gameRequest.getGameDTO() == null) {
+            return ResponseEntity.badRequest().body("Request is null or game DTO is null");
+        }
+        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.changePlayerType(gameRequest.getGameDTO(),
+                gameRequest.getPlayerId(), gameRequest.getPlayerType(), gameRequest.getTeam()));
+        if(gameDTOOptional.isPresent()){
+            return ResponseEntity.ok().body(gameDTOOptional);
+        }
+        return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
+                gameRequest.getPlayerId() + " can not be found.");
     }
 
 }

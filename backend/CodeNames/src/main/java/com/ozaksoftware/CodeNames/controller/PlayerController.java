@@ -42,35 +42,6 @@ public class PlayerController {
         return ResponseEntity.badRequest().body("There is no user with the id " + userId + " and the nickname " + nickName);
     }
 
-    @RequestMapping(value = "/changeType", method = RequestMethod.POST)
-    public ResponseEntity changePlayerType(@RequestBody PlayerRequest playerRequest) {
-        /*
-        if(playerRequest == null || playerRequest.getPlayerDTO() == null) {
-            return Response.badRequest().setErrors("Request is null or playerDTO is null");
-        }
-        //todo:kontroller servise tasinacak
-        Game game = gameService.getGame(playerRequest.getGameId());
-        int playerId = playerRequest.getPlayerDTO().getId();
-
-        if(game == null){
-            return Response.badRequest().setErrors("Game with id: " + playerRequest.getGameId() + "can not be found.");
-        }
-
-        if (!game.containsPlayerWithId(playerId)){
-            return Response.badRequest().setErrors("Player with id: " + playerId
-                    + "can not be found in the game.");
-        }
-
-        List<Player> playerList = game.getPlayers();
-        for (int i = 0; i<playerList.size();i++){
-            if()
-        }
-         */
-        return ResponseEntity.badRequest().body("Daha yazmadik");
-    }
-
-
-
     @RequestMapping(value = "/players", method = RequestMethod.GET)
     public ResponseEntity getAllPlayers() {
         List<PlayerDTO> playerDTOs = playerService.listPlayerDTOs();

@@ -4,5 +4,7 @@ export {
   getRoomsData,
   getRoomData,
   checkSession,
+  setUserData,
   checkRoomSession,
+  changePlayerType,
 } from './data';
