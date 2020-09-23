@@ -1,11 +1,8 @@
 package com.ozaksoftware.CodeNames.controller;
 
 import com.ozaksoftware.CodeNames.DTO.model.GameDTO;
-import com.ozaksoftware.CodeNames.DTO.model.PlayerDTO;
-import com.ozaksoftware.CodeNames.DTO.response.Response;
 import com.ozaksoftware.CodeNames.controller.request.GamePlayerTypeRequest;
 import com.ozaksoftware.CodeNames.controller.request.GameRequest;
-import com.ozaksoftware.CodeNames.domain.Game;
 import com.ozaksoftware.CodeNames.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -59,17 +56,30 @@ public class GameController {
     }
 
     @RequestMapping(value = "/changePlayerType", method = RequestMethod.POST)
-    public ResponseEntity changePlayerType(@RequestBody GamePlayerTypeRequest gameRequest) {
+    public ResponseEntity changePlayerType(@RequestBody GamePlayerTypeRequest gamePlayerTypeRequest) {
+        if(gamePlayerTypeRequest == null || gamePlayerTypeRequest.getGameDTO() == null) {
+            return ResponseEntity.badRequest().body("Request is null or game DTO is null");
+        }
+        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.changePlayerType(gamePlayerTypeRequest.getGameDTO(),
+                gamePlayerTypeRequest.getPlayerId(), gamePlayerTypeRequest.getPlayerType(), gamePlayerTypeRequest.getTeam()));
+        if(gameDTOOptional.isPresent()){
+            return ResponseEntity.ok().body(gameDTOOptional);
+        }
+        return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
+                gamePlayerTypeRequest.getPlayerId() + " can not be found.");
+    }
+
+    @RequestMapping(value = "/reset", method = RequestMethod.POST)
+    public ResponseEntity resetGame(@RequestBody GameRequest gameRequest) {
         if(gameRequest == null || gameRequest.getGameDTO() == null) {
             return ResponseEntity.badRequest().body("Request is null or game DTO is null");
         }
-        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.changePlayerType(gameRequest.getGameDTO(),
-                gameRequest.getPlayerId(), gameRequest.getPlayerType(), gameRequest.getTeam()));
+
+        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.resetGame(gameRequest.getGameDTO(), gameRequest.getPlayerId()));
         if(gameDTOOptional.isPresent()){
             return ResponseEntity.ok().body(gameDTOOptional);
         }
         return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
                 gameRequest.getPlayerId() + " can not be found.");
     }
-
 }

@@ -9,6 +9,7 @@ import {
   apiCheckSession,
   apiCheckRoomSession,
   apiChangePlayerType,
+  apiResetGame,
 } from '../../api/api';
 
 export const showLoading = () => ({
@@ -148,6 +149,19 @@ export const changePlayerType = (roomId, playerId, playerType, team) => (dispatc
     },
     (err) => {
       console.log(`Error when changing player type:\n${err}`);
+    },
+  );
+};
+
+export const resetGame = (roomId, playerId) => (dispatch) => {
+  apiResetGame(
+    roomId,
+    playerId,
+    (response) => {
+      dispatch(setRoomData(response.data));
+    },
+    (err) => {
+      console.log(`Error when resetting game:\n${err}`);
     },
   );
 };

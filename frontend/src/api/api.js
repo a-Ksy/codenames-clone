@@ -18,6 +18,7 @@ const urls = {
   CHECK_SESSION_URL: 'http://localhost:8080/player/check',
   CHECK_ROOM_SESSION_URL: 'http://localhost:8080/game/check',
   CHANGE_PLAYER_TYPE_URL: 'http://localhost:8080/game/changePlayerType',
+  RESET_GAME_URL: 'http://localhost:8080/game/reset',
 };
 
 const apiCall = (
@@ -95,4 +96,14 @@ export const apiChangePlayerType = (roomId, playerId, playerType, team, callback
     team,
   };
   apiCall(urls.CHANGE_PLAYER_TYPE_URL, methods.POST, null, data, callback, onError);
+};
+
+export const apiResetGame = (roomId, playerId, callback, onError) => {
+  const data = {
+    gameDTO: {
+      id: roomId,
+    },
+    playerId,
+  };
+  apiCall(urls.RESET_GAME_URL, methods.POST, null, data, callback, onError);
 };

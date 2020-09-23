@@ -51,13 +51,4 @@ public class Game {
 
     @OneToOne
     private Player owner;
-
-    public boolean containsPlayerWithId(int id){
-        for(int i = 0; i<players.size(); i++){
-            if (players.get(i).getId() == id){
-                return true;
-            }
-        }
-        return false;
-    }
 }

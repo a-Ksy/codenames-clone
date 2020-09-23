@@ -12,6 +12,7 @@ import Dropdown from '../../components/Dropdown/Dropdown';
 import Button from '../../components/Button/Button';
 import Modal from '../../components/Modal/Modal';
 import './Game.scss';
+import { resetGame, setUserData } from '../../store/actions/data';
 
 class Game extends React.Component {
   constructor(props) {
@@ -39,8 +40,17 @@ class Game extends React.Component {
     }
   }
 
+  handleResetGame = () => {
+    const { room, user, retrieveResetGame, retrieveSetUserData } = this.props;
+    retrieveResetGame(room.id, user.id);
+    const tempUser = user;
+    tempUser.playerType = 'SPECTATOR';
+    tempUser.team = 'SPECTATOR';
+    retrieveSetUserData(tempUser);
+  }
+
   render() {
-    const { room, userId } = this.props;
+    const { room, user } = this.props;
     const { isResetModalVisible, isLeaveModalVisible } = this.state;
     localStorage.setItem('gameId', room.id);
 
@@ -50,6 +60,7 @@ class Game extends React.Component {
           title="Are you sure to reset game?"
           paragraph="This will reset all the game progress, do you wish to continue?"
           buttonTitle="Reset game"
+          onClick={() => this.handleResetGame()}
           show={isResetModalVisible}
           handleModalVisibility={this.handleModalVisibility}
         />
@@ -79,7 +90,7 @@ class Game extends React.Component {
           </Dropdown>
 
           <div className="optionsBox">
-            {room.owner.id === userId
+            {room.owner.id === user.id
           && (
           <Button title="Reset game" type="Reset" onClick={() => this.handleModal(true, 'RESET')} />
           )}
@@ -120,12 +131,14 @@ class Game extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  userId: state.data.user.id,
+  user: state.data.user,
   room: state.data.room,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   retrieveRoomData: (userId, roomId) => dispatch(getRoomData(userId, roomId)),
+  retrieveResetGame: (userId, roomId) => dispatch(resetGame(userId, roomId)),
+  retrieveSetUserData: (payload) => dispatch(setUserData(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Game));
