@@ -39,6 +39,8 @@
   }
 
   .gameOverlay {
+    height: 80%;
+    width: 100%;
     display: grid;
     grid-template-columns: 20% 20% 20% 20% 20%;
     grid-template-rows: 20% 20% 20% 20% 20%;
@@ -59,6 +61,12 @@
 
     .gameColumn {
       order: 1;
+      padding: 0;
+      margin-bottom: 3rem;
+    }
+
+    .gameOverlay {
+      height: 100%;
     }
   }
 }
