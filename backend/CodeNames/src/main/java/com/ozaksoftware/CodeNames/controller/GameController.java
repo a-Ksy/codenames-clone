@@ -82,4 +82,36 @@ public class GameController {
         return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
                 gameRequest.getPlayerId() + " can not be found.");
     }
+
+    @RequestMapping(value = "/leave", method = RequestMethod.POST)
+    public ResponseEntity leaveGame(@RequestBody GameRequest gameRequest) {
+        if(gameRequest == null || gameRequest.getGameDTO() == null) {
+            return ResponseEntity.badRequest().body("Request is null or game DTO is null");
+        }
+        Optional<List<GameDTO>> gameDTOListOptional = Optional.ofNullable(gameService.leaveGame(gameRequest.getGameDTO(), gameRequest.getPlayerId()));
+
+        if(gameDTOListOptional.isPresent()){
+            return ResponseEntity.ok().body(gameDTOListOptional);
+        }
+
+        return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
+                gameRequest.getPlayerId() + " can not be found.");
+    }
+
+    @RequestMapping(value = "/giveHint", method = RequestMethod.POST)
+    public ResponseEntity giveHint(@RequestBody GameRequest gameRequest) {
+        if(gameRequest == null || gameRequest.getGameDTO() == null) {
+            return ResponseEntity.badRequest().body("Request is null or game DTO is null");
+        }
+        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.giveHint(gameRequest.getGameDTO(), gameRequest.getPlayerId()));
+
+        if(gameDTOOptional.isPresent()){
+            return ResponseEntity.ok().body(gameDTOOptional);
+        }
+
+        return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
+                gameRequest.getPlayerId() + " can not be found.");
+    }
+
+
 }

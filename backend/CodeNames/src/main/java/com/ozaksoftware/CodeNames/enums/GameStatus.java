@@ -1,8 +1,10 @@
 package com.ozaksoftware.CodeNames.enums;
 
 public enum GameStatus {
-    WAITS_FOR_PLAYER,
-    IN_PROGRESS,
+    RED_TEAM_OPERATIVE_ROUND,
+    RED_TEAM_SPYMASTER_ROUND,
+    BLUE_TEAM_OPERATIVE_ROUND,
+    BLUE_TEAM_SPYMASTER_ROUND,
     BLUE_TEAM_WON,
     RED_TEAM_WON
 }

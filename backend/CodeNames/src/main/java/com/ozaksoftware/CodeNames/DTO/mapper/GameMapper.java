@@ -15,7 +15,7 @@ public class GameMapper {
                 .setClueNumber(game.getClueNumber())
                 .setClueWord(game.getClueWord())
                 .setGameName(game.getGameName())
-                .setMoves(game.getMoves())
+                .setLogs(game.getLogs())
                 .setGameStatus(game.getGameStatus())
                 .setPlayers(game.getPlayers());
     }
