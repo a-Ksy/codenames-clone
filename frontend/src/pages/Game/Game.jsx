@@ -9,139 +9,8 @@ import { capitalizeFirstLetterOfCapitalized } from '../../helpers/helpers';
 import TeamCard from '../../components/TeamCard/TeamCard';
 import GameCard from '../../components/GameCard/GameCard';
 import Dropdown from '../../components/Dropdown/Dropdown';
+import Button from '../../components/Button/Button';
 import './Game.scss';
-
-const dummyData = {
-  operativeList: ['Atahan', 'Barış'],
-  spymasterList: ['DenizYuret'],
-  cards: [
-    {
-      id: 2,
-      title: 'araba',
-      color: 'red',
-    },
-    {
-      id: 6,
-      title: 'araba',
-      color: 'red',
-    },
-    {
-      id: 7,
-      title: 'araba',
-      color: 'red',
-    },
-    {
-      id: 8,
-      title: 'araba',
-      color: 'red',
-    },
-    {
-      id: 9,
-      title: 'araba',
-      color: 'blue',
-    },
-    {
-      id: 10,
-      title: 'araba',
-      color: 'blue',
-    },
-    {
-      id: 11,
-      title: 'araba',
-      color: 'blue',
-    },
-    {
-      id: 18,
-      title: 'araba',
-      color: 'neutral',
-    },
-    {
-      id: 19,
-      title: 'araba',
-      color: 'neutral',
-    },
-    {
-      id: 3,
-      title: 'araba',
-      color: 'red',
-    },
-    {
-      id: 4,
-      title: 'araba',
-      color: 'red',
-    },
-    {
-      id: 5,
-      title: 'araba',
-      color: 'red',
-    },
-    {
-      id: 12,
-      title: 'araba',
-      color: 'blue',
-    },
-    {
-      id: 13,
-      title: 'araba',
-      color: 'blue',
-    },
-    {
-      id: 0,
-      title: 'araba',
-      color: 'red',
-    },
-    {
-      id: 1,
-      title: 'araba',
-      color: 'red',
-    },
-    {
-      id: 14,
-      title: 'araba',
-      color: 'blue',
-    },
-    {
-      id: 15,
-      title: 'araba',
-      color: 'blue',
-    },
-    {
-      id: 22,
-      title: 'araba',
-      color: 'neutral',
-    },
-    {
-      id: 23,
-      title: 'araba',
-      color: 'neutral',
-    },
-    {
-      id: 16,
-      title: 'araba',
-      color: 'blue',
-    },
-    {
-      id: 17,
-      title: 'araba',
-      color: 'neutral',
-    },
-    {
-      id: 20,
-      title: 'araba',
-      color: 'neutral',
-    },
-    {
-      id: 21,
-      title: 'araba',
-      color: 'neutral',
-    },
-    {
-      id: 24,
-      title: 'araba',
-      color: 'black',
-    },
-  ],
-};
 
 class Game extends React.Component {
   constructor(props) {
@@ -152,11 +21,11 @@ class Game extends React.Component {
   }
 
   render() {
-    const { room } = this.props;
+    const { room, userId } = this.props;
     localStorage.setItem('gameId', room.id);
 
     return (
-      <>
+      <div className="Game">
         <div className="header row justify-content-between">
           <Dropdown title="Players">
             <p className="dropdownMenuTitle">Players in this room</p>
@@ -174,8 +43,17 @@ class Game extends React.Component {
               </p>
             ))}
           </Dropdown>
+
+          <div className="optionsBox">
+            {room.owner.id === userId
+          && (
+            <Button title="Reset game" type="Reset" />
+          )}
+            <Button title="Leave game" type="Leave" />
+          </div>
+
         </div>
-        <div className="Game">
+        <div className="GameWrapper">
           <div className="row">
             <div className="redTeamColumn col-lg-2">
               <TeamCard
@@ -202,7 +80,7 @@ class Game extends React.Component {
             </div>
           </div>
         </div>
-      </>
+      </div>
     );
   }
 }
