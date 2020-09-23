@@ -10,22 +10,56 @@ import TeamCard from '../../components/TeamCard/TeamCard';
 import GameCard from '../../components/GameCard/GameCard';
 import Dropdown from '../../components/Dropdown/Dropdown';
 import Button from '../../components/Button/Button';
+import Modal from '../../components/Modal/Modal';
 import './Game.scss';
 
 class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      isResetModalVisible: false,
+      isLeaveModalVisible: false,
     };
+  }
+
+  handleModalVisibility = (isModalVisible) => {
+    const { isResetModalVisible, isLeaveModalVisible } = this.state;
+    if (isResetModalVisible) {
+      this.setState({ isResetModalVisible: isModalVisible });
+    } else if (isLeaveModalVisible) {
+      this.setState({ isLeaveModalVisible: isModalVisible });
+    }
+  }
+
+  handleModal = (boolean, type) => {
+    if (type === 'RESET') {
+      this.setState({ isResetModalVisible: boolean });
+    } else if (type === 'LEAVE') {
+      this.setState({ isLeaveModalVisible: boolean });
+    }
   }
 
   render() {
     const { room, userId } = this.props;
+    const { isResetModalVisible, isLeaveModalVisible } = this.state;
     localStorage.setItem('gameId', room.id);
 
     return (
       <div className="Game">
+        <Modal
+          title="Are you sure to reset game?"
+          paragraph="This will reset all the game progress, do you wish to continue?"
+          buttonTitle="Reset game"
+          show={isResetModalVisible}
+          handleModalVisibility={this.handleModalVisibility}
+        />
+        <Modal
+          title="Are you sure to leave game?"
+          buttonTitle="Leave game"
+          show={isLeaveModalVisible}
+          handleModalVisibility={this.handleModalVisibility}
+        />
+
         <div className="header row justify-content-between">
           <Dropdown title="Players">
             <p className="dropdownMenuTitle">Players in this room</p>
@@ -47,9 +81,9 @@ class Game extends React.Component {
           <div className="optionsBox">
             {room.owner.id === userId
           && (
-            <Button title="Reset game" type="Reset" />
+          <Button title="Reset game" type="Reset" onClick={() => this.handleModal(true, 'RESET')} />
           )}
-            <Button title="Leave game" type="Leave" />
+            <Button title="Leave game" type="Leave" onClick={() => this.handleModal(true, 'LEAVE')} />
           </div>
 
         </div>

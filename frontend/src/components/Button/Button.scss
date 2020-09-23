@@ -71,7 +71,7 @@ button:hover {
   }
 }
 @include media("<=phone") {
-  .Button {
+  .Button, .Button.Reset, .Button.Leave {
     font-size: 0.8rem;
   }
 
