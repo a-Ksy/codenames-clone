@@ -113,5 +113,55 @@ public class GameController {
                 gameRequest.getPlayerId() + " can not be found.");
     }
 
+<<<<<<< Updated upstream
+=======
+    @RequestMapping(value = "/kick", method = RequestMethod.POST)
+    public ResponseEntity kickPlayer(@RequestBody GameRequest gameRequest) {
+        if(gameRequest == null || gameRequest.getGameDTO() == null) {
+            return ResponseEntity.badRequest().body("Request is null or game DTO is null");
+        }
+        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.kickPlayer(gameRequest.getGameDTO(), gameRequest.getPlayerId()));
+
+        if(gameDTOOptional.isPresent()){
+            return ResponseEntity.ok().body(gameDTOOptional);
+        }
+
+        return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
+                gameRequest.getPlayerId() + " can not be found.");
+    }
+
+    @RequestMapping(value = "/highlightCard", method = RequestMethod.POST)
+    public ResponseEntity highlightCard(@RequestBody CardRequest cardRequest) {
+        if(cardRequest == null || cardRequest.getGameDTO() == null) {
+            return ResponseEntity.badRequest().body("Request is null or game DTO is null");
+        }
+        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.highlightCard(cardRequest.getGameDTO(), cardRequest.getPlayerId(),
+                cardRequest.getCardId()));
+
+        if(gameDTOOptional.isPresent()){
+            return ResponseEntity.ok().body(gameDTOOptional);
+        }
+
+        return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
+                cardRequest.getPlayerId() + " can not be found.");
+    }
+
+    @RequestMapping(value = "/endGuess", method = RequestMethod.POST)
+    public ResponseEntity endGuess(@RequestBody GameRequest gameRequest) {
+        if(gameRequest == null || gameRequest.getGameDTO() == null) {
+            return ResponseEntity.badRequest().body("Request is null or game DTO is null");
+        }
+        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.endGuess(gameRequest.getGameDTO(),
+                gameRequest.getPlayerId()));
+
+        if(gameDTOOptional.isPresent()){
+            return ResponseEntity.ok().body(gameDTOOptional);
+        }
+
+        return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
+                gameRequest.getPlayerId() + " can not be found.");
+    }
+
+>>>>>>> Stashed changes
 
 }
