@@ -1,6 +1,16 @@
 @import "../../sass/variables";
 @import "../../sass/breakpoints";
 
+.Game.RED_TEAM_OPERATIVE_ROUND,
+.RED_TEAM_SPYMASTER_ROUND {
+  background-color: $backgroundRedTeam;
+}
+
+.Game.BLUE_TEAM_OPERATIVE_ROUND,
+.BLUE_TEAM_SPYMASTER_ROUND {
+  background-color: $backgroundBlueTeam;
+}
+
 .Game {
   height: 100%;
   width: 100%;
@@ -84,6 +94,10 @@
   }
 
   @include media("<=collapse") {
+    .gameColumn {
+      height: 35%;
+    }
+
     .redTeamColumn {
       order: 2;
       width: 28.57%;
@@ -108,33 +122,22 @@
     }
 
     .gameLogRow {
-      height: 60%;
+      height: 70%;
     }
 
     .teamCardRedRow,
     .teamCardBlueRow {
-      height: 60%;
+      height: 70%;
     }
     .gameColumn {
       order: 1;
       padding: 0;
-      margin-bottom: 3rem;
+      margin-bottom: 1.5rem;
     }
 
     .gameOverlay {
       height: 100%;
     }
   }
-  
-  @include media("<=phone") {
-      .gameLogRow {
-        height: 40%;
-      }
-  
-      .teamCardRedRow,
-      .teamCardBlueRow {
-        height: 40%;
-      }
-  }
-}
 
+}

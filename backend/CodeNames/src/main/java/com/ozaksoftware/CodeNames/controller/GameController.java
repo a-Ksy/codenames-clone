@@ -98,12 +98,12 @@ public class GameController {
                 gameRequest.getPlayerId() + " can not be found.");
     }
 
-    @RequestMapping(value = "/giveHint", method = RequestMethod.POST)
-    public ResponseEntity giveHint(@RequestBody GameRequest gameRequest) {
+    @RequestMapping(value = "/giveClue", method = RequestMethod.POST)
+    public ResponseEntity giveClue(@RequestBody GameRequest gameRequest) {
         if(gameRequest == null || gameRequest.getGameDTO() == null) {
             return ResponseEntity.badRequest().body("Request is null or game DTO is null");
         }
-        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.giveHint(gameRequest.getGameDTO(), gameRequest.getPlayerId()));
+        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.giveClue(gameRequest.getGameDTO(), gameRequest.getPlayerId()));
 
         if(gameDTOOptional.isPresent()){
             return ResponseEntity.ok().body(gameDTOOptional);

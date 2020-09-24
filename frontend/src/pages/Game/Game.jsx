@@ -12,8 +12,10 @@ import Dropdown from '../../components/Dropdown/Dropdown';
 import Button from '../../components/Button/Button';
 import Modal from '../../components/Modal/Modal';
 import GameLog from '../../components/GameLog/GameLog';
+import GiveClue from '../../components/GiveClue/GiveClue';
 import './Game.scss';
 import { resetGame, setUserData } from '../../store/actions/data';
+import RoundInfo from '../../components/RoundInfo/RoundInfo';
 
 class Game extends React.Component {
   constructor(props) {
@@ -67,7 +69,7 @@ class Game extends React.Component {
     localStorage.setItem('gameId', room.id);
 
     return (
-      <div className="Game">
+      <div className={`Game ${room.gameStatus}`}>
         <Modal
           title="Are you sure to reset game?"
           paragraph="This will reset all the game progress, do you wish to continue?"
@@ -88,7 +90,7 @@ class Game extends React.Component {
           <Dropdown title="Players">
             <p className="dropdownMenuTitle">Players in this room</p>
             {room.players.map((player) => (
-              <p>
+              <p key={player.id}>
                 <span className="dropdownMenuNickname">
                   {player.nickName}
                   {' '}
@@ -124,11 +126,14 @@ class Game extends React.Component {
               </div>
             </div>
             <div className="gameColumn col-lg-8">
+              <RoundInfo />
               <div className="gameOverlay">
                 {room.cards.map((card) => (
-                  <GameCard id={card.id} type={card.cardColor} title={card.word} />
+                  <GameCard id={card.id} key={card.id} type={card.cardColor} title={card.word} />
                 ))}
               </div>
+              {((room.gameStatus === 'BLUE_TEAM_SPYMASTER_ROUND' && user.playerType === 'SPYMASTER' && user.team === 'BLUE') || (room.gameStatus === 'RED_TEAM_SPYMASTER_ROUND' && user.playerType === 'SPYMASTER' && user.team === 'RED'))
+                && <GiveClue />}
             </div>
             <div className="blueTeamColumn col-lg-2">
               <div className="teamCardBlueRow">

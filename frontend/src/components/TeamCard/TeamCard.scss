@@ -53,14 +53,7 @@
     padding: 1rem;
     border-radius: 0;
     .cardsLeft {
-      font-size: 2.5rem;
-    }
-}
-
-  @include media("<=phone") {
-
-    .cardsLeft {
-      font-size: 1.5rem;
+      font-size: 2rem;
     }
 
     .playerTitle {
@@ -71,6 +64,15 @@
     .playerNickname {
       font-size: 0.7rem;
     }
+
+}
+
+  @include media("<=phone") {
+
+    .cardsLeft {
+      font-size: 1.5rem;
+    }
+
 }
 
 }

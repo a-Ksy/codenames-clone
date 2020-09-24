@@ -118,11 +118,14 @@ public class GameService {
         Player owner = playerRepository.findOneById(ownerId);
         if(owner==null) return null;
         newGame.setOwner(owner);
+        List<HashMap<String,String>> logs = new ArrayList<>();
         List<Player> players = new ArrayList<>();
         players.add(owner);
+        newGame.setLogs(logs);
         newGame.setPlayers(players);
         newGame.setCards(cardService.generateCards());
         newGame.setClueWord("");
+
         gameRepository.save(newGame);
         return createDTO(newGame);
     }
@@ -204,7 +207,7 @@ public class GameService {
         return gameDTO;
     }
 
-    public GameDTO giveHint(GameDTO gameDTO, int playerId) {
+    public GameDTO giveClue(GameDTO gameDTO, int playerId) {
         Game game = gameRepository.findOneById(gameDTO.getId());
         Player player = playerRepository.findOneById(playerId);
 

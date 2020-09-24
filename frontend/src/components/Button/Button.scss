@@ -17,7 +17,7 @@
   transition: 0.3s ease;
   font-size: 0.9rem;
   padding: 0.5rem 1rem;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }
 
 .Button.Reset {
@@ -35,6 +35,14 @@
     padding-right: 1.5rem;
     line-height: 1.5;
     font-size: 1rem;
+}
+
+.Button.Clue {
+  margin:0;
+  padding: 0.25rem;
+  font-size: 1rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
 
 button:active, button:hover, button:focus {
@@ -71,7 +79,17 @@ button:hover {
     padding-left: 1rem;
     padding-right: 1rem;
   }
+
+  .Button.TeamCard {
+    padding: 0.125rem 0.25rem;
+    font-size: 0.7rem;
+  }
+
+  .Button.Clue {
+    font-size: 0.9rem;
+  }
 }
+
 @include media("<=phone") {
   .Button, .Button.Reset, .Button.Leave {
     font-size: 0.8rem;
@@ -79,7 +97,10 @@ button:hover {
 
   .Button.TeamCard {
     font-size: 0.5rem;
-    padding: 0.125rem 0.25rem;
+  }
+
+  .Button.Clue {
+    font-size: 0.8rem;
   }
 }
 

@@ -1,0 +1,72 @@
+@import "../../sass/variables";
+@import "../../sass/breakpoints";
+
+.GiveClue {
+  text-align: center;
+  margin-top: 1.5rem;
+  .form-inline {
+    justify-content: center;
+    .form-group {
+      width: 70%;
+      margin: 0;
+      justify-content: space-evenly;
+
+      input,
+      select {
+        outline: none !important;
+        border: none;
+        box-shadow: none;
+        border-radius: 3px;
+      }
+    }
+  }
+
+  @include media("<=collapse") {
+    .form-inline {
+      .form-group {
+        width: 100%;
+        margin: 0;
+        .form-control {
+          margin-right: 1rem;
+          width: auto;
+          display: inline-block;
+        }
+      }
+    }
+  }
+
+  @include media("<=tablet") {
+    .title {
+      font-size: 0.9rem;
+    }
+
+    .form-inline {
+      .form-group {
+        .form-control {
+          margin-right: 1rem;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  @include media("<=phone") {
+    .title {
+      font-size: 0.8rem;
+    }
+
+    .form-inline {
+      .form-group {
+        width: 100%;
+        margin: 0;
+        .form-control {
+          margin-right: 0.5rem;
+          font-size: 0.8rem;
+        }
+        input.form-control {
+          width: 30%;
+        }
+      }
+    }
+  }
+}

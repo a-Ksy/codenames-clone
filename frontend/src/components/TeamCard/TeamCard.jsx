@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -10,9 +11,9 @@ import { changePlayerType, setUserData } from '../../store/actions';
 
 const propTypes = {
   type: PropTypes.string.isRequired,
-  cardsLeft: PropTypes.string.isRequired,
-  operativeList: PropTypes.objectOf,
-  spymasterList: PropTypes.objectOf,
+  cardsLeft: PropTypes.number.isRequired,
+  operativeList: PropTypes.array,
+  spymasterList: PropTypes.array,
 };
 
 const defaultProps = {
@@ -40,7 +41,7 @@ function TeamCard(props) {
         <h1 className="cardsLeft">{cardsLeft}</h1>
         <h4 className="playerTitle">Operatives</h4>
         {operativeList.map((operative) => (
-          <p className="playerNickname">{operative.nickName}</p>
+          <p key={operative.id} className="playerNickname">{operative.nickName}</p>
         ))}
         {((user.playerType !== 'SPYMASTER' && user.team !== type))
           && (
@@ -55,7 +56,7 @@ function TeamCard(props) {
       <div className="titleBox">
         <h4 className="playerTitle">Spymasters</h4>
         {spymasterList.map((spymaster) => (
-          <p className="playerNickname">{spymaster.nickName}</p>
+          <p key={spymaster.id} className="playerNickname">{spymaster.nickName}</p>
         ))}
         {spymasterList.length === 0
           && (

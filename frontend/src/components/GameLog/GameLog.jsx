@@ -1,14 +1,7 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
-import variables from '../../sass/_variables.scss';
 import './GameLog.scss';
-
-const propTypes = {
-  logs: PropTypes.objectOf.isRequired,
-};
-
-const defaultProps = {
-};
 
 function GameLog(props) {
   const { logs } = props;
@@ -16,8 +9,8 @@ function GameLog(props) {
     <div className="GameLog">
       <p className="title">Game log</p>
       <div className="logs">
-        {logs.length !== 0 && logs.map((log) => (
-          <p className="log">
+        {logs.length !== 0 && logs.map((log, index) => (
+          <p key={index} className="log">
             <span className={`logNickname ${log.playerColor}`}>
               {log.nickName}
               {' '}
@@ -36,8 +29,5 @@ function GameLog(props) {
     </div>
   );
 }
-
-GameLog.propTypes = propTypes;
-GameLog.defaultProps = defaultProps;
 
 export default GameLog;

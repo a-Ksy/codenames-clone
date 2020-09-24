@@ -21,7 +21,7 @@ function Modal(props) {
     title, buttonTitle, onClick, show, handleModalVisibility, paragraph,
   } = props;
   return (
-    <div className={`modal fade ${show && 'show'}`} style={{ display: `${show ? 'block' : 'none'}` }} onHide={() => handleModalVisibility(false)}>
+    <div className={`modal fade ${show && 'show'}`} style={{ display: `${show ? 'block' : 'none'}` }}>
       <div className="modal-dialog modal-dialog-centered " role="document">
         <div className="modal-content">
           <div className="modal-header">

@@ -49,19 +49,18 @@
       font-size: 1rem;
     }
     .log {
-      font-size: 0.6rem;
+      font-size: 0.8rem;
     }
   }
 
 
   @include media("<collapse") {
-    height: 60%;
+    height: 70%;
     border-radius: 0;
     padding: 1rem;
 }
 
   @include media("<=phone") {
-    height: 40%;
     .title {
       font-size: 0.8rem;
     }

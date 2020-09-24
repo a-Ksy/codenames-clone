@@ -10,6 +10,7 @@ import {
   apiCheckRoomSession,
   apiChangePlayerType,
   apiResetGame,
+  apiGiveClue,
 } from '../../api/api';
 
 export const showLoading = () => ({
@@ -162,6 +163,21 @@ export const resetGame = (roomId, playerId) => (dispatch) => {
     },
     (err) => {
       console.log(`Error when resetting game:\n${err}`);
+    },
+  );
+};
+
+export const giveClue = (roomId, clueWord, clueNumber, playerId) => (dispatch) => {
+  apiGiveClue(
+    roomId,
+    clueWord,
+    clueNumber,
+    playerId,
+    (response) => {
+      dispatch(setRoomData(response.data));
+    },
+    (err) => {
+      console.log(`Error when giving clue:\n${err}`);
     },
   );
 };
