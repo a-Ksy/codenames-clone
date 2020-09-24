@@ -11,6 +11,7 @@ import GameCard from '../../components/GameCard/GameCard';
 import Dropdown from '../../components/Dropdown/Dropdown';
 import Button from '../../components/Button/Button';
 import Modal from '../../components/Modal/Modal';
+import GameLog from '../../components/GameLog/GameLog';
 import './Game.scss';
 import { resetGame, setUserData } from '../../store/actions/data';
 
@@ -113,12 +114,14 @@ class Game extends React.Component {
         <div className="GameWrapper">
           <div className="row">
             <div className="redTeamColumn col-lg-2">
-              <TeamCard
-                type="RED"
-                cardsLeft={room.redCardsLeft}
-                operativeList={room.redTeam.operatives}
-                spymasterList={room.redTeam.spymasters}
-              />
+              <div className="teamCardRedRow">
+                <TeamCard
+                  type="RED"
+                  cardsLeft={room.redCardsLeft}
+                  operativeList={room.redTeam.operatives}
+                  spymasterList={room.redTeam.spymasters}
+                />
+              </div>
             </div>
             <div className="gameColumn col-lg-8">
               <div className="gameOverlay">
@@ -128,12 +131,17 @@ class Game extends React.Component {
               </div>
             </div>
             <div className="blueTeamColumn col-lg-2">
-              <TeamCard
-                type="BLUE"
-                cardsLeft={room.blueCardsLeft}
-                operativeList={room.blueTeam.operatives}
-                spymasterList={room.blueTeam.spymasters}
-              />
+              <div className="teamCardBlueRow">
+                <TeamCard
+                  type="BLUE"
+                  cardsLeft={room.blueCardsLeft}
+                  operativeList={room.blueTeam.operatives}
+                  spymasterList={room.blueTeam.spymasters}
+                />
+              </div>
+              <div className="gameLogRow">
+                <GameLog logs={room.logs} />
+              </div>
             </div>
           </div>
         </div>

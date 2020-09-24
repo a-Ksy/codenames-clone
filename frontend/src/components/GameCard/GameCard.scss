@@ -37,6 +37,7 @@
   }
 
   @include media("<=tablet") {
+    padding: 0 0.25rem 0.5rem 0.25rem;
     .title {    
       transition: 0.3s ease;
       font-size: 0.7rem;
@@ -54,6 +55,7 @@
 
 
 .GameCardPlot {
+  min-height: 50px;
   height: 100%;
   width: 100%;
   background-color: $secondary;
@@ -76,9 +78,3 @@
   background-color: $backgroundLight;
 }
 
-@include media("<=collapse") {
-  .GameCardPlot {
-    background-color: $secondary;
-    border-radius: 3px;
-  }
-}
