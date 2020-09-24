@@ -1,6 +1,7 @@
 package com.ozaksoftware.CodeNames.controller;
 
 import com.ozaksoftware.CodeNames.DTO.model.GameDTO;
+import com.ozaksoftware.CodeNames.controller.request.CardRequest;
 import com.ozaksoftware.CodeNames.controller.request.GamePlayerTypeRequest;
 import com.ozaksoftware.CodeNames.controller.request.GameRequest;
 import com.ozaksoftware.CodeNames.service.GameService;
@@ -104,6 +105,53 @@ public class GameController {
             return ResponseEntity.badRequest().body("Request is null or game DTO is null");
         }
         Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.giveClue(gameRequest.getGameDTO(), gameRequest.getPlayerId()));
+
+        if(gameDTOOptional.isPresent()){
+            return ResponseEntity.ok().body(gameDTOOptional);
+        }
+
+        return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
+                gameRequest.getPlayerId() + " can not be found.");
+    }
+
+    @RequestMapping(value = "/kick", method = RequestMethod.POST)
+    public ResponseEntity kickPlayer(@RequestBody GameRequest gameRequest) {
+        if(gameRequest == null || gameRequest.getGameDTO() == null) {
+            return ResponseEntity.badRequest().body("Request is null or game DTO is null");
+        }
+        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.kickPlayer(gameRequest.getGameDTO(), gameRequest.getPlayerId()));
+
+        if(gameDTOOptional.isPresent()){
+            return ResponseEntity.ok().body(gameDTOOptional);
+        }
+
+        return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
+                gameRequest.getPlayerId() + " can not be found.");
+    }
+
+    @RequestMapping(value = "/selectCard", method = RequestMethod.POST)
+    public ResponseEntity selectCard(@RequestBody CardRequest cardRequest) {
+        if(cardRequest == null || cardRequest.getGameDTO() == null) {
+            return ResponseEntity.badRequest().body("Request is null or game DTO is null");
+        }
+        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.selectCard(cardRequest.getGameDTO(), cardRequest.getPlayerId(),
+                cardRequest.getCardId()));
+
+        if(gameDTOOptional.isPresent()){
+            return ResponseEntity.ok().body(gameDTOOptional);
+        }
+
+        return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
+                cardRequest.getPlayerId() + " can not be found.");
+    }
+
+    @RequestMapping(value = "/endGuess", method = RequestMethod.POST)
+    public ResponseEntity endGuess(@RequestBody GameRequest gameRequest) {
+        if(gameRequest == null || gameRequest.getGameDTO() == null) {
+            return ResponseEntity.badRequest().body("Request is null or game DTO is null");
+        }
+        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.endGuess(gameRequest.getGameDTO(),
+                gameRequest.getPlayerId()));
 
         if(gameDTOOptional.isPresent()){
             return ResponseEntity.ok().body(gameDTOOptional);

@@ -147,6 +147,9 @@ public class GameService {
         game.setPlayers(updatedPlayers);
         game.setCards(cardService.generateCards());
         game.setGameStatus(GameStatus.BLUE_TEAM_SPYMASTER_ROUND);
+        game.setClueWord("");
+        game.setClueNumber(0);
+        game.setLogs(new ArrayList<>());
         gameRepository.save(game);
 
         return createDTO(game);
@@ -291,4 +294,79 @@ public class GameService {
         return updatedGameDTO;
     }
 
+    public GameDTO kickPlayer(GameDTO gameDTO, int playerId){
+        Game game = gameRepository.findOneById(gameDTO.getId());
+
+        if(game == null || game.getGameName() == null)  {
+            return null;
+        }
+
+        if(!game.getPlayers().stream().anyMatch(pl -> Objects.equals(pl.getId(), playerId))){
+            return null;
+        }
+
+        Player leftPlayer = playerRepository.findOneById(playerId);
+        leftPlayer.setPlayerType(PlayerType.SPECTATOR);
+        leftPlayer.setTeam(Team.SPECTATOR);
+        playerRepository.save(leftPlayer);
+
+        List<Player> updatedPlayers = game.getPlayers().stream().filter(player ->
+                player.getId() != playerId).collect(Collectors.toList());
+
+        game.setPlayers(updatedPlayers);
+        gameRepository.save(game);
+        return GameMapper.toGameDTO(game);
+    }
+
+    public GameDTO selectCard(GameDTO gameDTO, int playerId, int cardId){
+        Game game = gameRepository.findOneById(gameDTO.getId());
+
+        if(game == null || game.getGameName() == null)  {
+            return null;
+        }
+
+        Optional<Card> selectedCard = game.getCards().stream().filter(card -> card.getId() == cardId).findFirst();
+
+        if(!selectedCard.isPresent()){
+            return null;
+        }
+
+        game.setCards(game.getCards().stream().map(card -> {
+            if(card.getId() == cardId){
+                if(Team.BLUE.equals(playerRepository.findOneById(playerId).getTeam())){
+                    card.setCardColor(CardColor.SELECTED_BLUE);
+                }
+                else if (Team.RED.equals(playerRepository.findOneById(playerId).getTeam())){
+                    card.setCardColor(CardColor.SELECTED_RED);
+                }
+            }
+            return card;
+        }).collect(Collectors.toList()));
+
+        gameRepository.save(game);
+        return GameMapper.toGameDTO(game);
+    }
+
+    public GameDTO endGuess(GameDTO gameDTO, int playerId) {
+        Game game = gameRepository.findOneById(gameDTO.getId());
+
+        if(game == null || game.getGameName() == null)  {
+            return null;
+        }
+
+        Player player = playerRepository.findOneById(playerId);
+        if(player == null) {
+            return null;
+        }
+        
+        if(Team.BLUE.equals(player.getTeam()) && PlayerType.OPERATIVE.equals(player.getPlayerType())) {
+            game.setGameStatus(GameStatus.RED_TEAM_SPYMASTER_ROUND);
+        }
+        else if(Team.RED.equals(player.getTeam()) && PlayerType.OPERATIVE.equals(player.getPlayerType())){
+            game.setGameStatus(GameStatus.BLUE_TEAM_SPYMASTER_ROUND);
+        }
+
+        gameRepository.save(game);
+        return GameMapper.toGameDTO(game);
+    }
 }
