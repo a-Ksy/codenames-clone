@@ -1,6 +1,7 @@
 package com.ozaksoftware.CodeNames.controller;
 
 import com.ozaksoftware.CodeNames.DTO.model.GameDTO;
+import com.ozaksoftware.CodeNames.controller.request.CardRequest;
 import com.ozaksoftware.CodeNames.controller.request.GamePlayerTypeRequest;
 import com.ozaksoftware.CodeNames.controller.request.GameRequest;
 import com.ozaksoftware.CodeNames.service.GameService;
@@ -113,8 +114,6 @@ public class GameController {
                 gameRequest.getPlayerId() + " can not be found.");
     }
 
-<<<<<<< Updated upstream
-=======
     @RequestMapping(value = "/kick", method = RequestMethod.POST)
     public ResponseEntity kickPlayer(@RequestBody GameRequest gameRequest) {
         if(gameRequest == null || gameRequest.getGameDTO() == null) {
@@ -130,12 +129,12 @@ public class GameController {
                 gameRequest.getPlayerId() + " can not be found.");
     }
 
-    @RequestMapping(value = "/highlightCard", method = RequestMethod.POST)
-    public ResponseEntity highlightCard(@RequestBody CardRequest cardRequest) {
+    @RequestMapping(value = "/selectCard", method = RequestMethod.POST)
+    public ResponseEntity selectCard(@RequestBody CardRequest cardRequest) {
         if(cardRequest == null || cardRequest.getGameDTO() == null) {
             return ResponseEntity.badRequest().body("Request is null or game DTO is null");
         }
-        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.highlightCard(cardRequest.getGameDTO(), cardRequest.getPlayerId(),
+        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.selectCard(cardRequest.getGameDTO(), cardRequest.getPlayerId(),
                 cardRequest.getCardId()));
 
         if(gameDTOOptional.isPresent()){
@@ -162,6 +161,5 @@ public class GameController {
                 gameRequest.getPlayerId() + " can not be found.");
     }
 
->>>>>>> Stashed changes
 
 }

@@ -21,7 +21,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Check(constraints = "card_color = 'RED' or card_color = 'BLUE' or card_color = 'BLACK' or card_color = 'NEUTRAL' or card_color = 'HIDDEN'" +
-        " and card_status = 'CLOSED' or card_status = 'OPEN'")
+        " and card_status = 'CLOSED' or card_status = 'OPEN' or card_status = 'SELECTED_RED', card_status = 'SELECTED_BLUE'")
 public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
