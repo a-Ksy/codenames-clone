@@ -11,12 +11,20 @@
     transition: 0.3s ease;
     background-color: $primary;
     color: $headline;
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 600;
     outline: none;
     border: none;
     padding-left: 1.5rem;
     padding-right: 1.5rem;
+  }
+
+  .btn-custom:hover {
+    background-color: $primaryDark;
+  }
+
+  .btn-lg {
+    border-radius: 3px;
   }
 
   .btn-custom, .btn-custom:hover, .btn-custom:active, .btn-custom:focus {
@@ -39,9 +47,23 @@
     min-width: 15rem;
   }
 
-  @include media("<=collapse") {
+  @include media("<=desktop") {
     .btn-custom {
       font-size: 1rem;
+    }
+  }
+
+  @include media("<=collapse") {
+    .btn-custom {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+
+
+    @include media("<=phone") {
+    .btn-custom {
+      font-size: 0.8rem;
     }
   }
   

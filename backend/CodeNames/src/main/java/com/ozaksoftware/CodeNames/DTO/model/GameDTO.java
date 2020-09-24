@@ -2,8 +2,6 @@ package com.ozaksoftware.CodeNames.DTO.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.ozaksoftware.CodeNames.domain.Card;
-import com.ozaksoftware.CodeNames.domain.Move;
 import com.ozaksoftware.CodeNames.domain.Player;
 import com.ozaksoftware.CodeNames.enums.GameStatus;
 import lombok.Getter;
@@ -12,6 +10,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +33,6 @@ public class GameDTO {
     private List<CardDTO> cards;
     private int redCardsLeft;
     private int blueCardsLeft;
-    private List<Move> moves;
+    private List<HashMap<String,String>> logs;
     private Player owner;
 }

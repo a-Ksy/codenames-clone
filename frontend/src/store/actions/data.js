@@ -9,6 +9,8 @@ import {
   apiCheckSession,
   apiCheckRoomSession,
   apiChangePlayerType,
+  apiResetGame,
+  apiGiveClue,
 } from '../../api/api';
 
 export const showLoading = () => ({
@@ -148,6 +150,34 @@ export const changePlayerType = (roomId, playerId, playerType, team) => (dispatc
     },
     (err) => {
       console.log(`Error when changing player type:\n${err}`);
+    },
+  );
+};
+
+export const resetGame = (roomId, playerId) => (dispatch) => {
+  apiResetGame(
+    roomId,
+    playerId,
+    (response) => {
+      dispatch(setRoomData(response.data));
+    },
+    (err) => {
+      console.log(`Error when resetting game:\n${err}`);
+    },
+  );
+};
+
+export const giveClue = (roomId, clueWord, clueNumber, playerId) => (dispatch) => {
+  apiGiveClue(
+    roomId,
+    clueWord,
+    clueNumber,
+    playerId,
+    (response) => {
+      dispatch(setRoomData(response.data));
+    },
+    (err) => {
+      console.log(`Error when giving clue:\n${err}`);
     },
   );
 };

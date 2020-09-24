@@ -1,0 +1,72 @@
+@import "../../sass/variables";
+@import "../../sass/breakpoints";
+
+.GameLog {
+  background-color: $backgroundLight;
+  box-sizing: border-box;
+  height: 40%;
+  flex: 1 1 0%;
+  border-radius: 3px;
+  color: $headline;
+  padding: 1.5rem;
+
+  .logs {
+    height: 80%;
+    overflow-y: auto;
+  }
+
+  .title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .log {
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+    color: $paragraph;
+  }
+
+ .logNickname {
+   font-weight: 600;
+ }
+ .logNickname.RED,.logWord.RED {
+   color: $redTeam;
+ }
+ .logNickname.BLUE,.logWord.BLUE {
+   color: $blueTeam;
+ }
+
+ .logWord {
+   font-weight: 500;
+   color: $headline;
+
+ }
+
+   @include media("<=desktop") {
+    .title {
+      font-size: 1rem;
+    }
+    .log {
+      font-size: 0.8rem;
+    }
+  }
+
+
+  @include media("<collapse") {
+    height: 70%;
+    border-radius: 0;
+    padding: 1rem;
+}
+
+  @include media("<=phone") {
+    .title {
+      font-size: 0.8rem;
+    }
+
+    .log {
+      font-size: 0.7rem;
+    }
+}
+}

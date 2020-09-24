@@ -2,7 +2,7 @@
 @import "../../sass/breakpoints";
 
 .GameCard {
-  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  padding: 0 0.5rem 1rem 0.5rem;
   width: 100%;
   height: 100%;
   margin: 0;
@@ -37,6 +37,7 @@
   }
 
   @include media("<=tablet") {
+    padding: 0 0.25rem 0.5rem 0.25rem;
     .title {    
       transition: 0.3s ease;
       font-size: 0.7rem;
@@ -46,7 +47,7 @@
     @include media("<=phone") {
     .title {    
       transition: 0.3s ease;
-      font-size: 0.6rem;
+      font-size: 0.7rem;
     }
   }
 
@@ -54,10 +55,12 @@
 
 
 .GameCardPlot {
+  min-height: 50px;
   height: 100%;
   width: 100%;
   background-color: $secondary;
   border-radius: 3px;
+
 }
 
 .GameCardPlot.NEUTRAL {
@@ -76,9 +79,3 @@
   background-color: $backgroundLight;
 }
 
-@include media("<=collapse") {
-  .GameCardPlot {
-    background-color: $secondary;
-    border-radius: 3px;
-  }
-}

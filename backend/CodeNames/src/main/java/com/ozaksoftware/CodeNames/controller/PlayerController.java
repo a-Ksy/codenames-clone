@@ -1,12 +1,6 @@
 package com.ozaksoftware.CodeNames.controller;
 
-
-import com.ozaksoftware.CodeNames.DTO.model.GameDTO;
 import com.ozaksoftware.CodeNames.DTO.model.PlayerDTO;
-import com.ozaksoftware.CodeNames.DTO.response.Response;
-import com.ozaksoftware.CodeNames.controller.request.PlayerRequest;
-import com.ozaksoftware.CodeNames.domain.Game;
-import com.ozaksoftware.CodeNames.domain.Player;
 import com.ozaksoftware.CodeNames.service.GameService;
 import com.ozaksoftware.CodeNames.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;

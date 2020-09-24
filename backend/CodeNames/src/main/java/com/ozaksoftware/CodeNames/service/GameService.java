@@ -6,10 +6,7 @@ import com.ozaksoftware.CodeNames.DTO.model.GameDTO;
 import com.ozaksoftware.CodeNames.domain.Card;
 import com.ozaksoftware.CodeNames.domain.Game;
 import com.ozaksoftware.CodeNames.domain.Player;
-import com.ozaksoftware.CodeNames.enums.CardColor;
-import com.ozaksoftware.CodeNames.enums.GameStatus;
-import com.ozaksoftware.CodeNames.enums.PlayerType;
-import com.ozaksoftware.CodeNames.enums.Team;
+import com.ozaksoftware.CodeNames.enums.*;
 import com.ozaksoftware.CodeNames.repository.GameRepository;
 import com.ozaksoftware.CodeNames.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -34,14 +32,17 @@ public class GameService {
     }
 
     /***Helper Methods***/
-    public GameDTO setDTOCardsHidden(GameDTO gameDTO) {
+    private GameDTO setDTOCardsHidden(GameDTO gameDTO) {
         List<CardDTO> cardList = gameDTO.getCards();
-        cardList.stream().forEach(cardDTO -> cardDTO.setCardColor(CardColor.HIDDEN));
+        cardList.stream().forEach(cardDTO -> {
+            if(cardDTO.getCardStatus() == CardStatus.CLOSED)
+            cardDTO.setCardColor(CardColor.HIDDEN);
+        });
         gameDTO.setCards(cardList);
         return gameDTO;
     }
 
-    public GameDTO setDTOTeams(GameDTO gameDTO) {
+    private GameDTO setDTOTeams(GameDTO gameDTO) {
         Map<String, List<Player>> redTeam = new HashMap<>();
         Map<String, List<Player>> blueTeam = new HashMap<>();
         List<Player> playerList = gameDTO.getPlayers();
@@ -76,7 +77,7 @@ public class GameService {
         return gameDTO;
     }
 
-    public GameDTO setDTOCardsRemaining(GameDTO gameDTO) {
+    private GameDTO setDTOCardsRemaining(GameDTO gameDTO) {
         /*it should be called before hiding the cards*/
         List<CardDTO> cardList = gameDTO.getCards();
         for(CardDTO cardDTO : cardList) {
@@ -86,6 +87,18 @@ public class GameService {
                 gameDTO.setBlueCardsLeft(gameDTO.getBlueCardsLeft() + 1);
             }
         }
+        return gameDTO;
+    }
+
+    private GameDTO createDTO(Game game) {
+        GameDTO gameDTO = GameMapper.toGameDTO(game);
+
+        gameDTO = setDTOTeams(gameDTO);
+
+        gameDTO = setDTOCardsRemaining(gameDTO);
+
+        gameDTO = setDTOCardsHidden(gameDTO);
+
         return gameDTO;
     }
 
@@ -99,30 +112,74 @@ public class GameService {
         //Initializing game data
         Game newGame = new Game();
         newGame.setGameName(gameDTO.getGameName());
-        newGame.setGameStatus(GameStatus.WAITS_FOR_PLAYER);
+        newGame.setGameStatus(GameStatus.BLUE_TEAM_SPYMASTER_ROUND);
 
         //Initializing owner
         Player owner = playerRepository.findOneById(ownerId);
         if(owner==null) return null;
         newGame.setOwner(owner);
-        List<Player> players = new ArrayList<Player>();
+        List<HashMap<String,String>> logs = new ArrayList<>();
+        List<Player> players = new ArrayList<>();
         players.add(owner);
+        newGame.setLogs(logs);
         newGame.setPlayers(players);
         newGame.setCards(cardService.generateCards());
+        newGame.setClueWord("");
+
         gameRepository.save(newGame);
+        return createDTO(newGame);
+    }
 
-        GameDTO newGameDTO = GameMapper.toGameDTO(newGame);
+    public GameDTO resetGame(GameDTO gameDTO,Integer ownerId) {
+        Game game = gameRepository.findOneById(gameDTO.getId());
+        if(game == null || game.getGameName() == null || game.getOwner() == null ||
+                game.getOwner().getId() != ownerId)  {
+            return null;
+        }
+        List<Player> updatedPlayers = new ArrayList<>();
+        game.getPlayers().stream().forEach(player -> {
+            Player updatedPlayer = playerRepository.findOneById(player.getId());
+            updatedPlayer.setTeam(Team.SPECTATOR);
+            updatedPlayer.setPlayerType(PlayerType.SPECTATOR);
+            playerRepository.save(updatedPlayer);
+            updatedPlayers.add(updatedPlayer);
+        });
+        game.setPlayers(updatedPlayers);
+        game.setCards(cardService.generateCards());
+        game.setGameStatus(GameStatus.BLUE_TEAM_SPYMASTER_ROUND);
+        gameRepository.save(game);
 
-        //Initializing teams
-        newGameDTO = setDTOTeams(newGameDTO);
+        return createDTO(game);
+    }
 
-        //Calculating the remaining cards for each team.
-        newGameDTO = setDTOCardsRemaining(newGameDTO);
+    public  List<GameDTO> leaveGame(GameDTO gameDTO, int playerId){
+        Game game = gameRepository.findOneById(gameDTO.getId());
 
-        //Mapping each card color to hidden
-        newGameDTO = setDTOCardsHidden(newGameDTO);
+        if(game == null || game.getGameName() == null)  {
+            return null;
+        }
 
-        return newGameDTO;
+        if(!game.getPlayers().stream().anyMatch(pl -> Objects.equals(pl.getId(), playerId))){
+            return null;
+        }
+        Player leftPlayer = playerRepository.findOneById(playerId);
+        leftPlayer.setPlayerType(PlayerType.SPECTATOR);
+        leftPlayer.setTeam(Team.SPECTATOR);
+        playerRepository.save(leftPlayer);
+
+        List<Player> updatedPlayers = game.getPlayers().stream().filter(player ->
+                player.getId() != playerId).collect(Collectors.toList());
+
+        if(updatedPlayers.size() == 0){
+            gameRepository.delete(game);
+            return listGameDTOs();
+        }
+        game.setPlayers(updatedPlayers);
+        if(game.getOwner().getId() == playerId){
+            game.setOwner(game.getPlayers().get(0));
+        }
+        gameRepository.save(game);
+        return listGameDTOs();
     }
 
     public GameDTO getGame(int gameId, int playerId) {
@@ -150,9 +207,45 @@ public class GameService {
         return gameDTO;
     }
 
+    public GameDTO giveClue(GameDTO gameDTO, int playerId) {
+        Game game = gameRepository.findOneById(gameDTO.getId());
+        Player player = playerRepository.findOneById(playerId);
+
+        if(game == null || player  == null || player.getPlayerType() != PlayerType.SPYMASTER) return null;
+
+        if(!game.getPlayers().stream().anyMatch(pl -> Objects.equals(pl.getId(), playerId))) {
+            return null;
+        }
+
+        game.setClueWord(gameDTO.getClueWord());
+        game.setClueNumber(gameDTO.getClueNumber());
+        game.addHintLog(player.getNickName(),player.getTeam(),gameDTO.getClueWord(),gameDTO.getClueNumber());
+
+        if(player.getTeam() == Team.RED){
+            game.setGameStatus(GameStatus.RED_TEAM_OPERATIVE_ROUND);
+        }
+        else {
+            game.setGameStatus(GameStatus.BLUE_TEAM_OPERATIVE_ROUND);
+        }
+
+        gameRepository.save(game);
+
+        GameDTO updatedGameDTO = GameMapper.toGameDTO(game);
+
+        updatedGameDTO = setDTOTeams(updatedGameDTO);
+
+        updatedGameDTO = setDTOCardsRemaining(updatedGameDTO);
+
+        if(player.getPlayerType() != PlayerType.SPYMASTER) updatedGameDTO = setDTOCardsHidden(updatedGameDTO);
+
+        return updatedGameDTO;
+    }
+
     public List<GameDTO> listGameDTOs() {
         List<Game> games = (List<Game>) gameRepository.findAll();
-        return GameMapper.toGameDTOList(games);
+        List<GameDTO> gameDTOS = GameMapper.toGameDTOList(games);
+        gameDTOS = gameDTOS.stream().map(game -> setDTOCardsHidden(game)).collect(Collectors.toList());
+        return gameDTOS;
     }
 
     public GameDTO checkGame(int playerId, int gameId) {
