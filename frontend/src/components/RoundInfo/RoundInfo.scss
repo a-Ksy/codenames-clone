@@ -1,2 +1,19 @@
 @import "../../sass/variables";
 @import "../../sass/breakpoints";
+
+.RoundInfo {
+  text-align: center;
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  transition: 0.3s ease;
+  font-weight: 600;
+
+  @include media("<=desktop") {
+    font-size: 1.2rem;
+  }
+
+  @include media("<=collapse") {
+    font-size: 1rem;
+  }
+
+}
