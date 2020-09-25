@@ -129,12 +129,12 @@ public class GameController {
                 gameRequest.getPlayerId() + " can not be found.");
     }
 
-    @RequestMapping(value = "/selectCard", method = RequestMethod.POST)
-    public ResponseEntity selectCard(@RequestBody CardRequest cardRequest) {
+    @RequestMapping(value = "/highlightCard", method = RequestMethod.POST)
+    public ResponseEntity highlightCard(@RequestBody CardRequest cardRequest) {
         if(cardRequest == null || cardRequest.getGameDTO() == null) {
             return ResponseEntity.badRequest().body("Request is null or game DTO is null");
         }
-        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.selectCard(cardRequest.getGameDTO(), cardRequest.getPlayerId(),
+        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.highlightCard(cardRequest.getGameDTO(), cardRequest.getPlayerId(),
                 cardRequest.getCardId()));
 
         if(gameDTOOptional.isPresent()){
@@ -160,6 +160,5 @@ public class GameController {
         return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
                 gameRequest.getPlayerId() + " can not be found.");
     }
-
-
+    
 }
