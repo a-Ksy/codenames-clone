@@ -134,7 +134,7 @@ class Game extends React.Component {
               <RoundInfo />
               <div className="gameOverlay">
                 {room.cards.map((card) => (
-                  <GameCard id={card.id} key={card.id} type={card.cardColor} title={card.word} />
+                  <GameCard id={card.id} key={card.id} type={card.cardColor} title={card.word} highlighters={card.highlighters} />
                 ))}
               </div>
               {((room.gameStatus === 'BLUE_TEAM_SPYMASTER_ROUND' && user.playerType === 'SPYMASTER' && user.team === 'BLUE') || (room.gameStatus === 'RED_TEAM_SPYMASTER_ROUND' && user.playerType === 'SPYMASTER' && user.team === 'RED'))

@@ -7,75 +7,114 @@
   height: 100%;
   margin: 0;
   box-sizing: border-box;
-  text-align: center;
-  
-  
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+
+  .GameCardPlot.isHighlightable {
+    cursor:pointer;
+  }
+
+
   .GameCardPlot {
-  position: relative;
-  min-height: 50px;
-  height: 100%;
-  background-color: $hidden;
-  border-radius: 3px;
-  
-  .title {
-    transition: 0.3s ease;
-    font-size: 1.3rem;
-    text-align: center;
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
+    position: relative;
+    min-height: 50px;
+    height: 100%;
+    background-color: $hidden;
+    border-radius: 3px;
 
-  .buttonBox {
-    display: flex;
-    padding: 1rem;
-
-    .em {
-      font-size: 0.8rem;
+    .title {
+      transition: 0.3s ease;
+      font-size: 1.3rem;
+      font-weight: 600;
+      text-align: center;
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
 
-    .em:hover {
-      cursor: pointer;
+    .highlighterNicknameBox {
+      position: absolute;
+      top: 0;
+      margin-top: 15px;
+      padding-top: 1rem;
+      padding-left: 0.5rem;
+      transform: translate(0, -50%);
+      .highlighterNickname {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: $headline;
+      }
+    }
+
+    .buttonBox {
+      display: flex;
+      padding: 1rem;
+
+      .em {
+        font-size: 0.8rem;
+      }
+
+      .em:hover {
+        cursor: pointer;
+      }
+    }
+
+    @include media("<=desktop") {
+      .title {
+        transition: 0.3s ease;
+        font-size: 1rem;
+      }
+      .buttonBox {
+        padding: 0.5rem;
+        .em {
+          font-size: 0.6rem;
+        }
+      }
+    }
+
+    @include media("<=collapse") {
+      padding: 0 0.25rem 0.5rem 0.25rem;
+      .title {
+        transition: 0.3s ease;
+        font-size: 0.9rem;
+      }
+    }
+
+    @include media("<=tablet") {
+      padding: 0 0.25rem 0.5rem 0.25rem;
+      .title {
+        transition: 0.3s ease;
+        font-size: 0.7rem;
+      }
+    }
+
+    @include media("<=phone") {
+      .title {
+        transition: 0.3s ease;
+        font-size: 0.6rem;
+      }
+      .buttonBox {
+        padding: 0.25rem;
+
+        .em {
+          font-size: 0.4rem;
+        }
+      }
+
+      .highlighterNicknameBox {
+        display: none;
+      }
     }
   }
 
+  .GameCardPlot.Highlighted {
+    border: 3px solid $tertiary;
+  }
 }
-
-
-  @include media("<=desktop") {
-    .title {
-      transition: 0.3s ease;
-      font-size: 1rem;
-    }
-  }
-
-  @include media("<=collapse") {
-    padding: 0 0.25rem 0.5rem 0.25rem;
-    .title {
-      transition: 0.3s ease;
-      font-size: 0.9rem;
-    }
-  }
-
-  @include media("<=tablet") {
-    padding: 0 0.25rem 0.5rem 0.25rem;
-    .title {
-      transition: 0.3s ease;
-      font-size: 0.7rem;
-    }
-  }
-
-  @include media("<=phone") {
-    .title {
-      transition: 0.3s ease;
-      font-size: 0.7rem;
-    }
-  }
-}
-
-
 
 .GameCardPlot.NEUTRAL {
   background-color: $neutral;

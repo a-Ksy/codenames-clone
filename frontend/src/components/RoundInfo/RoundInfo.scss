@@ -7,9 +7,12 @@
   margin-bottom: 1.5rem;
   transition: 0.3s ease;
   font-weight: 600;
-
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
   p {
-    margin-bottom:0;
+    margin-bottom: 0;
   }
 
   @include media("<=desktop") {
@@ -19,5 +22,4 @@
   @include media("<=collapse") {
     font-size: 1rem;
   }
-
 }

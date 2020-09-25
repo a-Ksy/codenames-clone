@@ -2,7 +2,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { getRoundInfo } from '../../helpers/helpers';
 import './Clue.scss';
 
 function Clue(props) {
@@ -13,13 +12,11 @@ function Clue(props) {
     <div className="Clue">
       <div className="clueBox">
         <p className="title">
-          <p>
-            <span className="clueText">Clue:</span>
-            {' '}
-            {clueWord}
-            {' '}
-            {clueNumber}
-          </p>
+          <span className="clueText">Clue:</span>
+          {' '}
+          {clueWord}
+          {' '}
+          {clueNumber}
         </p>
       </div>
     </div>

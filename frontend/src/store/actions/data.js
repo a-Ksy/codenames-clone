@@ -12,6 +12,7 @@ import {
   apiResetGame,
   apiGiveClue,
   apiLeaveGame,
+  apiHighlightCard,
 } from '../../api/api';
 
 export const showLoading = () => ({
@@ -200,6 +201,20 @@ export const leaveGame = (roomId, playerId) => (dispatch) => {
     (err) => {
       console.log(`Error when retrieving rooms data:\n${err}`);
       dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+  );
+};
+
+export const highlightCard = (roomId, playerId, cardId) => (dispatch) => {
+  apiHighlightCard(
+    roomId,
+    playerId,
+    cardId,
+    (response) => {
+      dispatch(setRoomData(response.data));
+    },
+    (err) => {
+      console.log(`Error when highlighting card:\n${err}`);
     },
   );
 };

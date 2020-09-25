@@ -21,6 +21,7 @@ const urls = {
   RESET_GAME_URL: 'http://localhost:8080/game/reset',
   GIVE_CLUE_URL: 'http://localhost:8080/game/giveClue',
   LEAVE_GAME_URL: 'http://localhost:8080/game/leave',
+  HIGHLIGHT_CARD_URL: 'http://localhost:8080/game/highlightCard',
 };
 
 const apiCall = (
@@ -130,4 +131,15 @@ export const apiLeaveGame = (roomId, playerId, callback, onError) => {
     playerId,
   };
   apiCall(urls.LEAVE_GAME_URL, methods.POST, null, data, callback, onError);
+};
+
+export const apiHighlightCard = (roomId, playerId, cardId, callback, onError) => {
+  const data = {
+    gameDTO: {
+      id: roomId,
+    },
+    playerId,
+    cardId,
+  };
+  apiCall(urls.HIGHLIGHT_CARD_URL, methods.POST, null, data, callback, onError);
 };

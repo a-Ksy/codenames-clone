@@ -138,4 +138,10 @@
       height: 100%;
     }
   }
+
+  @include media("<=phone") {
+    .gameColumn {
+      margin-bottom: 3rem;
+    }
+  }
 }
