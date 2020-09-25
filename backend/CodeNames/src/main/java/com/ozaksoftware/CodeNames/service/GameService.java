@@ -98,7 +98,6 @@ public class GameService {
         gameDTO = setDTOCardsRemaining(gameDTO);
 
         if(!isSpymaster) gameDTO = setDTOCardsHidden(gameDTO);
-        gameDTO = setDTOCardsHidden(gameDTO);
 
         return gameDTO;
     }
