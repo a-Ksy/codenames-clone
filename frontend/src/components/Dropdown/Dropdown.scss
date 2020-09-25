@@ -1,7 +1,6 @@
 @import "../../sass/variables";
 @import "../../sass/breakpoints";
 
-
 .Dropdown {
   margin-bottom: 3rem;
   border-radius: 3px;
@@ -27,14 +26,17 @@
     border-radius: 3px;
   }
 
-  .btn-custom, .btn-custom:hover, .btn-custom:active, .btn-custom:focus {
+  .btn-custom,
+  .btn-custom:hover,
+  .btn-custom:active,
+  .btn-custom:focus {
     outline: none;
     border: none;
     box-shadow: none;
   }
 
   .dropdown-menu {
-    -webkit-user-select: none; /* Safari */        
+    -webkit-user-select: none; /* Safari */
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* IE10+/Edge */
     user-select: none; /* Standard */
@@ -60,11 +62,9 @@
     }
   }
 
-
-    @include media("<=phone") {
+  @include media("<=phone") {
     .btn-custom {
       font-size: 0.8rem;
     }
   }
-  
 }

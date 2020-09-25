@@ -17,10 +17,6 @@ class Rooms extends React.Component {
     };
   }
 
-  componentDidMount() {
-
-  }
-
   handleCreateRoom = async (history) => {
     const { roomName } = this.state;
     const { retrieveCreateRoom, userId } = this.props;

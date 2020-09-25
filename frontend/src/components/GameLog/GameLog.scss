@@ -28,23 +28,24 @@
     color: $paragraph;
   }
 
- .logNickname {
-   font-weight: 600;
- }
- .logNickname.RED,.logWord.RED {
-   color: $redTeam;
- }
- .logNickname.BLUE,.logWord.BLUE {
-   color: $blueTeam;
- }
+  .logNickname {
+    font-weight: 600;
+  }
+  .logNickname.RED,
+  .logWord.RED {
+    color: $redTeam;
+  }
+  .logNickname.BLUE,
+  .logWord.BLUE {
+    color: $blueTeam;
+  }
 
- .logWord {
-   font-weight: 500;
-   color: $headline;
+  .logWord {
+    font-weight: 500;
+    color: $headline;
+  }
 
- }
-
-   @include media("<=desktop") {
+  @include media("<=desktop") {
     .title {
       font-size: 1rem;
     }
@@ -53,12 +54,11 @@
     }
   }
 
-
   @include media("<collapse") {
     height: 70%;
     border-radius: 0;
     padding: 1rem;
-}
+  }
 
   @include media("<=phone") {
     .title {
@@ -68,5 +68,5 @@
     .log {
       font-size: 0.7rem;
     }
-}
+  }
 }

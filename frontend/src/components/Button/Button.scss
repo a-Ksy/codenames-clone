@@ -21,41 +21,40 @@
 }
 
 .Button.Reset {
-    padding: 0.5rem 1rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    line-height: 1.5;
-    margin-right: 1rem;
-    font-size: 1rem;
+  padding: 0.5rem 1rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  line-height: 1.5;
+  margin-right: 1rem;
+  font-size: 1rem;
 }
 
 .Button.Leave {
-    padding: 0.5rem 1rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    line-height: 1.5;
-    font-size: 1rem;
+  padding: 0.5rem 1rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  line-height: 1.5;
+  font-size: 1rem;
 }
 
 .Button.Clue {
-  margin:0;
+  margin: 0;
   padding: 0.25rem;
   font-size: 1rem;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
 }
 
-button:active, button:hover, button:focus {
-  outline:none;
-  border:none;
+button:active,
+button:hover,
+button:focus {
+  outline: none;
+  border: none;
 }
 
 button:hover {
   background-color: $primaryDark;
-
 }
-
-
 
 @include media("<=desktop") {
   .Button {
@@ -64,7 +63,7 @@ button:hover {
 
   .Button.TeamCard {
     padding-left: 0.5rem;
-    padding-right: 0.5rem; 
+    padding-right: 0.5rem;
     font-size: 0.8rem;
   }
 }
@@ -73,7 +72,7 @@ button:hover {
   .Button.Reset {
     padding-left: 1rem;
     padding-right: 1rem;
-}
+  }
 
   .Button.Leave {
     padding-left: 1rem;
@@ -91,7 +90,9 @@ button:hover {
 }
 
 @include media("<=phone") {
-  .Button, .Button.Reset, .Button.Leave {
+  .Button,
+  .Button.Reset,
+  .Button.Leave {
     font-size: 0.8rem;
   }
 
@@ -103,5 +104,3 @@ button:hover {
     font-size: 0.8rem;
   }
 }
-
-

@@ -1,6 +1,5 @@
 @import "../../sass/variables";
-@import  "../../sass/breakpoints";
-
+@import "../../sass/breakpoints";
 
 .Rooms {
   height: 100%;
@@ -22,7 +21,7 @@
   }
 
   td {
-    border-width:1px 0 1px 0;
+    border-width: 1px 0 1px 0;
     border-color: $stroke;
     border-style: solid;
     font-size: 1.1rem;
@@ -43,7 +42,8 @@
     color: $headline;
   }
 
-  td,th {
+  td,
+  th {
     padding: 0.75rem 0 0.75rem 0;
   }
 
@@ -55,21 +55,20 @@
   input {
     border-radius: 3px;
     border: none;
-    outline:none;
+    outline: none;
     font-size: 1rem;
     margin-bottom: 3rem;
   }
 
-
   .roomsColumn {
     background-color: $backgroundLight;
-    padding:2.5rem;
+    padding: 2.5rem;
     border-radius: 3px;
   }
 
   .createRoomColumn {
     background-color: $backgroundLight;
-    padding:2.5rem;
+    padding: 2.5rem;
     border-radius: 3px;
     display: flex;
     flex-direction: column;
@@ -79,7 +78,7 @@
 
   @include media("<=collapse") {
     display: inherit;
-
+    margin-top: 2.5rem;
     .createRoomColumn {
       margin-top: 2.5rem;
       margin-bottom: 2.5rem;
@@ -90,12 +89,11 @@
     }
 
     td {
-      border-width:1px 0 1px 0;
+      border-width: 1px 0 1px 0;
       border-color: $stroke;
       border-style: solid;
       font-size: 0.9rem;
     }
-
   }
 
 }

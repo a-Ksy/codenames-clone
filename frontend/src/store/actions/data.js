@@ -11,6 +11,7 @@ import {
   apiChangePlayerType,
   apiResetGame,
   apiGiveClue,
+  apiLeaveGame,
 } from '../../api/api';
 
 export const showLoading = () => ({
@@ -81,6 +82,11 @@ export const checkSession = (userId, nickName) => (dispatch) => {
 
 export const setRoomData = (payload) => ({
   type: actionTypes.SET_ROOM_DATA,
+  payload,
+});
+
+export const setLeaveData = (payload) => ({
+  type: actionTypes.LEAVE_GAME,
   payload,
 });
 
@@ -178,6 +184,22 @@ export const giveClue = (roomId, clueWord, clueNumber, playerId) => (dispatch) =
     },
     (err) => {
       console.log(`Error when giving clue:\n${err}`);
+    },
+  );
+};
+
+export const leaveGame = (roomId, playerId) => (dispatch) => {
+  dispatch({ type: actionTypes.SHOW_LOADING });
+  apiLeaveGame(
+    roomId,
+    playerId,
+    (response) => {
+      dispatch(setLeaveData(response.data));
+      dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+    (err) => {
+      console.log(`Error when retrieving rooms data:\n${err}`);
+      dispatch({ type: actionTypes.HIDE_LOADING });
     },
   );
 };

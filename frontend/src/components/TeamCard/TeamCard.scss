@@ -1,6 +1,5 @@
 @import "../../sass/variables";
-@import  "../../sass/breakpoints";
-
+@import "../../sass/breakpoints";
 
 .TeamCard {
   border-radius: 3px;
@@ -31,23 +30,21 @@
     margin-bottom: 0;
   }
 
+  @include media("<=desktop") {
+    .cardsLeft {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
 
-    @include media("<=desktop") {
-      .cardsLeft {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-      }
+    .playerTitle {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
 
-      .playerTitle {
-        font-size: 1rem;
-        margin-bottom: 1rem;
-      }
-
-      .playerNickname {
-        font-size: 0.9rem;
-      }
+    .playerNickname {
+      font-size: 0.9rem;
+    }
   }
-
 
   @include media("<collapse") {
     padding: 1rem;
@@ -64,24 +61,19 @@
     .playerNickname {
       font-size: 0.7rem;
     }
-
-}
+  }
 
   @include media("<=phone") {
-
     .cardsLeft {
       font-size: 1.5rem;
     }
-
+  }
 }
 
-}
-
-.TeamCard.RED{
+.TeamCard.RED {
   background-color: $redTeam;
 }
 
 .TeamCard.BLUE {
   background-color: $blueTeam;
 }
-

@@ -27,10 +27,9 @@
     }
   }
 
-
   @include media("<=collapse") {
     padding: 0 0.25rem 0.5rem 0.25rem;
-    .title {    
+    .title {
       transition: 0.3s ease;
       font-size: 0.9rem;
     }
@@ -38,29 +37,26 @@
 
   @include media("<=tablet") {
     padding: 0 0.25rem 0.5rem 0.25rem;
-    .title {    
+    .title {
       transition: 0.3s ease;
       font-size: 0.7rem;
     }
   }
 
-    @include media("<=phone") {
-    .title {    
+  @include media("<=phone") {
+    .title {
       transition: 0.3s ease;
       font-size: 0.7rem;
     }
   }
-
 }
-
 
 .GameCardPlot {
   min-height: 50px;
   height: 100%;
   width: 100%;
-  background-color: $secondary;
+  background-color: $hidden;
   border-radius: 3px;
-
 }
 
 .GameCardPlot.NEUTRAL {
@@ -78,4 +74,3 @@
 .GameCardPlot.BLACK {
   background-color: $backgroundLight;
 }
-

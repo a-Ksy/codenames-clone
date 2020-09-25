@@ -20,6 +20,7 @@ const urls = {
   CHANGE_PLAYER_TYPE_URL: 'http://localhost:8080/game/changePlayerType',
   RESET_GAME_URL: 'http://localhost:8080/game/reset',
   GIVE_CLUE_URL: 'http://localhost:8080/game/giveClue',
+  LEAVE_GAME_URL: 'http://localhost:8080/game/leave',
 };
 
 const apiCall = (
@@ -119,4 +120,14 @@ export const apiGiveClue = (roomId, clueWord, clueNumber, playerId, callback, on
     playerId,
   };
   apiCall(urls.GIVE_CLUE_URL, methods.POST, null, data, callback, onError);
+};
+
+export const apiLeaveGame = (roomId, playerId, callback, onError) => {
+  const data = {
+    gameDTO: {
+      id: roomId,
+    },
+    playerId,
+  };
+  apiCall(urls.LEAVE_GAME_URL, methods.POST, null, data, callback, onError);
 };

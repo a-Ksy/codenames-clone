@@ -1,15 +1,28 @@
 @import "../../sass/variables";
 @import "../../sass/breakpoints";
 
-.RoundInfo {
+.Clue {
   text-align: center;
+  padding: 0.5rem 1rem;
   font-size: 1.4rem;
-  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
   transition: 0.3s ease;
   font-weight: 600;
 
+  .clueBox {
+    background-color: $backgroundLight;
+    border-radius: 3px;
+    width: 30%;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+
+    .clueText {
+      color: $paragraph;
+    }
+  }
+
   p {
-    margin-bottom:0;
+    margin-bottom: 0;
   }
 
   @include media("<=desktop") {
@@ -19,5 +32,4 @@
   @include media("<=collapse") {
     font-size: 1rem;
   }
-
 }

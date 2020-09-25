@@ -14,8 +14,9 @@ import Modal from '../../components/Modal/Modal';
 import GameLog from '../../components/GameLog/GameLog';
 import GiveClue from '../../components/GiveClue/GiveClue';
 import './Game.scss';
-import { resetGame, setUserData } from '../../store/actions/data';
+import { leaveGame, resetGame, setUserData } from '../../store/actions/data';
 import RoundInfo from '../../components/RoundInfo/RoundInfo';
+import Clue from '../../components/Clue/Clue';
 
 class Game extends React.Component {
   constructor(props) {
@@ -57,9 +58,13 @@ class Game extends React.Component {
 
   handleLeaveGame = () => {
     const {
-      room, user,
+      room, user, retrieveLeaveGame, retrieveSetUserData,
     } = this.props;
-    // call dispatch function here
+    retrieveLeaveGame(room.id, user.id);
+    const tempUser = user;
+    tempUser.playerType = 'SPECTATOR';
+    tempUser.team = 'SPECTATOR';
+    retrieveSetUserData(tempUser);
     this.handleModal(false, 'LEAVE');
   }
 
@@ -134,6 +139,8 @@ class Game extends React.Component {
               </div>
               {((room.gameStatus === 'BLUE_TEAM_SPYMASTER_ROUND' && user.playerType === 'SPYMASTER' && user.team === 'BLUE') || (room.gameStatus === 'RED_TEAM_SPYMASTER_ROUND' && user.playerType === 'SPYMASTER' && user.team === 'RED'))
                 && <GiveClue />}
+              {(room.gameStatus === 'BLUE_TEAM_OPERATIVE_ROUND' || room.gameStatus === 'RED_TEAM_OPERATIVE_ROUND')
+                && <Clue />}
             </div>
             <div className="blueTeamColumn col-lg-2">
               <div className="teamCardBlueRow">
@@ -164,6 +171,7 @@ const mapDispatchToProps = (dispatch) => ({
   retrieveRoomData: (userId, roomId) => dispatch(getRoomData(userId, roomId)),
   retrieveResetGame: (userId, roomId) => dispatch(resetGame(userId, roomId)),
   retrieveSetUserData: (payload) => dispatch(setUserData(payload)),
+  retrieveLeaveGame: (roomId, userId) => dispatch(leaveGame(roomId, userId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Game));

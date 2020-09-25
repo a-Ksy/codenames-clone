@@ -1,5 +1,5 @@
 @import "../../sass/variables";
-@import  "../../sass/breakpoints";
+@import "../../sass/breakpoints";
 
 .Landing {
   display: flex;
@@ -25,7 +25,7 @@
       font-weight: 400;
       transition: 0.3s ease;
     }
-    
+
     @include media("<=collapse") {
       .title {
         font-size: 3.5rem;
@@ -62,7 +62,6 @@
         font-size: 1.1rem;
       }
     }
-
   }
 
   .footer {
@@ -71,13 +70,11 @@
     color: $paragraph;
 
     a {
-     color: $tertiary; 
+      color: $tertiary;
     }
 
     a:hover {
       text-decoration: none;
     }
-
   }
-
 }
