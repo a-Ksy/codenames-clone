@@ -1,6 +1,7 @@
 package com.ozaksoftware.CodeNames.controller;
 
 import com.ozaksoftware.CodeNames.DTO.model.GameDTO;
+import com.ozaksoftware.CodeNames.controller.request.CardRequest;
 import com.ozaksoftware.CodeNames.controller.request.GamePlayerTypeRequest;
 import com.ozaksoftware.CodeNames.controller.request.GameRequest;
 import com.ozaksoftware.CodeNames.service.GameService;
@@ -113,8 +114,6 @@ public class GameController {
                 gameRequest.getPlayerId() + " can not be found.");
     }
 
-<<<<<<< Updated upstream
-=======
     @RequestMapping(value = "/kick", method = RequestMethod.POST)
     public ResponseEntity kickPlayer(@RequestBody GameRequest gameRequest) {
         if(gameRequest == null || gameRequest.getGameDTO() == null) {
@@ -161,7 +160,5 @@ public class GameController {
         return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
                 gameRequest.getPlayerId() + " can not be found.");
     }
-
->>>>>>> Stashed changes
-
+    
 }

@@ -254,8 +254,6 @@ public class GameService {
         return createDTO(game,player.getPlayerType() == PlayerType.SPYMASTER);
     }
 
-<<<<<<< Updated upstream
-=======
     public GameDTO kickPlayer(GameDTO gameDTO, int playerId){
         Game game = gameRepository.findOneById(gameDTO.getId());
 
@@ -340,5 +338,4 @@ public class GameService {
         gameRepository.save(game);
         return createDTO(game,player.getPlayerType() == PlayerType.SPYMASTER);
     }
->>>>>>> Stashed changes
 }
