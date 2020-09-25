@@ -14,7 +14,9 @@ import Modal from '../../components/Modal/Modal';
 import GameLog from '../../components/GameLog/GameLog';
 import GiveClue from '../../components/GiveClue/GiveClue';
 import './Game.scss';
-import { leaveGame, resetGame, setUserData } from '../../store/actions/data';
+import {
+  leaveGame, resetGame, setUserData, kickPlayer,
+} from '../../store/actions/data';
 import RoundInfo from '../../components/RoundInfo/RoundInfo';
 import Clue from '../../components/Clue/Clue';
 
@@ -68,6 +70,11 @@ class Game extends React.Component {
     this.handleModal(false, 'LEAVE');
   }
 
+  handleKickPlayer = (playerId) => {
+    const { room, retrieveKickPlayer } = this.props;
+    retrieveKickPlayer(room.id, playerId);
+  }
+
   render() {
     const { room, user } = this.props;
     const { isResetModalVisible, isLeaveModalVisible } = this.state;
@@ -95,17 +102,23 @@ class Game extends React.Component {
           <Dropdown title="Players">
             <p className="dropdownMenuTitle">Players in this room</p>
             {room.players.map((player) => (
-              <p key={player.id}>
-                <span className="dropdownMenuNickname">
-                  {player.nickName}
-                  {' '}
-                  :
-                </span>
-                {' '}
-                <span className="dropdownMenuPlayerType">
-                  {capitalizeFirstLetterOfCapitalized(player.playerType)}
-                </span>
-              </p>
+              <div key={player.id} className="dropdownRow row justify-content-between">
+                <div>
+                  <p>
+                    <span className="dropdownMenuNickname">
+                      {player.nickName}
+                      {' '}
+                      :
+                    </span>
+                    {' '}
+                    <span className="dropdownMenuPlayerType">
+                      {capitalizeFirstLetterOfCapitalized(player.playerType)}
+                    </span>
+                  </p>
+                </div>
+                {(user.id === room.owner.id && player.id !== user.id)
+                  && <i className="fa fa-ban" aria-hidden="true" onClick={() => this.handleKickPlayer(player.id)} />}
+              </div>
             ))}
           </Dropdown>
 
@@ -172,6 +185,7 @@ const mapDispatchToProps = (dispatch) => ({
   retrieveResetGame: (userId, roomId) => dispatch(resetGame(userId, roomId)),
   retrieveSetUserData: (payload) => dispatch(setUserData(payload)),
   retrieveLeaveGame: (roomId, userId) => dispatch(leaveGame(roomId, userId)),
+  retrieveKickPlayer: (roomId, playerId) => dispatch(kickPlayer(roomId, playerId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Game));

@@ -254,6 +254,8 @@ public class GameService {
     }
 
     public GameDTO kickPlayer(GameDTO gameDTO, int playerId){
+        //headerda ownerın tokenı checklenmeli
+
         Game game = gameRepository.findOneById(gameDTO.getId());
 
         if(game == null || game.getGameName() == null)  {

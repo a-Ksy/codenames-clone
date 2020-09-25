@@ -13,6 +13,7 @@ import {
   apiGiveClue,
   apiLeaveGame,
   apiHighlightCard,
+  apiKickPlayer,
 } from '../../api/api';
 
 export const showLoading = () => ({
@@ -215,6 +216,19 @@ export const highlightCard = (roomId, playerId, cardId) => (dispatch) => {
     },
     (err) => {
       console.log(`Error when highlighting card:\n${err}`);
+    },
+  );
+};
+
+export const kickPlayer = (roomId, playerId) => (dispatch) => {
+  apiKickPlayer(
+    roomId,
+    playerId,
+    (response) => {
+      dispatch(setRoomData(response.data));
+    },
+    (err) => {
+      console.log(`Error when kicking player:\n${err}`);
     },
   );
 };

@@ -33,6 +33,21 @@
     margin-bottom: 1rem;
   }
 
+  .dropdownRow {
+    width: 90%;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+
+    .fa {
+      font-size: 0.9rem;
+      color: $redTeam;
+    }
+
+    .fa:hover {
+      cursor: pointer;
+    }
+  }
+
   p {
     margin-bottom: 0.25rem;
   }

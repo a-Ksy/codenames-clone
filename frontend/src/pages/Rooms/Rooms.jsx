@@ -5,7 +5,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Route, withRouter, Redirect } from 'react-router-dom';
-import { createRoom, getRoomData, checkRoomSession } from '../../store/actions/data';
+import {
+  createRoom, getRoomData, checkRoomSession, setUserData,
+} from '../../store/actions/data';
 import Button from '../../components/Button/Button';
 import './Rooms.scss';
 
@@ -17,16 +19,26 @@ class Rooms extends React.Component {
     };
   }
 
+  componentDidMount() {
+    const { user, retrieveSetUserData } = this.props;
+    const tempUser = user;
+    if (tempUser.playerType !== 'SPECTATOR' || tempUser.team !== 'SPECTATOR') {
+      tempUser.playerType = 'SPECTATOR';
+      tempUser.team = 'SPECTATOR';
+      retrieveSetUserData(tempUser);
+    }
+  }
+
   handleCreateRoom = async (history) => {
     const { roomName } = this.state;
-    const { retrieveCreateRoom, userId } = this.props;
-    await retrieveCreateRoom(userId, roomName);
+    const { retrieveCreateRoom, user } = this.props;
+    await retrieveCreateRoom(user.id, roomName);
     history.push('/game');
   }
 
   handleJoinRoom = async (roomId, history) => {
-    const { retrieveRoomData, userId } = this.props;
-    await retrieveRoomData(userId, roomId);
+    const { retrieveRoomData, user } = this.props;
+    await retrieveRoomData(user.id, roomId);
     history.push('/game');
   }
 
@@ -92,7 +104,7 @@ class Rooms extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  userId: state.data.user.id,
+  user: state.data.user,
   rooms: state.data.rooms,
   room: state.data.room,
 });
@@ -100,6 +112,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   retrieveCreateRoom: (userId, roomName) => dispatch(createRoom(userId, roomName)),
   retrieveRoomData: (userId, roomId) => dispatch(getRoomData(userId, roomId)),
+  retrieveSetUserData: (payload) => dispatch(setUserData(payload)),
   retrieveCheckRoomSession: (userId, roomId) => dispatch(checkRoomSession(userId, roomId)),
 });
 

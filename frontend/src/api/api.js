@@ -22,6 +22,7 @@ const urls = {
   GIVE_CLUE_URL: 'http://localhost:8080/game/giveClue',
   LEAVE_GAME_URL: 'http://localhost:8080/game/leave',
   HIGHLIGHT_CARD_URL: 'http://localhost:8080/game/highlightCard',
+  KICK_PLAYER_URL: 'http://localhost:8080/game/kick',
 };
 
 const apiCall = (
@@ -142,4 +143,14 @@ export const apiHighlightCard = (roomId, playerId, cardId, callback, onError) =>
     cardId,
   };
   apiCall(urls.HIGHLIGHT_CARD_URL, methods.POST, null, data, callback, onError);
+};
+
+export const apiKickPlayer = (roomId, playerId, callback, onError) => {
+  const data = {
+    gameDTO: {
+      id: roomId,
+    },
+    playerId,
+  };
+  apiCall(urls.KICK_PLAYER_URL, methods.POST, null, data, callback, onError);
 };
