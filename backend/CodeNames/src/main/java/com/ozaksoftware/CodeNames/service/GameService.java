@@ -102,6 +102,20 @@ public class GameService {
         return gameDTO;
     }
 
+    private Game removeHighlightedCardsById(Game game, int playerId) {
+        game.setCards(game.getCards().stream().map(card -> {
+            if(card.getHighlighters().containsKey(playerId)){
+                card.removeHighlighter(playerId);
+            }
+            return card;
+        }).collect(Collectors.toList()));
+        return game;
+    }
+
+    private Game removeAllHighlightedCards(Game game) {
+        game.setCards(game.getCards().stream().map(card -> card.setHighlighters(new HashMap<Integer,String>())).collect(Collectors.toList()));
+        return game;
+    }
 
     /***Controller Methods***/
     public GameDTO createNewGame(GameDTO gameDTO,Integer ownerId) {
@@ -147,6 +161,7 @@ public class GameService {
         game.setPlayers(updatedPlayers);
         game.setCards(cardService.generateCards());
         game.setGameStatus(GameStatus.BLUE_TEAM_SPYMASTER_ROUND);
+        game = removeAllHighlightedCards(game);
         gameRepository.save(game);
 
         return createDTO(game, false);
@@ -178,6 +193,7 @@ public class GameService {
         if(game.getOwner().getId() == playerId){
             game.setOwner(game.getPlayers().get(0));
         }
+        game = removeHighlightedCardsById(game, leftPlayer.getId());
         gameRepository.save(game);
         return listGameDTOs();
     }
@@ -274,6 +290,8 @@ public class GameService {
         List<Player> updatedPlayers = game.getPlayers().stream().filter(player ->
                 player.getId() != playerId).collect(Collectors.toList());
 
+
+        game = removeHighlightedCardsById(game, playerId);
         game.setPlayers(updatedPlayers);
         gameRepository.save(game);
         return createDTO(game,game.getOwner().getPlayerType() == PlayerType.SPYMASTER);
@@ -336,6 +354,7 @@ public class GameService {
             game.setGameStatus(GameStatus.BLUE_TEAM_SPYMASTER_ROUND);
         }
 
+        game = removeAllHighlightedCards(game);
         gameRepository.save(game);
         return createDTO(game,player.getPlayerType() == PlayerType.SPYMASTER);
     }
