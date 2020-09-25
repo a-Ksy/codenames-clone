@@ -20,9 +20,10 @@ class Rooms extends React.Component {
   }
 
   componentDidMount() {
-    const { user, retrieveSetUserData } = this.props;
+    const { room, user, retrieveSetUserData } = this.props;
     const tempUser = user;
-    if (tempUser.playerType !== 'SPECTATOR' || tempUser.team !== 'SPECTATOR') {
+    if (room === null && (tempUser.playerType !== 'SPECTATOR' || tempUser.team !== 'SPECTATOR')) {
+      console.log('burada');
       tempUser.playerType = 'SPECTATOR';
       tempUser.team = 'SPECTATOR';
       retrieveSetUserData(tempUser);
