@@ -8,6 +8,7 @@ import PropTypes, { string } from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import './GameCard.scss';
+import Flippy, { FrontSide, BackSide } from 'react-flippy';
 import { highlightCard, selectCard } from '../../store/actions/data';
 
 const propTypes = {
@@ -24,7 +25,7 @@ const defaultProps = {
 
 function GameCard(props) {
   const {
-    type, title, highlighters, user, room, id,
+    type, title, highlighters, user, room, id, cardStatus, key,
   } = props;
   const { playerType, team } = user;
   const { gameStatus } = room;
@@ -46,30 +47,54 @@ function GameCard(props) {
 
   let button = null;
   let isHighlightable = false;
-  if ((playerType === 'OPERATIVE') && ((gameStatus === 'RED_TEAM_OPERATIVE_ROUND' && team === 'RED') || (gameStatus === 'BLUE_TEAM_OPERATIVE_ROUND' && team === 'BLUE'))) {
+  if ((cardStatus !== 'OPEN') && (playerType === 'OPERATIVE') && ((gameStatus === 'RED_TEAM_OPERATIVE_ROUND' && team === 'RED') || (gameStatus === 'BLUE_TEAM_OPERATIVE_ROUND' && team === 'BLUE'))) {
     button = (
-      <i className="em em-heavy_check_mark" aria-label="HEAVY CHECK MARK" onClick={(event) => handleSelectCard(event)} />
+      <i
+        className="fa fa-hand-pointer"
+        onClick={(event) => handleSelectCard(event)}
+      />
     );
     isHighlightable = true;
   }
 
-  return (
-    <div className="GameCard">
-      <div
-        className={`GameCardPlot ${type} ${Object.keys(highlighters).length !== 0 && 'Highlighted'} ${isHighlightable && 'isHighlightable'} `}
-        onClick={isHighlightable && (() => handleHighlightCard())}
-      >
-        {button}
-        <h1 className="title">{title}</h1>
-        <div className="highlighterNicknameBox">
-          {Object.keys(highlighters).length !== 0
+  let gameCard = (
+    <div
+      className={`GameCardPlot ${type} ${Object.keys(highlighters).length !== 0 && 'Highlighted'} ${isHighlightable && 'isHighlightable'} `}
+      onClick={isHighlightable && (() => handleHighlightCard())}
+    >
+      {button}
+      <h1 className="title">{title}</h1>
+      <div className="highlighterNicknameBox">
+        {Object.keys(highlighters).length !== 0
           && Object.keys(highlighters).map((key) => (
             <p className="highlighterNickname" key={key}>
               {highlighters[key]}
             </p>
           ))}
-        </div>
       </div>
+    </div>
+  );
+
+  if (cardStatus === 'OPEN') {
+    gameCard = (
+      <div className={`GameCardPlot OPEN ${type}`}>
+        <Flippy
+          flipOnClick
+          flipDirection="vertical"
+          style={{ height: '100%', width: '100%' }}
+        >
+          <FrontSide />
+          <BackSide>
+            <h1 className="title">{title}</h1>
+          </BackSide>
+        </Flippy>
+      </div>
+    );
+  }
+
+  return (
+    <div key={key} className="GameCard">
+      { gameCard }
     </div>
   );
 }

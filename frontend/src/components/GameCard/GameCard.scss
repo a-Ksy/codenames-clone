@@ -12,6 +12,48 @@
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none; /* Standard */
 
+  .flippy-front, .flippy-back {
+    padding:0;
+    box-shadow: none;
+  }
+
+  .GameCardPlot.OPEN {
+    .title {
+      color: $paragraph;
+    }
+    background-color: transparent;
+    .flippy-front,.flippy-back {
+      filter: grayscale(25%);
+    }
+  }
+
+  .GameCardPlot.OPEN:hover {
+    cursor: pointer;
+  }
+  
+  .GameCardPlot.OPEN.BLUE {
+
+    .flippy-front, .flippy-back {
+      background-color: $blueTeamDarker;
+      box-shadow: inset 0 0 0 200px rgba(0, 0, 0, 0.02);
+}
+  }
+
+    .GameCardPlot.OPEN.RED {
+    .flippy-front, .flippy-back {
+      background-color: $redTeamDarker;
+      box-shadow: inset 0 0 0 200px rgba(0, 0, 0, 0.02);
+}
+  }
+
+      .GameCardPlot.OPEN.NEUTRAL {
+        .flippy-front, .flippy-back {
+          background-color: $neutralDark;
+          box-shadow: inset 0 0 0 200px rgba(0, 0, 0, 0.02);
+    }
+  }
+
+
   .GameCardPlot {
     position: relative;
     min-height: 50px;
@@ -47,18 +89,19 @@
 
 
 
-    .em {
+    .fa-hand-pointer {
       font-size: 0.8rem;
       position: absolute;
+      background-color: $primary;
+      border-radius: 3px;
       top:0;
       right:0;
-      padding: 0.7rem;
+      padding: 0.8rem;
       margin-right: 5px;
       margin-top: 5px;
-      border: 3px solid black;
     }
 
-    .em:hover {
+    .fa:hover {
       cursor: pointer;
     }
 
@@ -69,14 +112,13 @@
         font-size: 1rem;
       }
 
-        .em {
+        .fa {
           font-size: 0.6rem;
         }
       
     }
 
     @include media("<=collapse") {
-      padding: 0 0.25rem 0.5rem 0.25rem;
       .title {
         transition: 0.3s ease;
         font-size: 0.9rem;
@@ -84,7 +126,6 @@
     }
 
     @include media("<=tablet") {
-      padding: 0 0.25rem 0.5rem 0.25rem;
       .title {
         transition: 0.3s ease;
         font-size: 0.7rem;
@@ -97,7 +138,7 @@
         font-size: 0.6rem;
       }
 
-        .em {
+        .fa {
           font-size: 0.4rem;
         }
       
