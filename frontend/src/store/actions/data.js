@@ -14,6 +14,7 @@ import {
   apiLeaveGame,
   apiHighlightCard,
   apiKickPlayer,
+  apiSelectCard,
 } from '../../api/api';
 
 export const showLoading = () => ({
@@ -216,6 +217,20 @@ export const highlightCard = (roomId, playerId, cardId) => (dispatch) => {
     },
     (err) => {
       console.log(`Error when highlighting card:\n${err}`);
+    },
+  );
+};
+
+export const selectCard = (roomId, playerId, cardId) => (dispatch) => {
+  apiSelectCard(
+    roomId,
+    playerId,
+    cardId,
+    (response) => {
+      dispatch(setRoomData(response.data));
+    },
+    (err) => {
+      console.log(`Error when selecting card:\n${err}`);
     },
   );
 };

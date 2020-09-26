@@ -33,5 +33,5 @@ export function getRoundInfo(playerType, playerTeam, gameStatus) {
     if (gameStatus === 'RED_TEAM_SPYMASTER_ROUND') return 'The opponent spymaster is playing, wait for your turn...';
     if (gameStatus === 'RED_TEAM_OPERATIVE_ROUND') return 'The opponent operatives are playing, wait for your turn...';
   }
-  return 'babababbaa';
+  return gameStatus;
 }

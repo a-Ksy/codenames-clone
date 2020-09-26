@@ -8,7 +8,7 @@ import PropTypes, { string } from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import './GameCard.scss';
-import { highlightCard } from '../../store/actions/data';
+import { highlightCard, selectCard } from '../../store/actions/data';
 
 const propTypes = {
   type: PropTypes.string,
@@ -29,23 +29,29 @@ function GameCard(props) {
   const { playerType, team } = user;
   const { gameStatus } = room;
 
-  let button = null;
-  let isHighlightable = false;
-  if ((playerType === 'OPERATIVE') && ((gameStatus === 'RED_TEAM_OPERATIVE_ROUND' && team === 'RED') || (gameStatus === 'BLUE_TEAM_OPERATIVE_ROUND' && team === 'BLUE'))) {
-    button = (
-      <div className="buttonBox justify-content-end">
-        <i className="em em-heavy_check_mark" aria-label="HEAVY CHECK MARK" />
-      </div>
-    );
-    isHighlightable = true;
-  }
-
   const handleHighlightCard = () => {
     const {
       retrieveHighlightCard,
     } = props;
     retrieveHighlightCard(room.id, user.id, id);
   };
+
+  const handleSelectCard = (event) => {
+    const {
+      retrieveSelectCard,
+    } = props;
+    event.stopPropagation();
+    retrieveSelectCard(room.id, user.id, id);
+  };
+
+  let button = null;
+  let isHighlightable = false;
+  if ((playerType === 'OPERATIVE') && ((gameStatus === 'RED_TEAM_OPERATIVE_ROUND' && team === 'RED') || (gameStatus === 'BLUE_TEAM_OPERATIVE_ROUND' && team === 'BLUE'))) {
+    button = (
+      <i className="em em-heavy_check_mark" aria-label="HEAVY CHECK MARK" onClick={(event) => handleSelectCard(event)} />
+    );
+    isHighlightable = true;
+  }
 
   return (
     <div className="GameCard">
@@ -78,6 +84,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   retrieveHighlightCard: (roomId, playerId, cardId) => dispatch(highlightCard(roomId, playerId, cardId)),
+  retrieveSelectCard: (roomId, playerId, cardId) => dispatch(selectCard(roomId, playerId, cardId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(GameCard));

@@ -49,4 +49,8 @@ public class Card {
         highlighters.remove(id);
     }
 
+    public void removeAllHighlighters() {
+        highlighters.clear();
+    }
+
 }

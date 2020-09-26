@@ -160,5 +160,20 @@ public class GameController {
         return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
                 gameRequest.getPlayerId() + " can not be found.");
     }
-    
+
+    @RequestMapping(value = "/selectCard", method = RequestMethod.POST)
+    public ResponseEntity selectCard(@RequestBody CardRequest cardRequest) {
+        if(cardRequest == null || cardRequest.getGameDTO() == null) {
+            return ResponseEntity.badRequest().body("Request is null or game DTO is null");
+        }
+        Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.selectCard(cardRequest.getGameDTO(), cardRequest.getPlayerId(),
+                cardRequest.getCardId()));
+
+        if(gameDTOOptional.isPresent()){
+            return ResponseEntity.ok().body(gameDTOOptional);
+        }
+
+        return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
+                cardRequest.getPlayerId() + " can not be found.");
+    }
 }

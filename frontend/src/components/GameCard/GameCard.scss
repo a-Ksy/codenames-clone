@@ -12,11 +12,6 @@
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none; /* Standard */
 
-  .GameCardPlot.isHighlightable {
-    cursor:pointer;
-  }
-
-
   .GameCardPlot {
     position: relative;
     min-height: 50px;
@@ -50,30 +45,34 @@
       }
     }
 
-    .buttonBox {
-      display: flex;
-      padding: 1rem;
 
-      .em {
-        font-size: 0.8rem;
-      }
 
-      .em:hover {
-        cursor: pointer;
-      }
+    .em {
+      font-size: 0.8rem;
+      position: absolute;
+      top:0;
+      right:0;
+      padding: 0.7rem;
+      margin-right: 5px;
+      margin-top: 5px;
+      border: 3px solid black;
     }
+
+    .em:hover {
+      cursor: pointer;
+    }
+
 
     @include media("<=desktop") {
       .title {
         transition: 0.3s ease;
         font-size: 1rem;
       }
-      .buttonBox {
-        padding: 0.5rem;
+
         .em {
           font-size: 0.6rem;
         }
-      }
+      
     }
 
     @include media("<=collapse") {
@@ -97,13 +96,11 @@
         transition: 0.3s ease;
         font-size: 0.6rem;
       }
-      .buttonBox {
-        padding: 0.25rem;
 
         .em {
           font-size: 0.4rem;
         }
-      }
+      
 
       .highlighterNicknameBox {
         display: none;
