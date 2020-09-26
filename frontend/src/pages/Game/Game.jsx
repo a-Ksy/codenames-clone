@@ -15,7 +15,7 @@ import GameLog from '../../components/GameLog/GameLog';
 import GiveClue from '../../components/GiveClue/GiveClue';
 import './Game.scss';
 import {
-  leaveGame, resetGame, setUserData, kickPlayer,
+  leaveGame, resetGame, setUserData, kickPlayer, checkRoomSession,
 } from '../../store/actions/data';
 import RoundInfo from '../../components/RoundInfo/RoundInfo';
 import Clue from '../../components/Clue/Clue';
@@ -27,6 +27,16 @@ class Game extends React.Component {
       isResetModalVisible: false,
       isLeaveModalVisible: false,
     };
+  }
+
+  async componentDidMount() {
+    const { user, room, retrieveCheckRoomSession } = this.props;
+    await retrieveCheckRoomSession(user.id, room.id);
+    this.interval = setInterval(() => retrieveCheckRoomSession(user.id, room.id), 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   handleModalVisibility = (isModalVisible) => {
@@ -188,7 +198,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  retrieveRoomData: (userId, roomId) => dispatch(getRoomData(userId, roomId)),
+  retrieveCheckRoomSession: (userId, roomId) => dispatch(checkRoomSession(userId, roomId)),
   retrieveResetGame: (userId, roomId) => dispatch(resetGame(userId, roomId)),
   retrieveSetUserData: (payload) => dispatch(setUserData(payload)),
   retrieveLeaveGame: (roomId, userId) => dispatch(leaveGame(roomId, userId)),
