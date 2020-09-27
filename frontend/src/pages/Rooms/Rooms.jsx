@@ -5,7 +5,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Route, withRouter, Redirect } from 'react-router-dom';
-import { createRoom, getRoomData, checkRoomSession } from '../../store/actions/data';
+import {
+  createRoom, getRoomData, checkRoomSession, setUserData, getRoomsData,
+} from '../../store/actions/data';
 import Button from '../../components/Button/Button';
 import './Rooms.scss';
 
@@ -18,20 +20,33 @@ class Rooms extends React.Component {
   }
 
   componentDidMount() {
-
+    const {
+      room, user, retrieveSetUserData,
+    } = this.props;
+    const tempUser = user;
+    if (room === null && (tempUser.playerType !== 'SPECTATOR' || tempUser.team !== 'SPECTATOR')) {
+      tempUser.playerType = 'SPECTATOR';
+      tempUser.team = 'SPECTATOR';
+      retrieveSetUserData(tempUser);
+    }
   }
 
   handleCreateRoom = async (history) => {
     const { roomName } = this.state;
-    const { retrieveCreateRoom, userId } = this.props;
-    await retrieveCreateRoom(userId, roomName);
+    const { retrieveCreateRoom, user } = this.props;
+    await retrieveCreateRoom(user.id, roomName);
     history.push('/game');
   }
 
   handleJoinRoom = async (roomId, history) => {
-    const { retrieveRoomData, userId } = this.props;
-    await retrieveRoomData(userId, roomId);
+    const { retrieveRoomData, user } = this.props;
+    await retrieveRoomData(user.id, roomId);
     history.push('/game');
+  }
+
+  handleRefreshRooms = () => {
+    const { retrieveRoomsData } = this.props;
+    retrieveRoomsData();
   }
 
   statusPrettier = (status) => {
@@ -47,11 +62,15 @@ class Rooms extends React.Component {
 
   render() {
     const { rooms } = this.props;
+
     return (
       <div className="Rooms">
         <div className="row">
           <div className="roomsColumn col-lg-8">
-            <h1 className="title">Join an existing room</h1>
+            <div className="roomsTitleRow row justify-content-between">
+              <h1 className="title">Join an existing room</h1>
+              <i className="fa fa-refresh" aria-hidden="true" onClick={() => { this.handleRefreshRooms(); }} />
+            </div>
             <table className="table table-borderless" role="grid">
               <thead>
                 <tr>
@@ -96,7 +115,7 @@ class Rooms extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  userId: state.data.user.id,
+  user: state.data.user,
   rooms: state.data.rooms,
   room: state.data.room,
 });
@@ -104,7 +123,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   retrieveCreateRoom: (userId, roomName) => dispatch(createRoom(userId, roomName)),
   retrieveRoomData: (userId, roomId) => dispatch(getRoomData(userId, roomId)),
+  retrieveSetUserData: (payload) => dispatch(setUserData(payload)),
   retrieveCheckRoomSession: (userId, roomId) => dispatch(checkRoomSession(userId, roomId)),
+  retrieveRoomsData: () => dispatch(getRoomsData()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Rooms));

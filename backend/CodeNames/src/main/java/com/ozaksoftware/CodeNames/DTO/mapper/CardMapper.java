@@ -11,7 +11,8 @@ public class CardMapper {
                 .setId(card.getId())
                 .setWord(card.getWord())
                 .setCardColor(card.getCardColor())
-                .setCardStatus(card.getCardStatus());
+                .setCardStatus(card.getCardStatus())
+                .setHighlighters(card.getHighlighters());
     }
     public static List<CardDTO> toCardDTOList(List<Card> cardList) {
         return cardList.stream().map(card -> toCardDTO(card)).collect(Collectors.toList());

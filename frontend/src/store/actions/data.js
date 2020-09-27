@@ -11,6 +11,11 @@ import {
   apiChangePlayerType,
   apiResetGame,
   apiGiveClue,
+  apiLeaveGame,
+  apiHighlightCard,
+  apiKickPlayer,
+  apiSelectCard,
+  apiEndGuess,
 } from '../../api/api';
 
 export const showLoading = () => ({
@@ -28,6 +33,11 @@ export const setUserData = (payload) => ({
 
 export const setRoomsData = (payload) => ({
   type: actionTypes.SET_ROOMS_DATA,
+  payload,
+});
+
+export const setKickedData = (payload) => ({
+  type: actionTypes.SET_KICKED_DATA,
   payload,
 });
 
@@ -84,6 +94,11 @@ export const setRoomData = (payload) => ({
   payload,
 });
 
+export const setLeaveData = (payload) => ({
+  type: actionTypes.LEAVE_GAME,
+  payload,
+});
+
 export const checkRoomSession = (userId, roomId) => (dispatch) => {
   apiCheckRoomSession(
     userId,
@@ -100,11 +115,26 @@ export const getRoomsData = () => (dispatch) => {
   dispatch({ type: actionTypes.SHOW_LOADING });
   apiGetRoomsData(
     (response) => {
+      console.log(response);
       dispatch(setRoomsData(response.data));
       dispatch({ type: actionTypes.HIDE_LOADING });
     },
     (err) => {
       console.log(`Error when retrieving rooms data:\n${err}`);
+      dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+  );
+};
+
+export const getKickedData = () => (dispatch) => {
+  dispatch({ type: actionTypes.SHOW_LOADING });
+  apiGetRoomsData(
+    (response) => {
+      dispatch(setKickedData(response.data));
+      dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+    (err) => {
+      console.log(`Error when getting kicked data:\n${err}`);
       dispatch({ type: actionTypes.HIDE_LOADING });
     },
   );
@@ -139,12 +169,13 @@ export const createRoom = (userId, roomName) => (dispatch) => {
   );
 };
 
-export const changePlayerType = (roomId, playerId, playerType, team) => (dispatch) => {
+export const changePlayerType = (roomId, playerId, playerType, team, client) => (dispatch) => {
   apiChangePlayerType(
     roomId,
     playerId,
     playerType,
     team,
+    client,
     (response) => {
       dispatch(setRoomData(response.data));
     },
@@ -178,6 +209,76 @@ export const giveClue = (roomId, clueWord, clueNumber, playerId) => (dispatch) =
     },
     (err) => {
       console.log(`Error when giving clue:\n${err}`);
+    },
+  );
+};
+
+export const leaveGame = (roomId, playerId) => (dispatch) => {
+  dispatch({ type: actionTypes.SHOW_LOADING });
+  apiLeaveGame(
+    roomId,
+    playerId,
+    (response) => {
+      dispatch(setLeaveData(response.data));
+      dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+    (err) => {
+      console.log(`Error when retrieving rooms data:\n${err}`);
+      dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+  );
+};
+
+export const highlightCard = (roomId, playerId, cardId) => (dispatch) => {
+  apiHighlightCard(
+    roomId,
+    playerId,
+    cardId,
+    (response) => {
+      dispatch(setRoomData(response.data));
+    },
+    (err) => {
+      console.log(`Error when highlighting card:\n${err}`);
+    },
+  );
+};
+
+export const selectCard = (roomId, playerId, cardId) => (dispatch) => {
+  apiSelectCard(
+    roomId,
+    playerId,
+    cardId,
+    (response) => {
+      dispatch(setRoomData(response.data));
+    },
+    (err) => {
+      console.log(`Error when selecting card:\n${err}`);
+    },
+  );
+};
+
+export const kickPlayer = (roomId, playerId) => (dispatch) => {
+  apiKickPlayer(
+    roomId,
+    playerId,
+    (response) => {
+      dispatch(setRoomData(response.data));
+    },
+    (err) => {
+      console.log(`Error when kicking player:\n${err}`);
+    },
+  );
+};
+
+export const endGuess = (roomId, playerId) => (dispatch) => {
+  apiEndGuess(
+    roomId,
+    playerId,
+    (response) => {
+      dispatch(setRoomData(response.data));
+    },
+    (err) => {
+      console.log(`Error when ending guess:\n${err}`);
     },
   );
 };

@@ -1,17 +1,23 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { getRoundInfo } from '../../helpers/helpers';
 import './RoundInfo.scss';
 
-const RoundInfo = (props) => (
-  <div className="RoundInfo">
-    <p className="title">
-      Selam
-    </p>
-  </div>
-);
+function RoundInfo(props) {
+  const { user, room } = props;
+  const { playerType, team } = user;
+  const { gameStatus } = room;
+
+  return (
+    <div className="RoundInfo">
+      <p className="title">
+        {getRoundInfo(playerType, team, gameStatus)}
+      </p>
+    </div>
+  );
+}
 
 const mapStateToProps = (state) => ({
   user: state.data.user,

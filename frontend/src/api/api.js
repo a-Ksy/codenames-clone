@@ -20,6 +20,11 @@ const urls = {
   CHANGE_PLAYER_TYPE_URL: 'http://localhost:8080/game/changePlayerType',
   RESET_GAME_URL: 'http://localhost:8080/game/reset',
   GIVE_CLUE_URL: 'http://localhost:8080/game/giveClue',
+  LEAVE_GAME_URL: 'http://localhost:8080/game/leave',
+  HIGHLIGHT_CARD_URL: 'http://localhost:8080/game/highlightCard',
+  KICK_PLAYER_URL: 'http://localhost:8080/game/kick',
+  SELECT_CARD_URL: 'http://localhost:8080/game/selectCard',
+  END_GUESS_URL: 'http://localhost:8080/game/endGuess',
 };
 
 const apiCall = (
@@ -87,7 +92,7 @@ export const apiCheckRoomSession = (userId, roomId, callback, onError) => {
   apiCall(urls.CHECK_ROOM_SESSION_URL, methods.GET, params, null, callback, onError);
 };
 
-export const apiChangePlayerType = (roomId, playerId, playerType, team, callback, onError) => {
+export const apiChangePlayerType = (roomId, playerId, playerType, team, client, callback, onError) => {
   const data = {
     gameDTO: {
       id: roomId,
@@ -119,4 +124,56 @@ export const apiGiveClue = (roomId, clueWord, clueNumber, playerId, callback, on
     playerId,
   };
   apiCall(urls.GIVE_CLUE_URL, methods.POST, null, data, callback, onError);
+};
+
+export const apiLeaveGame = (roomId, playerId, callback, onError) => {
+  const data = {
+    gameDTO: {
+      id: roomId,
+    },
+    playerId,
+  };
+  apiCall(urls.LEAVE_GAME_URL, methods.POST, null, data, callback, onError);
+};
+
+export const apiHighlightCard = (roomId, playerId, cardId, callback, onError) => {
+  const data = {
+    gameDTO: {
+      id: roomId,
+    },
+    playerId,
+    cardId,
+  };
+  apiCall(urls.HIGHLIGHT_CARD_URL, methods.POST, null, data, callback, onError);
+};
+
+export const apiSelectCard = (roomId, playerId, cardId, callback, onError) => {
+  const data = {
+    gameDTO: {
+      id: roomId,
+    },
+    playerId,
+    cardId,
+  };
+  apiCall(urls.SELECT_CARD_URL, methods.POST, null, data, callback, onError);
+};
+
+export const apiKickPlayer = (roomId, playerId, callback, onError) => {
+  const data = {
+    gameDTO: {
+      id: roomId,
+    },
+    playerId,
+  };
+  apiCall(urls.KICK_PLAYER_URL, methods.POST, null, data, callback, onError);
+};
+
+export const apiEndGuess = (roomId, playerId, callback, onError) => {
+  const data = {
+    gameDTO: {
+      id: roomId,
+    },
+    playerId,
+  };
+  apiCall(urls.END_GUESS_URL, methods.POST, null, data, callback, onError);
 };

@@ -9,7 +9,10 @@
   border-radius: 3px;
   color: $headline;
   padding: 1.5rem;
-
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
   .logs {
     height: 80%;
     overflow-y: auto;
@@ -28,23 +31,28 @@
     color: $paragraph;
   }
 
- .logNickname {
-   font-weight: 600;
- }
- .logNickname.RED,.logWord.RED {
-   color: $redTeam;
- }
- .logNickname.BLUE,.logWord.BLUE {
-   color: $blueTeam;
- }
+  .logNickname {
+    font-weight: 600;
+  }
+  .logNickname.RED,
+  .logWord.RED {
+    color: $redTeam;
+  }
+  .logNickname.BLUE,
+  .logWord.BLUE {
+    color: $blueTeam;
+  }
 
- .logWord {
-   font-weight: 500;
-   color: $headline;
+  .logWord.NEUTRAL {
+    color: $neutral;
+  }
 
- }
+  .logWord {
+    font-weight: 500;
+    color: $headline;
+  }
 
-   @include media("<=desktop") {
+  @include media("<=desktop") {
     .title {
       font-size: 1rem;
     }
@@ -53,12 +61,11 @@
     }
   }
 
-
   @include media("<collapse") {
     height: 70%;
     border-radius: 0;
     padding: 1rem;
-}
+  }
 
   @include media("<=phone") {
     .title {
@@ -68,5 +75,5 @@
     .log {
       font-size: 0.7rem;
     }
-}
+  }
 }

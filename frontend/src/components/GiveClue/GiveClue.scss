@@ -7,7 +7,7 @@
   .form-inline {
     justify-content: center;
     .form-group {
-      width: 70%;
+      width: 50%;
       margin: 0;
       justify-content: space-evenly;
 
@@ -21,10 +21,18 @@
     }
   }
 
+  @include media("<=desktop") {
+    .form-inline {
+      .form-group {
+        width: 80%;
+      }
+    }
+  }
+
   @include media("<=collapse") {
     .form-inline {
       .form-group {
-        width: 100%;
+        width: 80%;
         margin: 0;
         .form-control {
           margin-right: 1rem;

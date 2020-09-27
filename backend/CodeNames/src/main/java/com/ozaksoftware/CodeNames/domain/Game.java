@@ -65,13 +65,13 @@ public class Game {
         logs.add(logMap);
     }
 
-    public void addCardLog(String nickName, Team team, CardColor cardColor){
+    public void addCardLog(String nickName, Team team, Card card){
         HashMap<String,String> logMap = new HashMap<>();
         logMap.put("nickName",nickName);
         logMap.put("playerColor", team.toString());
         logMap.put("text", "taps");
-        logMap.put("cardColor",cardColor.toString());
-        logMap.put("clueWord","");
+        logMap.put("cardColor",card.getCardColor().toString());
+        logMap.put("clueWord",card.getWord());
         logMap.put("clueNumber", "");
         logs.add(logMap);
     }

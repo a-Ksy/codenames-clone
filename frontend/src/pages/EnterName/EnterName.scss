@@ -1,8 +1,7 @@
 @import "../../sass/variables";
-@import  "../../sass/breakpoints";
+@import "../../sass/breakpoints";
 
 .EnterName {
-
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -40,13 +39,9 @@
     input {
       border-radius: 3px;
       border: none;
-      outline:none;
+      outline: none;
       font-size: 1rem;
       margin-bottom: 3rem;
     }
-
   }
-
-
-
 }

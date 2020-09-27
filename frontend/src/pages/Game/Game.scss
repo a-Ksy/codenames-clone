@@ -22,7 +22,7 @@
   overflow: hidden;
 
   @include media("<=collapse") {
-    padding: 1rem 0 0 0;
+    padding: 0.5rem 0 0 0;
   }
 }
 
@@ -33,12 +33,32 @@
     margin-bottom: 1rem;
   }
 
+  .dropdownRow {
+    width: 90%;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+
+    .fa {
+      font-size: 0.9rem;
+      color: $redTeam;
+    }
+
+    .fa:hover {
+      cursor: pointer;
+    }
+  }
+
   p {
     margin-bottom: 0.25rem;
   }
 
   .dropdownMenuNickname {
     font-size: 0.9rem;
+  }
+
+  .dropdownMenuHost {
+    font-size: 0.7rem;
+    color: $primary;
   }
   .dropdownMenuPlayerType {
     font-size: 0.9rem;
@@ -50,6 +70,12 @@
   height: 100%;
   .row {
     height: 100%;
+  }
+
+  .ClueRow {
+    height: fit-content!important;
+    align-items: baseline;
+    justify-content: space-around;
   }
 
   .col-lg-2,
@@ -93,6 +119,8 @@
     }
   }
 
+
+
   @include media("<=collapse") {
     .gameColumn {
       height: 35%;
@@ -132,7 +160,6 @@
     .gameColumn {
       order: 1;
       padding: 0;
-      margin-bottom: 1.5rem;
     }
 
     .gameOverlay {
@@ -140,4 +167,9 @@
     }
   }
 
+  @include media("<=phone") {
+    .gameColumn {
+      margin-bottom: 3rem;
+    }
+  }
 }

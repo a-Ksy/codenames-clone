@@ -7,4 +7,5 @@ export {
   setUserData,
   checkRoomSession,
   changePlayerType,
+  leaveGame,
 } from './data';

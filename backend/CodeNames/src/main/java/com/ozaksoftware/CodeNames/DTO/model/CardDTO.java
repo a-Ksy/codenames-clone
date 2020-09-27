@@ -10,6 +10,9 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.util.HashMap;
+import java.util.List;
+
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -22,4 +25,5 @@ public class CardDTO {
     private String word;
     private CardColor cardColor;
     private CardStatus cardStatus;
+    private HashMap<Integer, String> highlighters;
 }

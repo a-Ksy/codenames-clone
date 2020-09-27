@@ -11,6 +11,9 @@ import org.hibernate.annotations.Check;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -33,4 +36,21 @@ public class Card {
 
     @Enumerated(EnumType.STRING)
     private CardStatus cardStatus;
+
+    @Column(name = "highlighters")
+    @MapKey(name = "highlight")
+    private HashMap<Integer,String> highlighters = new HashMap<>();
+
+    public void addHighlighter(int id, String nickname) {
+        highlighters.put(id, nickname);
+    }
+
+    public void removeHighlighter(int id) {
+        highlighters.remove(id);
+    }
+
+    public void removeAllHighlighters() {
+        highlighters.clear();
+    }
+
 }

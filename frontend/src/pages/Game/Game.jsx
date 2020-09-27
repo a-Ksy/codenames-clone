@@ -5,6 +5,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 // eslint-disable-next-line import/named
+import { Client } from '@stomp/stompjs';
 import { capitalizeFirstLetterOfCapitalized } from '../../helpers/helpers';
 import TeamCard from '../../components/TeamCard/TeamCard';
 import GameCard from '../../components/GameCard/GameCard';
@@ -14,8 +15,11 @@ import Modal from '../../components/Modal/Modal';
 import GameLog from '../../components/GameLog/GameLog';
 import GiveClue from '../../components/GiveClue/GiveClue';
 import './Game.scss';
-import { resetGame, setUserData } from '../../store/actions/data';
+import {
+  leaveGame, resetGame, setUserData, kickPlayer, checkRoomSession, getKickedData, endGuess,
+} from '../../store/actions/data';
 import RoundInfo from '../../components/RoundInfo/RoundInfo';
+import Clue from '../../components/Clue/Clue';
 
 class Game extends React.Component {
   constructor(props) {
@@ -24,6 +28,32 @@ class Game extends React.Component {
       isResetModalVisible: false,
       isLeaveModalVisible: false,
     };
+    this.client = new Client();
+  }
+
+  componentDidMount() {
+    const {
+      room, user, retrieveCheckRoomSession, retrieveSetUserData, retrieveKickedGame,
+    } = this.props;
+    this.client.configure({
+      brokerURL: 'ws://localhost:8080/stomp',
+      onConnect: () => {
+        this.client.subscribe(`/topic/kick/${user.id}`, () => {
+          this.client.unsubscribe(`/topic/updateGame/${room.id}`);
+          const tempUser = user;
+          tempUser.playerType = 'SPECTATOR';
+          tempUser.team = 'SPECTATOR';
+          retrieveSetUserData(tempUser);
+          retrieveKickedGame();
+        });
+        this.client.subscribe(`/topic/updateGame/${room.id}`, () => {
+          console.log('updategame');
+          retrieveCheckRoomSession(user.id, room.id);
+        });
+      },
+    });
+
+    this.client.activate();
   }
 
   handleModalVisibility = (isModalVisible) => {
@@ -57,16 +87,42 @@ class Game extends React.Component {
 
   handleLeaveGame = () => {
     const {
-      room, user,
+      room, user, retrieveLeaveGame, retrieveSetUserData,
     } = this.props;
-    // call dispatch function here
+    retrieveLeaveGame(room.id, user.id);
+    const tempUser = user;
+    tempUser.playerType = 'SPECTATOR';
+    tempUser.team = 'SPECTATOR';
+    retrieveSetUserData(tempUser);
     this.handleModal(false, 'LEAVE');
+  }
+
+  handleKickPlayer = (playerId) => {
+    const { room, retrieveKickPlayer } = this.props;
+    retrieveKickPlayer(room.id, playerId);
+  }
+
+  handleEndGuess = () => {
+    const { room, user, retrieveEndGuess } = this.props;
+    retrieveEndGuess(room.id, user.id);
   }
 
   render() {
     const { room, user } = this.props;
     const { isResetModalVisible, isLeaveModalVisible } = this.state;
     localStorage.setItem('gameId', room.id);
+
+    let hintBox = ((room.gameStatus === 'BLUE_TEAM_OPERATIVE_ROUND' || room.gameStatus === 'RED_TEAM_OPERATIVE_ROUND')
+      && <Clue />);
+
+    if (((room.gameStatus === 'BLUE_TEAM_OPERATIVE_ROUND' && user.playerType === 'OPERATIVE' && user.team === 'BLUE') || (room.gameStatus === 'RED_TEAM_OPERATIVE_ROUND' && user.playerType === 'OPERATIVE' && user.team === 'RED'))) {
+      hintBox = (
+        <div className="ClueRow row">
+          <Clue />
+          <Button title="End guess" onClick={() => { this.handleEndGuess(); }} />
+        </div>
+      );
+    }
 
     return (
       <div className={`Game ${room.gameStatus}`}>
@@ -90,17 +146,26 @@ class Game extends React.Component {
           <Dropdown title="Players">
             <p className="dropdownMenuTitle">Players in this room</p>
             {room.players.map((player) => (
-              <p key={player.id}>
-                <span className="dropdownMenuNickname">
-                  {player.nickName}
-                  {' '}
-                  :
-                </span>
-                {' '}
-                <span className="dropdownMenuPlayerType">
-                  {capitalizeFirstLetterOfCapitalized(player.playerType)}
-                </span>
-              </p>
+              <div key={player.id} className="dropdownRow row justify-content-between">
+                <div>
+                  <p>
+                    <span className="dropdownMenuNickname">
+                      {player.nickName}
+                      :
+                    </span>
+                    {' '}
+                    <span className="dropdownMenuPlayerType">
+                      {capitalizeFirstLetterOfCapitalized(player.playerType)}
+                    </span>
+                    {' '}
+                    <span className="dropdownMenuHost">
+                      {player.id === room.owner.id && '(host)'}
+                    </span>
+                  </p>
+                </div>
+                {(user.id === room.owner.id && player.id !== user.id)
+                  && <i className="fa fa-ban" aria-hidden="true" onClick={() => this.handleKickPlayer(player.id)} />}
+              </div>
             ))}
           </Dropdown>
 
@@ -118,6 +183,7 @@ class Game extends React.Component {
             <div className="redTeamColumn col-lg-2">
               <div className="teamCardRedRow">
                 <TeamCard
+                  client={this.client}
                   type="RED"
                   cardsLeft={room.redCardsLeft}
                   operativeList={room.redTeam.operatives}
@@ -129,15 +195,24 @@ class Game extends React.Component {
               <RoundInfo />
               <div className="gameOverlay">
                 {room.cards.map((card) => (
-                  <GameCard id={card.id} key={card.id} type={card.cardColor} title={card.word} />
+                  <GameCard
+                    id={card.id}
+                    key={card.id}
+                    type={card.cardColor}
+                    title={card.word}
+                    highlighters={card.highlighters}
+                    cardStatus={card.cardStatus}
+                  />
                 ))}
               </div>
               {((room.gameStatus === 'BLUE_TEAM_SPYMASTER_ROUND' && user.playerType === 'SPYMASTER' && user.team === 'BLUE') || (room.gameStatus === 'RED_TEAM_SPYMASTER_ROUND' && user.playerType === 'SPYMASTER' && user.team === 'RED'))
                 && <GiveClue />}
+              {hintBox}
             </div>
             <div className="blueTeamColumn col-lg-2">
               <div className="teamCardBlueRow">
                 <TeamCard
+                  client={this.client}
                   type="BLUE"
                   cardsLeft={room.blueCardsLeft}
                   operativeList={room.blueTeam.operatives}
@@ -161,9 +236,14 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  retrieveRoomData: (userId, roomId) => dispatch(getRoomData(userId, roomId)),
+  retrieveCheckRoomSession: (userId, roomId) => dispatch(checkRoomSession(userId, roomId)),
+  retrieveKickedGame: () => dispatch(getKickedData()),
   retrieveResetGame: (userId, roomId) => dispatch(resetGame(userId, roomId)),
   retrieveSetUserData: (payload) => dispatch(setUserData(payload)),
+  retrieveLeaveGame: (roomId, userId) => dispatch(leaveGame(roomId, userId)),
+  retrieveKickPlayer: (roomId, playerId) => dispatch(kickPlayer(roomId, playerId)),
+  retrieveEndGuess: (roomId, playerId) => dispatch(endGuess(roomId, playerId)),
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Game));

@@ -22,6 +22,10 @@ const dataReducer = (state = initialState, action) => {
       return updateObject(state, { rooms: action.payload });
     case actionTypes.SET_ROOM_DATA:
       return updateObject(state, { isInGame: true, room: action.payload });
+    case actionTypes.LEAVE_GAME:
+      return updateObject(state, { isInGame: false, room: null, rooms: action.payload });
+    case actionTypes.SET_KICKED_DATA:
+      return updateObject(state, { isInGame: false, room: null, rooms: action.payload });
     default:
       return state;
   }

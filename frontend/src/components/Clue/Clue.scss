@@ -1,16 +1,29 @@
 @import "../../sass/variables";
 @import "../../sass/breakpoints";
 
-.RoundInfo {
+.Clue {
   text-align: center;
+  padding: 0.5rem 1rem;
   font-size: 1.4rem;
-  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
   transition: 0.3s ease;
   font-weight: 600;
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none; /* Standard */
+  
+  .clueBox {
+    background-color: $backgroundLight;
+    border-radius: 3px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+
+    .clueText {
+      color: $paragraph;
+    }
+  }
+
   p {
     margin-bottom: 0;
   }
@@ -21,5 +34,11 @@
 
   @include media("<=collapse") {
     font-size: 1rem;
+  }
+
+  @include media("<=phone") {
+    .clueBox {
+      padding: 0.5rem 1rem;
+    }
   }
 }

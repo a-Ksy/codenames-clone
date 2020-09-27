@@ -1,7 +1,6 @@
 @import "../../sass/variables";
 @import "../../sass/breakpoints";
 
-
 .modal {
   display: block;
   z-index: 1040;
@@ -13,80 +12,78 @@
   .modal-content {
     background-color: $backgroundLight;
     border-radius: 3px;
-    outline:none;
-    border:none;
+    outline: none;
+    border: none;
     padding: 2.5rem;
 
     .modal-header {
-      border:none;
-      outline:none;
-      padding:0;
+      border: none;
+      outline: none;
+      padding: 0;
       margin-bottom: 3rem;
-  
+
       .modal-title {
         color: $headline;
         font-weight: 600;
         font-size: 1.2rem;
       }
-  
+
       .close {
         color: $headline;
         text-shadow: none;
         opacity: 1;
       }
-  
+
       .close:hover {
         background-color: transparent;
-        outline:none;
+        outline: none;
         text-shadow: none;
         opacity: 1;
       }
-  
     }
     .modal-body {
-      border:none;
-      outline:none;
-      padding:0;
-  
+      border: none;
+      outline: none;
+      padding: 0;
+
       p {
         margin-bottom: 2rem;
       }
     }
-  
+
     .modal-footer {
-      border:none;
-      outline:none;
-      padding:0;
-  
+      border: none;
+      outline: none;
+      padding: 0;
+
       .btn {
         border-radius: 3px;
-        outline:none;
-        border:none;
+        outline: none;
+        border: none;
         font-weight: 600;
         box-shadow: none;
       }
-  
-      .btn:hover, .btn:active,.btn:focus, .btn:enabled {
-        outline:none!important;
-        box-shadow: none!important;
-        border:none;
+
+      .btn:hover,
+      .btn:active,
+      .btn:focus,
+      .btn:enabled {
+        outline: none !important;
+        box-shadow: none !important;
+        border: none;
       }
-  
+
       .btn-secondary {
         background-color: $secondary;
       }
-  
+
       .btn-primary {
         background: $primary;
       }
-  
+
       .btn-primary:hover {
         background: $primaryDark;
       }
-  
-  
     }
-  
   }
 }
-

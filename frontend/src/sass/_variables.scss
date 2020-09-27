@@ -1,7 +1,7 @@
 $background: #16161a;
 $backgroundLight: #242629;
 $backgroundBlueTeam: #232946;
-$backgroundRedTeam: #462323;
+$backgroundRedTeam: #621f1a;
 $headline: #fffffe;
 $paragraph: #94a1b2;
 $primary: #7f5af0;
@@ -10,12 +10,15 @@ $secondary: #72757e;
 $tertiary: #2cb67d;
 $stroke: #010101;
 
+$hidden: #9e9eb3;
 $redTeam: #e45858;
-$redTeamDark: #e23636;
-$neutral: #8c7851;
-$blueTeam: #5624ec;
-$blueTeamDark: #4611e7;
-
+$redTeamDark: #e43d3d;
+$redTeamDarker: #9c1e1e;
+$neutral: #ff8e3c;
+$neutralDark: #754a2b;
+$blueTeam: #6246ea;
+$blueTeamDark: #5536f0;
+$blueTeamDarker: #362a74;
 :export {
   background: $background;
   backgroundLight: $backgroundLight;
