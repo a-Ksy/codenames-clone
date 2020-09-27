@@ -6,6 +6,19 @@
   display: flex;
   align-items: center;
 
+  .roomsTitleRow {
+    align-items: baseline;
+
+    .fa {
+      color: $paragraph;
+      font-size: 1.1rem;
+    }
+
+    .fa:hover {
+      cursor: pointer;
+    }
+  }
+
   .row {
     width: 100%;
   }

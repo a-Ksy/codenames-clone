@@ -16,7 +16,6 @@
   .clueBox {
     background-color: $backgroundLight;
     border-radius: 3px;
-    width: 30%;
     margin: 0 auto;
     padding: 1rem 1.5rem;
 
@@ -39,7 +38,6 @@
 
   @include media("<=phone") {
     .clueBox {
-      width: 50%;
       padding: 0.5rem 1rem;
     }
   }

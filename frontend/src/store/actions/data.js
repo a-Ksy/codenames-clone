@@ -15,6 +15,7 @@ import {
   apiHighlightCard,
   apiKickPlayer,
   apiSelectCard,
+  apiEndGuess,
 } from '../../api/api';
 
 export const showLoading = () => ({
@@ -32,6 +33,11 @@ export const setUserData = (payload) => ({
 
 export const setRoomsData = (payload) => ({
   type: actionTypes.SET_ROOMS_DATA,
+  payload,
+});
+
+export const setKickedData = (payload) => ({
+  type: actionTypes.SET_KICKED_DATA,
   payload,
 });
 
@@ -109,11 +115,26 @@ export const getRoomsData = () => (dispatch) => {
   dispatch({ type: actionTypes.SHOW_LOADING });
   apiGetRoomsData(
     (response) => {
+      console.log(response);
       dispatch(setRoomsData(response.data));
       dispatch({ type: actionTypes.HIDE_LOADING });
     },
     (err) => {
       console.log(`Error when retrieving rooms data:\n${err}`);
+      dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+  );
+};
+
+export const getKickedData = () => (dispatch) => {
+  dispatch({ type: actionTypes.SHOW_LOADING });
+  apiGetRoomsData(
+    (response) => {
+      dispatch(setKickedData(response.data));
+      dispatch({ type: actionTypes.HIDE_LOADING });
+    },
+    (err) => {
+      console.log(`Error when getting kicked data:\n${err}`);
       dispatch({ type: actionTypes.HIDE_LOADING });
     },
   );
@@ -148,12 +169,13 @@ export const createRoom = (userId, roomName) => (dispatch) => {
   );
 };
 
-export const changePlayerType = (roomId, playerId, playerType, team) => (dispatch) => {
+export const changePlayerType = (roomId, playerId, playerType, team, client) => (dispatch) => {
   apiChangePlayerType(
     roomId,
     playerId,
     playerType,
     team,
+    client,
     (response) => {
       dispatch(setRoomData(response.data));
     },
@@ -244,6 +266,19 @@ export const kickPlayer = (roomId, playerId) => (dispatch) => {
     },
     (err) => {
       console.log(`Error when kicking player:\n${err}`);
+    },
+  );
+};
+
+export const endGuess = (roomId, playerId) => (dispatch) => {
+  apiEndGuess(
+    roomId,
+    playerId,
+    (response) => {
+      dispatch(setRoomData(response.data));
+    },
+    (err) => {
+      console.log(`Error when ending guess:\n${err}`);
     },
   );
 };

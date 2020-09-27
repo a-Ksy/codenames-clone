@@ -7,6 +7,8 @@ import com.ozaksoftware.CodeNames.controller.request.GameRequest;
 import com.ozaksoftware.CodeNames.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +19,13 @@ import java.util.Optional;
 public class GameController {
     @Autowired
     GameService gameService;
+
+    private final SimpMessagingTemplate simpMessagingTemplate;
+
+    public GameController(SimpMessagingTemplate simpMessagingTemplate) {
+        this.simpMessagingTemplate = simpMessagingTemplate;
+    }
+
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity createGame(@RequestBody GameRequest gameRequest) {
@@ -42,6 +51,7 @@ public class GameController {
         public ResponseEntity getGame(@RequestParam int gameId, @RequestParam int playerId) {
         Optional<GameDTO> gameOptional = Optional.ofNullable(gameService.getGame(gameId, playerId));
         if(gameOptional.isPresent()){
+            this.simpMessagingTemplate.convertAndSend("/topic/updateGame/" + gameOptional.get().getId(), "UPDATE");
             return ResponseEntity.ok().body(gameOptional);
         }
         return ResponseEntity.badRequest().body("Game with id: " + gameId + "can not be found.");
@@ -64,6 +74,7 @@ public class GameController {
         Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.changePlayerType(gamePlayerTypeRequest.getGameDTO(),
                 gamePlayerTypeRequest.getPlayerId(), gamePlayerTypeRequest.getPlayerType(), gamePlayerTypeRequest.getTeam()));
         if(gameDTOOptional.isPresent()){
+            this.simpMessagingTemplate.convertAndSend("/topic/updateGame/" + gameDTOOptional.get().getId(), "UPDATE");
             return ResponseEntity.ok().body(gameDTOOptional);
         }
         return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
@@ -78,6 +89,7 @@ public class GameController {
 
         Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.resetGame(gameRequest.getGameDTO(), gameRequest.getPlayerId()));
         if(gameDTOOptional.isPresent()){
+            this.simpMessagingTemplate.convertAndSend("/topic/updateGame/" + gameDTOOptional.get().getId(), "UPDATE");
             return ResponseEntity.ok().body(gameDTOOptional);
         }
         return ResponseEntity.badRequest().body("Room id is empty or player with player id:" +
@@ -92,6 +104,7 @@ public class GameController {
         Optional<List<GameDTO>> gameDTOListOptional = Optional.ofNullable(gameService.leaveGame(gameRequest.getGameDTO(), gameRequest.getPlayerId()));
 
         if(gameDTOListOptional.isPresent()){
+            this.simpMessagingTemplate.convertAndSend("/topic/updateGame/" + gameRequest.getGameDTO().getId(), "UPDATE");
             return ResponseEntity.ok().body(gameDTOListOptional);
         }
 
@@ -107,6 +120,7 @@ public class GameController {
         Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.giveClue(gameRequest.getGameDTO(), gameRequest.getPlayerId()));
 
         if(gameDTOOptional.isPresent()){
+            this.simpMessagingTemplate.convertAndSend("/topic/updateGame/" + gameDTOOptional.get().getId(), "UPDATE");
             return ResponseEntity.ok().body(gameDTOOptional);
         }
 
@@ -122,6 +136,8 @@ public class GameController {
         Optional<GameDTO> gameDTOOptional = Optional.ofNullable(gameService.kickPlayer(gameRequest.getGameDTO(), gameRequest.getPlayerId()));
 
         if(gameDTOOptional.isPresent()){
+            this.simpMessagingTemplate.convertAndSend("/topic/kick/" + gameRequest.getPlayerId(), "KICK");
+            this.simpMessagingTemplate.convertAndSend("/topic/updateGame/" + gameDTOOptional.get().getId(), "UPDATE");
             return ResponseEntity.ok().body(gameDTOOptional);
         }
 
@@ -138,6 +154,7 @@ public class GameController {
                 cardRequest.getCardId()));
 
         if(gameDTOOptional.isPresent()){
+            this.simpMessagingTemplate.convertAndSend("/topic/updateGame/" + gameDTOOptional.get().getId(), "UPDATE");
             return ResponseEntity.ok().body(gameDTOOptional);
         }
 
@@ -154,6 +171,7 @@ public class GameController {
                 gameRequest.getPlayerId()));
 
         if(gameDTOOptional.isPresent()){
+            this.simpMessagingTemplate.convertAndSend("/topic/updateGame/" + gameDTOOptional.get().getId(), "UPDATE");
             return ResponseEntity.ok().body(gameDTOOptional);
         }
 
@@ -170,6 +188,7 @@ public class GameController {
                 cardRequest.getCardId()));
 
         if(gameDTOOptional.isPresent()){
+            this.simpMessagingTemplate.convertAndSend("/topic/updateGame/" + gameDTOOptional.get().getId(), "UPDATE");
             return ResponseEntity.ok().body(gameDTOOptional);
         }
 

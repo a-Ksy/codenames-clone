@@ -27,8 +27,10 @@ function TeamCard(props) {
   } = props;
 
   const handleChangePlayerType = (roomId, playerId, playerType, team) => {
-    const { retrieveChangePlayerType, retrieveSetUserData, user } = props;
-    retrieveChangePlayerType(roomId, playerId, playerType, team);
+    const {
+      retrieveChangePlayerType, retrieveSetUserData, user, client,
+    } = props;
+    retrieveChangePlayerType(roomId, playerId, playerType, team, client);
     const tempUser = user;
     tempUser.playerType = playerType;
     tempUser.team = team;
@@ -81,7 +83,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  retrieveChangePlayerType: (roomId, playerId, playerType, team) => dispatch(changePlayerType(roomId, playerId, playerType, team)),
+  retrieveChangePlayerType: (roomId, playerId, playerType, team, client) => dispatch(changePlayerType(roomId, playerId, playerType, team, client)),
   retrieveSetUserData: (payload) => dispatch(setUserData(payload)),
 });
 

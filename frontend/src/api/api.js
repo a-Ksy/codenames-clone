@@ -24,6 +24,7 @@ const urls = {
   HIGHLIGHT_CARD_URL: 'http://localhost:8080/game/highlightCard',
   KICK_PLAYER_URL: 'http://localhost:8080/game/kick',
   SELECT_CARD_URL: 'http://localhost:8080/game/selectCard',
+  END_GUESS_URL: 'http://localhost:8080/game/endGuess',
 };
 
 const apiCall = (
@@ -91,7 +92,7 @@ export const apiCheckRoomSession = (userId, roomId, callback, onError) => {
   apiCall(urls.CHECK_ROOM_SESSION_URL, methods.GET, params, null, callback, onError);
 };
 
-export const apiChangePlayerType = (roomId, playerId, playerType, team, callback, onError) => {
+export const apiChangePlayerType = (roomId, playerId, playerType, team, client, callback, onError) => {
   const data = {
     gameDTO: {
       id: roomId,
@@ -165,4 +166,14 @@ export const apiKickPlayer = (roomId, playerId, callback, onError) => {
     playerId,
   };
   apiCall(urls.KICK_PLAYER_URL, methods.POST, null, data, callback, onError);
+};
+
+export const apiEndGuess = (roomId, playerId, callback, onError) => {
+  const data = {
+    gameDTO: {
+      id: roomId,
+    },
+    playerId,
+  };
+  apiCall(urls.END_GUESS_URL, methods.POST, null, data, callback, onError);
 };

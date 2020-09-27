@@ -6,7 +6,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Route, withRouter, Redirect } from 'react-router-dom';
 import {
-  createRoom, getRoomData, checkRoomSession, setUserData,
+  createRoom, getRoomData, checkRoomSession, setUserData, getRoomsData,
 } from '../../store/actions/data';
 import Button from '../../components/Button/Button';
 import './Rooms.scss';
@@ -20,10 +20,11 @@ class Rooms extends React.Component {
   }
 
   componentDidMount() {
-    const { room, user, retrieveSetUserData } = this.props;
+    const {
+      room, user, retrieveSetUserData,
+    } = this.props;
     const tempUser = user;
     if (room === null && (tempUser.playerType !== 'SPECTATOR' || tempUser.team !== 'SPECTATOR')) {
-      console.log('burada');
       tempUser.playerType = 'SPECTATOR';
       tempUser.team = 'SPECTATOR';
       retrieveSetUserData(tempUser);
@@ -43,6 +44,11 @@ class Rooms extends React.Component {
     history.push('/game');
   }
 
+  handleRefreshRooms = () => {
+    const { retrieveRoomsData } = this.props;
+    retrieveRoomsData();
+  }
+
   statusPrettier = (status) => {
     switch (status) {
       case 'WAITS_FOR_PLAYER':
@@ -56,11 +62,15 @@ class Rooms extends React.Component {
 
   render() {
     const { rooms } = this.props;
+
     return (
       <div className="Rooms">
         <div className="row">
           <div className="roomsColumn col-lg-8">
-            <h1 className="title">Join an existing room</h1>
+            <div className="roomsTitleRow row justify-content-between">
+              <h1 className="title">Join an existing room</h1>
+              <i className="fa fa-refresh" aria-hidden="true" onClick={() => { this.handleRefreshRooms(); }} />
+            </div>
             <table className="table table-borderless" role="grid">
               <thead>
                 <tr>
@@ -115,6 +125,7 @@ const mapDispatchToProps = (dispatch) => ({
   retrieveRoomData: (userId, roomId) => dispatch(getRoomData(userId, roomId)),
   retrieveSetUserData: (payload) => dispatch(setUserData(payload)),
   retrieveCheckRoomSession: (userId, roomId) => dispatch(checkRoomSession(userId, roomId)),
+  retrieveRoomsData: () => dispatch(getRoomsData()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Rooms));

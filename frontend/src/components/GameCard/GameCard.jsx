@@ -60,7 +60,7 @@ function GameCard(props) {
   let gameCard = (
     <div
       className={`GameCardPlot ${type} ${Object.keys(highlighters).length !== 0 && 'Highlighted'} ${isHighlightable && 'isHighlightable'} `}
-      onClick={isHighlightable && (() => handleHighlightCard())}
+      onClick={isHighlightable ? (() => handleHighlightCard()) : () => {}}
     >
       {button}
       <h1 className="title">{title}</h1>

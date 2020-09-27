@@ -23,17 +23,6 @@ public class CodeNamesApplication {
 		SpringApplication.run(CodeNamesApplication.class, args);
 	}
 
-	/*
-	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/").allowedOrigins("*").allowCredentials(true);
-			}
-		};
-	}
-	 */
 	@Bean
 	public CorsFilter corsFilter() {
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
