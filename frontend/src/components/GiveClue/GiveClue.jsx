@@ -18,8 +18,10 @@ class GiveClue extends React.Component {
 
   handleGiveClue = () => {
     const { clueWord, clueNumber } = this.state;
-    const { user, room, retrieveGiveClue } = this.props;
-    retrieveGiveClue(room.id, clueWord, clueNumber, user.id);
+    const {
+      user, room, retrieveGiveClue, token,
+    } = this.props;
+    retrieveGiveClue(room.id, clueWord, clueNumber, user.id, token);
   }
 
   render() {
@@ -55,10 +57,11 @@ class GiveClue extends React.Component {
 const mapStateToProps = (state) => ({
   user: state.data.user,
   room: state.data.room,
+  token: state.data.token,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  retrieveGiveClue: (roomId, clueWord, clueNumber, playerId) => dispatch(giveClue(roomId, clueWord, clueNumber, playerId)),
+  retrieveGiveClue: (roomId, clueWord, clueNumber, playerId, token) => dispatch(giveClue(roomId, clueWord, clueNumber, playerId, token)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(GiveClue));

@@ -57,42 +57,52 @@ export const apiCreateUser = (nickname, callback, onError) => {
   apiCall(urls.CREATE_USER_URL, methods.POST, null, data, callback, onError);
 };
 
-export const apiGetRoomsData = (callback, onError) => {
-  apiCall(urls.ROOMS_DATA_URL, methods.GET, null, null, callback, onError);
+export const apiGetRoomsData = (token, callback, onError) => {
+  apiCall(urls.ROOMS_DATA_URL, methods.GET, null, null, callback, onError, {
+    Authorization: token,
+  });
 };
 
-export const apiCreateRoom = (userId, roomName, callback, onError) => {
+export const apiCreateRoom = (userId, roomName, token, callback, onError) => {
   const data = {
     gameDTO: {
       gameName: roomName,
     },
     playerId: userId,
   };
-  apiCall(urls.CREATE_ROOM_URL, methods.POST, null, data, callback, onError);
+  apiCall(urls.CREATE_ROOM_URL, methods.POST, null, data, callback, onError, {
+    Authorization: token,
+  });
 };
 
-export const apiGetRoomData = (userId, roomId, callback, onError) => {
+export const apiGetRoomData = (userId, roomId, token, callback, onError) => {
   const params = new URLSearchParams();
   params.append('gameId', roomId);
   params.append('playerId', userId);
-  apiCall(urls.ROOM_DATA_URL, methods.GET, params, null, callback, onError);
+  apiCall(urls.ROOM_DATA_URL, methods.GET, params, null, callback, onError, {
+    Authorization: token,
+  });
 };
 
-export const apiCheckSession = (userId, nickname, callback, onError) => {
+export const apiCheckSession = (userId, nickname, token, callback, onError) => {
   const params = new URLSearchParams();
   params.append('userId', userId);
   params.append('nickName', nickname);
-  apiCall(urls.CHECK_SESSION_URL, methods.GET, params, null, callback, onError);
+  apiCall(urls.CHECK_SESSION_URL, methods.GET, params, null, callback, onError, {
+    Authorization: token,
+  });
 };
 
-export const apiCheckRoomSession = (userId, roomId, callback, onError) => {
+export const apiCheckRoomSession = (userId, roomId, token, callback, onError) => {
   const params = new URLSearchParams();
   params.append('userId', userId);
   params.append('gameId', roomId);
-  apiCall(urls.CHECK_ROOM_SESSION_URL, methods.GET, params, null, callback, onError);
+  apiCall(urls.CHECK_ROOM_SESSION_URL, methods.GET, params, null, callback, onError, {
+    Authorization: token,
+  });
 };
 
-export const apiChangePlayerType = (roomId, playerId, playerType, team, client, callback, onError) => {
+export const apiChangePlayerType = (roomId, playerId, playerType, team, token, callback, onError) => {
   const data = {
     gameDTO: {
       id: roomId,
@@ -101,20 +111,24 @@ export const apiChangePlayerType = (roomId, playerId, playerType, team, client, 
     playerType,
     team,
   };
-  apiCall(urls.CHANGE_PLAYER_TYPE_URL, methods.POST, null, data, callback, onError);
+  apiCall(urls.CHANGE_PLAYER_TYPE_URL, methods.POST, null, data, callback, onError, {
+    Authorization: token,
+  });
 };
 
-export const apiResetGame = (roomId, playerId, callback, onError) => {
+export const apiResetGame = (roomId, playerId, token, callback, onError) => {
   const data = {
     gameDTO: {
       id: roomId,
     },
     playerId,
   };
-  apiCall(urls.RESET_GAME_URL, methods.POST, null, data, callback, onError);
+  apiCall(urls.RESET_GAME_URL, methods.POST, null, data, callback, onError, {
+    Authorization: token,
+  });
 };
 
-export const apiGiveClue = (roomId, clueWord, clueNumber, playerId, callback, onError) => {
+export const apiGiveClue = (roomId, clueWord, clueNumber, playerId, token, callback, onError) => {
   const data = {
     gameDTO: {
       id: roomId,
@@ -123,31 +137,24 @@ export const apiGiveClue = (roomId, clueWord, clueNumber, playerId, callback, on
     },
     playerId,
   };
-  apiCall(urls.GIVE_CLUE_URL, methods.POST, null, data, callback, onError);
+  apiCall(urls.GIVE_CLUE_URL, methods.POST, null, data, callback, onError, {
+    Authorization: token,
+  });
 };
 
-export const apiLeaveGame = (roomId, playerId, callback, onError) => {
+export const apiLeaveGame = (roomId, playerId, token, callback, onError) => {
   const data = {
     gameDTO: {
       id: roomId,
     },
     playerId,
   };
-  apiCall(urls.LEAVE_GAME_URL, methods.POST, null, data, callback, onError);
+  apiCall(urls.LEAVE_GAME_URL, methods.POST, null, data, callback, onError, {
+    Authorization: token,
+  });
 };
 
-export const apiHighlightCard = (roomId, playerId, cardId, callback, onError) => {
-  const data = {
-    gameDTO: {
-      id: roomId,
-    },
-    playerId,
-    cardId,
-  };
-  apiCall(urls.HIGHLIGHT_CARD_URL, methods.POST, null, data, callback, onError);
-};
-
-export const apiSelectCard = (roomId, playerId, cardId, callback, onError) => {
+export const apiHighlightCard = (roomId, playerId, cardId, token, callback, onError) => {
   const data = {
     gameDTO: {
       id: roomId,
@@ -155,25 +162,44 @@ export const apiSelectCard = (roomId, playerId, cardId, callback, onError) => {
     playerId,
     cardId,
   };
-  apiCall(urls.SELECT_CARD_URL, methods.POST, null, data, callback, onError);
+  apiCall(urls.HIGHLIGHT_CARD_URL, methods.POST, null, data, callback, onError, {
+    Authorization: token,
+  });
 };
 
-export const apiKickPlayer = (roomId, playerId, callback, onError) => {
+export const apiSelectCard = (roomId, playerId, cardId, token, callback, onError) => {
+  const data = {
+    gameDTO: {
+      id: roomId,
+    },
+    playerId,
+    cardId,
+  };
+  apiCall(urls.SELECT_CARD_URL, methods.POST, null, data, callback, onError, {
+    Authorization: token,
+  });
+};
+
+export const apiKickPlayer = (roomId, playerId, token, callback, onError) => {
   const data = {
     gameDTO: {
       id: roomId,
     },
     playerId,
   };
-  apiCall(urls.KICK_PLAYER_URL, methods.POST, null, data, callback, onError);
+  apiCall(urls.KICK_PLAYER_URL, methods.POST, null, data, callback, onError, {
+    Authorization: token,
+  });
 };
 
-export const apiEndGuess = (roomId, playerId, callback, onError) => {
+export const apiEndGuess = (roomId, playerId, token, callback, onError) => {
   const data = {
     gameDTO: {
       id: roomId,
     },
     playerId,
   };
-  apiCall(urls.END_GUESS_URL, methods.POST, null, data, callback, onError);
+  apiCall(urls.END_GUESS_URL, methods.POST, null, data, callback, onError, {
+    Authorization: token,
+  });
 };

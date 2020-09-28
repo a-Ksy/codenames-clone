@@ -3,6 +3,7 @@ package com.ozaksoftware.CodeNames.service;
 import com.ozaksoftware.CodeNames.DTO.mapper.GameMapper;
 import com.ozaksoftware.CodeNames.DTO.model.CardDTO;
 import com.ozaksoftware.CodeNames.DTO.model.GameDTO;
+import com.ozaksoftware.CodeNames.DTO.model.PlayerDTO;
 import com.ozaksoftware.CodeNames.domain.Card;
 import com.ozaksoftware.CodeNames.domain.Game;
 import com.ozaksoftware.CodeNames.domain.Player;
@@ -44,15 +45,15 @@ public class GameService {
     }
 
     private GameDTO setDTOTeams(GameDTO gameDTO) {
-        Map<String, List<Player>> redTeam = new HashMap<>();
-        Map<String, List<Player>> blueTeam = new HashMap<>();
-        List<Player> playerList = gameDTO.getPlayers();
-        List<Player> redTeamOperativeList = new ArrayList<>();
-        List<Player> blueTeamOperativeList = new ArrayList<>();
-        List<Player> redTeamSpymasterList = new ArrayList<>();
-        List<Player> blueTeamSpymasterList = new ArrayList<>();
+        Map<String, List<PlayerDTO>> redTeam = new HashMap<>();
+        Map<String, List<PlayerDTO>> blueTeam = new HashMap<>();
+        List<PlayerDTO> playerList = gameDTO.getPlayers();
+        List<PlayerDTO> redTeamOperativeList = new ArrayList<>();
+        List<PlayerDTO> blueTeamOperativeList = new ArrayList<>();
+        List<PlayerDTO> redTeamSpymasterList = new ArrayList<>();
+        List<PlayerDTO> blueTeamSpymasterList = new ArrayList<>();
 
-        for(Player player : playerList) {
+        for(PlayerDTO player : playerList) {
             if(player.getTeam() == Team.RED) {
                 if(player.getPlayerType() == PlayerType.OPERATIVE) {
                     redTeamOperativeList.add(player);

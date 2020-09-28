@@ -1,3 +1,4 @@
+/* eslint-disable valid-typeof */
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 import React from 'react';
@@ -15,22 +16,18 @@ import GamePage from './pages/Game/Game';
 import './App.scss';
 
 class App extends React.Component {
-  componentDidMount() {
+  async componentDidMount() {
     const {
-      retrieveCheckSession, retrieveCheckGameSession, isLoggedIn, isInGame,
+      retrieveCheckSession, retrieveCheckGameSession, isInGame,
     } = this.props;
     const userId = localStorage.getItem('userId');
     const nickName = localStorage.getItem('nickName');
     const gameId = localStorage.getItem('gameId');
-    if (userId !== null && nickName !== null) {
-      retrieveCheckSession(userId, nickName);
-      if (!isLoggedIn) {
-        localStorage.removeItem('userId');
-        localStorage.removeItem('nickName');
-        localStorage.removeItem('gameId');
-      }
+    const token = localStorage.getItem('token');
+    if (userId !== null || nickName !== null || token !== null) {
+      await retrieveCheckSession(userId, nickName, token);
       if (gameId !== null) {
-        retrieveCheckGameSession(userId, gameId);
+        retrieveCheckGameSession(userId, gameId, token);
         if (!isInGame) localStorage.removeItem('gameId');
       }
     }
@@ -38,7 +35,7 @@ class App extends React.Component {
 
   render() {
     const {
-      isLoggedIn, room, user, isInGame,
+      isLoggedIn, room, user, isInGame, token,
     } = this.props;
 
     let routes = (
@@ -70,6 +67,10 @@ class App extends React.Component {
     if (isLoggedIn) {
       localStorage.setItem('userId', user.id);
       localStorage.setItem('nickName', user.nickName);
+      if (token !== undefined) {
+        console.log(`token undefined degil ve değeri ${token}`);
+        localStorage.setItem('token', token);
+      }
       routes = (
         <Container type="game">
           <Switch>
@@ -115,12 +116,13 @@ const mapStateToProps = (state) => ({
   isLoggedIn: state.data.loggedIn,
   room: state.data.room,
   user: state.data.user,
+  token: state.data.token,
   isInGame: state.data.isInGame,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  retrieveCheckSession: (userId, nickName) => dispatch(actions.checkSession(userId, nickName)),
-  retrieveCheckGameSession: (userId, gameId) => dispatch(actions.checkRoomSession(userId, gameId)),
+  retrieveCheckSession: (userId, nickName, token) => dispatch(actions.checkSession(userId, nickName, token)),
+  retrieveCheckGameSession: (userId, gameId, token) => dispatch(actions.checkRoomSession(userId, gameId, token)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

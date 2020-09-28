@@ -26,6 +26,8 @@ const dataReducer = (state = initialState, action) => {
       return updateObject(state, { isInGame: false, room: null, rooms: action.payload });
     case actionTypes.SET_KICKED_DATA:
       return updateObject(state, { isInGame: false, room: null, rooms: action.payload });
+    case actionTypes.SET_TOKEN:
+      return updateObject(state, { token: action.payload });
     default:
       return state;
   }

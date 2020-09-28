@@ -33,7 +33,7 @@ class Game extends React.Component {
 
   componentDidMount() {
     const {
-      room, user, retrieveCheckRoomSession, retrieveSetUserData, retrieveKickedGame,
+      room, user, retrieveCheckRoomSession, retrieveSetUserData, retrieveKickedGame, token,
     } = this.props;
     this.client.configure({
       brokerURL: 'ws://localhost:8080/stomp',
@@ -44,11 +44,10 @@ class Game extends React.Component {
           tempUser.playerType = 'SPECTATOR';
           tempUser.team = 'SPECTATOR';
           retrieveSetUserData(tempUser);
-          retrieveKickedGame();
+          retrieveKickedGame(token);
         });
         this.client.subscribe(`/topic/updateGame/${room.id}`, () => {
-          console.log('updategame');
-          retrieveCheckRoomSession(user.id, room.id);
+          retrieveCheckRoomSession(user.id, room.id, token);
         });
       },
     });
@@ -75,9 +74,9 @@ class Game extends React.Component {
 
   handleResetGame = () => {
     const {
-      room, user, retrieveResetGame, retrieveSetUserData,
+      room, user, retrieveResetGame, retrieveSetUserData, token,
     } = this.props;
-    retrieveResetGame(room.id, user.id);
+    retrieveResetGame(room.id, user.id, token);
     const tempUser = user;
     tempUser.playerType = 'SPECTATOR';
     tempUser.team = 'SPECTATOR';
@@ -87,9 +86,9 @@ class Game extends React.Component {
 
   handleLeaveGame = () => {
     const {
-      room, user, retrieveLeaveGame, retrieveSetUserData,
+      room, user, retrieveLeaveGame, retrieveSetUserData, token,
     } = this.props;
-    retrieveLeaveGame(room.id, user.id);
+    retrieveLeaveGame(room.id, user.id, token);
     const tempUser = user;
     tempUser.playerType = 'SPECTATOR';
     tempUser.team = 'SPECTATOR';
@@ -98,13 +97,15 @@ class Game extends React.Component {
   }
 
   handleKickPlayer = (playerId) => {
-    const { room, retrieveKickPlayer } = this.props;
-    retrieveKickPlayer(room.id, playerId);
+    const { room, retrieveKickPlayer, token } = this.props;
+    retrieveKickPlayer(room.id, playerId, token);
   }
 
   handleEndGuess = () => {
-    const { room, user, retrieveEndGuess } = this.props;
-    retrieveEndGuess(room.id, user.id);
+    const {
+      room, user, retrieveEndGuess, token,
+    } = this.props;
+    retrieveEndGuess(room.id, user.id, token);
   }
 
   render() {
@@ -233,16 +234,17 @@ class Game extends React.Component {
 const mapStateToProps = (state) => ({
   user: state.data.user,
   room: state.data.room,
+  token: state.data.token,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  retrieveCheckRoomSession: (userId, roomId) => dispatch(checkRoomSession(userId, roomId)),
-  retrieveKickedGame: () => dispatch(getKickedData()),
-  retrieveResetGame: (userId, roomId) => dispatch(resetGame(userId, roomId)),
+  retrieveCheckRoomSession: (userId, roomId, token) => dispatch(checkRoomSession(userId, roomId, token)),
+  retrieveKickedGame: (token) => dispatch(getKickedData(token)),
+  retrieveResetGame: (userId, roomId, token) => dispatch(resetGame(userId, roomId, token)),
   retrieveSetUserData: (payload) => dispatch(setUserData(payload)),
-  retrieveLeaveGame: (roomId, userId) => dispatch(leaveGame(roomId, userId)),
-  retrieveKickPlayer: (roomId, playerId) => dispatch(kickPlayer(roomId, playerId)),
-  retrieveEndGuess: (roomId, playerId) => dispatch(endGuess(roomId, playerId)),
+  retrieveLeaveGame: (roomId, userId, token) => dispatch(leaveGame(roomId, userId, token)),
+  retrieveKickPlayer: (roomId, playerId, token) => dispatch(kickPlayer(roomId, playerId, token)),
+  retrieveEndGuess: (roomId, playerId, token) => dispatch(endGuess(roomId, playerId, token)),
 
 });
 

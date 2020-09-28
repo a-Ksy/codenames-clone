@@ -21,7 +21,7 @@ class Rooms extends React.Component {
 
   componentDidMount() {
     const {
-      room, user, retrieveSetUserData,
+      room, user, retrieveSetUserData, token,
     } = this.props;
     const tempUser = user;
     if (room === null && (tempUser.playerType !== 'SPECTATOR' || tempUser.team !== 'SPECTATOR')) {
@@ -33,20 +33,20 @@ class Rooms extends React.Component {
 
   handleCreateRoom = async (history) => {
     const { roomName } = this.state;
-    const { retrieveCreateRoom, user } = this.props;
-    await retrieveCreateRoom(user.id, roomName);
+    const { retrieveCreateRoom, user, token } = this.props;
+    await retrieveCreateRoom(user.id, roomName, token);
     history.push('/game');
   }
 
   handleJoinRoom = async (roomId, history) => {
-    const { retrieveRoomData, user } = this.props;
-    await retrieveRoomData(user.id, roomId);
+    const { retrieveRoomData, user, token } = this.props;
+    await retrieveRoomData(user.id, roomId, token);
     history.push('/game');
   }
 
   handleRefreshRooms = () => {
-    const { retrieveRoomsData } = this.props;
-    retrieveRoomsData();
+    const { retrieveRoomsData, token } = this.props;
+    retrieveRoomsData(token);
   }
 
   statusPrettier = (status) => {
@@ -118,14 +118,15 @@ const mapStateToProps = (state) => ({
   user: state.data.user,
   rooms: state.data.rooms,
   room: state.data.room,
+  token: state.data.token,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  retrieveCreateRoom: (userId, roomName) => dispatch(createRoom(userId, roomName)),
-  retrieveRoomData: (userId, roomId) => dispatch(getRoomData(userId, roomId)),
+  retrieveCreateRoom: (userId, roomName, token) => dispatch(createRoom(userId, roomName, token)),
+  retrieveRoomData: (userId, roomId, token) => dispatch(getRoomData(userId, roomId, token)),
   retrieveSetUserData: (payload) => dispatch(setUserData(payload)),
-  retrieveCheckRoomSession: (userId, roomId) => dispatch(checkRoomSession(userId, roomId)),
-  retrieveRoomsData: () => dispatch(getRoomsData()),
+  retrieveCheckRoomSession: (userId, roomId, token) => dispatch(checkRoomSession(userId, roomId, token)),
+  retrieveRoomsData: (token) => dispatch(getRoomsData(token)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Rooms));

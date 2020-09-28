@@ -27,12 +27,12 @@ public class GameDTO {
     private GameStatus gameStatus;
     private String clueWord;
     private int clueNumber;
-    private List<Player> players;
-    private Map<String,List<Player>> redTeam;
-    private Map<String,List<Player>> blueTeam;
+    private List<PlayerDTO> players;
+    private Map<String,List<PlayerDTO>> redTeam;
+    private Map<String,List<PlayerDTO>> blueTeam;
     private List<CardDTO> cards;
     private int redCardsLeft;
     private int blueCardsLeft;
     private List<HashMap<String,String>> logs;
-    private Player owner;
+    private PlayerDTO owner;
 }

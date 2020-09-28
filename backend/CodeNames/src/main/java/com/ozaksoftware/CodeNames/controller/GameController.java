@@ -26,7 +26,6 @@ public class GameController {
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
-
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity createGame(@RequestBody GameRequest gameRequest) {
         if(gameRequest == null || gameRequest.getGameDTO() == null) {
