@@ -3,14 +3,12 @@ package com.ozaksoftware.CodeNames.controller;
 import com.ozaksoftware.CodeNames.DTO.mapper.PlayerMapper;
 import com.ozaksoftware.CodeNames.DTO.model.PlayerDTO;
 import com.ozaksoftware.CodeNames.domain.Player;
-import com.ozaksoftware.CodeNames.service.GameService;
 import com.ozaksoftware.CodeNames.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -18,8 +16,6 @@ import java.util.Optional;
 public class PlayerController {
     @Autowired
     PlayerService playerService;
-    @Autowired
-    GameService gameService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity createPlayer(@RequestBody PlayerDTO newPlayerDTO) {
@@ -43,8 +39,7 @@ public class PlayerController {
 
     @RequestMapping(value = "/players", method = RequestMethod.GET)
     public ResponseEntity getAllPlayers() {
-        List<PlayerDTO> playerDTOs = playerService.listPlayerDTOs();
-        return ResponseEntity.ok().body(playerDTOs);
+        return ResponseEntity.ok().body(playerService.listPlayerDTOs());
     }
 }
 

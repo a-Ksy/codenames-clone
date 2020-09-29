@@ -32,154 +32,6 @@ public class GameService {
         this.playerRepository = playerRepository;
     }
 
-    /***Helper Methods***/
-    private GameDTO setDTOCardsHidden(GameDTO gameDTO) {
-        List<CardDTO> cardList = gameDTO.getCards();
-        cardList.stream().forEach(cardDTO -> {
-            if(cardDTO.getCardStatus() == CardStatus.CLOSED) {
-                cardDTO.setCardColor(CardColor.HIDDEN);
-            }
-        });
-        gameDTO.setCards(cardList);
-        return gameDTO;
-    }
-
-    private GameDTO setDTOTeams(GameDTO gameDTO) {
-        Map<String, List<PlayerDTO>> redTeam = new HashMap<>();
-        Map<String, List<PlayerDTO>> blueTeam = new HashMap<>();
-        List<PlayerDTO> playerList = gameDTO.getPlayers();
-        List<PlayerDTO> redTeamOperativeList = new ArrayList<>();
-        List<PlayerDTO> blueTeamOperativeList = new ArrayList<>();
-        List<PlayerDTO> redTeamSpymasterList = new ArrayList<>();
-        List<PlayerDTO> blueTeamSpymasterList = new ArrayList<>();
-
-        for(PlayerDTO player : playerList) {
-            if(player.getTeam() == Team.RED) {
-                if(player.getPlayerType() == PlayerType.OPERATIVE) {
-                    redTeamOperativeList.add(player);
-                } else if (player.getPlayerType() == PlayerType.SPYMASTER) {
-                    redTeamSpymasterList.add(player);
-                }
-            } else if(player.getTeam() == Team.BLUE){
-                if(player.getPlayerType() == PlayerType.OPERATIVE) {
-                    blueTeamOperativeList.add(player);
-                } else if (player.getPlayerType() == PlayerType.SPYMASTER) {
-                    blueTeamSpymasterList.add(player);
-                }
-            }
-        }
-        redTeam.put("operatives", redTeamOperativeList);
-        redTeam.put("spymasters", redTeamSpymasterList);
-        blueTeam.put("operatives", blueTeamOperativeList);
-        blueTeam.put("spymasters", blueTeamSpymasterList);
-
-        gameDTO.setRedTeam(redTeam);
-        gameDTO.setBlueTeam(blueTeam);
-
-        return gameDTO;
-    }
-
-    private GameDTO setDTOCardsRemaining(GameDTO gameDTO) {
-        /*it should be called before hiding the cards*/
-        List<CardDTO> cardList = gameDTO.getCards();
-        for(CardDTO cardDTO : cardList) {
-            if(CardStatus.CLOSED.equals(cardDTO.getCardStatus())) {
-                if(cardDTO.getCardColor() == CardColor.RED) {
-                    gameDTO.setRedCardsLeft(gameDTO.getRedCardsLeft() + 1);
-                } else if(cardDTO.getCardColor() == CardColor.BLUE) {
-                    gameDTO.setBlueCardsLeft(gameDTO.getBlueCardsLeft() + 1);
-                }
-            }
-        }
-        return gameDTO;
-    }
-
-    private GameDTO createDTO(Game game, boolean isSpymaster) {
-        GameDTO gameDTO = GameMapper.toGameDTO(game);
-
-        gameDTO = setDTOTeams(gameDTO);
-
-        gameDTO = setDTOCardsRemaining(gameDTO);
-
-        if(!isSpymaster) gameDTO = setDTOCardsHidden(gameDTO);
-
-        return gameDTO;
-    }
-
-    private Game removeHighlightedCardsById(Game game, int playerId) {
-        game.setCards(game.getCards().stream().map(card -> {
-            if(card.getHighlighters().containsKey(playerId)){
-                card.removeHighlighter(playerId);
-            }
-            return card;
-        }).collect(Collectors.toList()));
-        return game;
-    }
-
-    private Game removeAllHighlightedCards(Game game) {
-        game.setCards(game.getCards().stream().map(card -> card.setHighlighters(new HashMap<Integer,String>())).collect(Collectors.toList()));
-        return game;
-    }
-
-    private boolean isTurnValid(Player player, Game game) {
-        if (GameStatus.BLUE_TEAM_OPERATIVE_ROUND.equals(game.getGameStatus())) {
-            if(Team.BLUE.equals(player.getTeam()) && PlayerType.OPERATIVE.equals(player.getPlayerType())) {
-                return true;
-            }
-        }
-        if (GameStatus.RED_TEAM_OPERATIVE_ROUND.equals(game.getGameStatus())) {
-            if(Team.RED.equals(player.getTeam()) && PlayerType.OPERATIVE.equals(player.getPlayerType())) {
-                return true;
-            }
-        }
-        if (GameStatus.BLUE_TEAM_SPYMASTER_ROUND.equals(game.getGameStatus())) {
-            if(Team.BLUE.equals(player.getTeam()) && PlayerType.SPYMASTER.equals(player.getPlayerType())) {
-                return true;
-            }
-        }
-        if (GameStatus.RED_TEAM_SPYMASTER_ROUND.equals(game.getGameStatus())) {
-            if(Team.RED.equals(player.getTeam()) && PlayerType.SPYMASTER.equals(player.getPlayerType())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private GameDTO changeGameStatus(Game game, Player player, Card card) {
-        if(Team.BLUE.equals(player.getTeam()) && (CardColor.RED.equals(card.getCardColor()) || CardColor.NEUTRAL.equals(card.getCardColor()))) {
-            game.setGameStatus(GameStatus.RED_TEAM_SPYMASTER_ROUND);
-            game = removeAllHighlightedCards(game);
-        }
-        if(Team.RED.equals(player.getTeam()) && (CardColor.BLUE.equals(card.getCardColor()) || CardColor.NEUTRAL.equals(card.getCardColor()))) {
-            game.setGameStatus(GameStatus.BLUE_TEAM_SPYMASTER_ROUND);
-            game = removeAllHighlightedCards(game);
-
-        }
-        if(CardColor.BLACK.equals(card.getCardColor())) {
-            if (Team.RED.equals(player.getTeam())) {
-                game.setGameStatus(GameStatus.BLUE_TEAM_WON);
-            } else {
-                game.setGameStatus(GameStatus.RED_TEAM_WON);
-            }
-            game = removeAllHighlightedCards(game);
-        }
-        GameDTO tempGameDTO = createDTO(game, false);
-        if(tempGameDTO.getBlueCardsLeft() == 0) {
-            game.setGameStatus(GameStatus.BLUE_TEAM_WON);
-        } else if(tempGameDTO.getRedCardsLeft() == 0) {
-            game.setGameStatus(GameStatus.RED_TEAM_WON);
-        }
-        gameRepository.save(game);
-        return createDTO(game, false);
-    }
-
-    private boolean isValidPlayer(Player player, String token) {
-        if(!player.getToken().equals(token)) {
-            return false;
-        }
-        return true;
-    }
-
     /***Controller Methods***/
     public GameDTO createNewGame(GameDTO gameDTO,Integer ownerId, String token) {
         if(gameDTO == null || gameDTO.getGameName() == null || gameDTO.getGameName() == "") {
@@ -197,16 +49,15 @@ public class GameService {
         if(!isValidPlayer(owner,token)) {
             return null;
         }
+
         newGame.setOwner(owner);
-        List<HashMap<String,String>> logs = new ArrayList<>();
         List<Player> players = new ArrayList<>();
-        List<Player> blackListPlayers = new ArrayList<>();
         players.add(owner);
-        newGame.setLogs(logs);
+        newGame.setLogs(new ArrayList<>());
         newGame.setPlayers(players);
         newGame.setCards(cardService.generateCards());
         newGame.setClueWord("");
-        newGame.setBlackListPlayers(blackListPlayers);
+        newGame.setBlackListPlayers(new ArrayList<>());
 
         gameRepository.save(newGame);
         return createDTO(newGame, false);
@@ -354,8 +205,8 @@ public class GameService {
         if(PlayerType.SPYMASTER.equals(playerType)) {
             GameDTO tempGameDTO = GameMapper.toGameDTO(game);
             tempGameDTO = setDTOTeams(tempGameDTO);
-            if(Team.RED.equals(team) && tempGameDTO.getRedTeam().size() >= 1 ) return null;
-            if(Team.BLUE.equals(team) && tempGameDTO.getBlueTeam().size() >= 1) return null;
+            if(Team.RED.equals(team) && tempGameDTO.getRedTeam().get("spymasters").size() >= 1 ) return null;
+            if(Team.BLUE.equals(team) && tempGameDTO.getBlueTeam().get("spymasters").size() >= 1) return null;
         }
         player.setPlayerType(playerType);
         player.setTeam(team);
@@ -480,7 +331,9 @@ public class GameService {
         if(!game.getPlayers().stream().anyMatch(pl -> Objects.equals(pl.getId(), playerId))){
             return null;
         }
+
         if(!isTurnValid(player,game)) return null;
+
         if(!isValidPlayer(player,token)) {
             return null;
         }
@@ -504,4 +357,149 @@ public class GameService {
         return changeGameStatus(game,player,selectedCard);
     }
 
+
+    /***Helper Methods***/
+    private GameDTO setDTOCardsHidden(GameDTO gameDTO) {
+        List<CardDTO> cardList = gameDTO.getCards();
+        cardList.stream().forEach(cardDTO -> {
+            if(cardDTO.getCardStatus() == CardStatus.CLOSED) {
+                cardDTO.setCardColor(CardColor.HIDDEN);
+            }
+        });
+        gameDTO.setCards(cardList);
+        return gameDTO;
+    }
+
+    private GameDTO setDTOTeams(GameDTO gameDTO) {
+        Map<String, List<PlayerDTO>> redTeam = new HashMap<>();
+        Map<String, List<PlayerDTO>> blueTeam = new HashMap<>();
+        List<PlayerDTO> playerList = gameDTO.getPlayers();
+        List<PlayerDTO> redTeamOperativeList = new ArrayList<>();
+        List<PlayerDTO> blueTeamOperativeList = new ArrayList<>();
+        List<PlayerDTO> redTeamSpymasterList = new ArrayList<>();
+        List<PlayerDTO> blueTeamSpymasterList = new ArrayList<>();
+
+        for(PlayerDTO player : playerList) {
+            if(player.getTeam() == Team.RED) {
+                if(player.getPlayerType() == PlayerType.OPERATIVE) {
+                    redTeamOperativeList.add(player);
+                } else if (player.getPlayerType() == PlayerType.SPYMASTER) {
+                    redTeamSpymasterList.add(player);
+                }
+            } else if(player.getTeam() == Team.BLUE){
+                if(player.getPlayerType() == PlayerType.OPERATIVE) {
+                    blueTeamOperativeList.add(player);
+                } else if (player.getPlayerType() == PlayerType.SPYMASTER) {
+                    blueTeamSpymasterList.add(player);
+                }
+            }
+        }
+        redTeam.put("operatives", redTeamOperativeList);
+        redTeam.put("spymasters", redTeamSpymasterList);
+        blueTeam.put("operatives", blueTeamOperativeList);
+        blueTeam.put("spymasters", blueTeamSpymasterList);
+
+        gameDTO.setRedTeam(redTeam);
+        gameDTO.setBlueTeam(blueTeam);
+
+        return gameDTO;
+    }
+
+    private GameDTO setDTOCardsRemaining(GameDTO gameDTO) {
+        /*it should be called before hiding the cards*/
+        List<CardDTO> cardList = gameDTO.getCards();
+        for(CardDTO cardDTO : cardList) {
+            if(CardStatus.CLOSED.equals(cardDTO.getCardStatus())) {
+                if(cardDTO.getCardColor() == CardColor.RED) {
+                    gameDTO.setRedCardsLeft(gameDTO.getRedCardsLeft() + 1);
+                } else if(cardDTO.getCardColor() == CardColor.BLUE) {
+                    gameDTO.setBlueCardsLeft(gameDTO.getBlueCardsLeft() + 1);
+                }
+            }
+        }
+        return gameDTO;
+    }
+
+    private GameDTO createDTO(Game game, boolean isSpymaster) {
+        GameDTO gameDTO = GameMapper.toGameDTO(game);
+
+        gameDTO = setDTOTeams(gameDTO);
+
+        gameDTO = setDTOCardsRemaining(gameDTO);
+
+        if(!isSpymaster) gameDTO = setDTOCardsHidden(gameDTO);
+
+        return gameDTO;
+    }
+
+    private Game removeHighlightedCardsById(Game game, int playerId) {
+        game.setCards(game.getCards().stream().map(card -> {
+            if(card.getHighlighters().containsKey(playerId)){
+                card.removeHighlighter(playerId);
+            }
+            return card;
+        }).collect(Collectors.toList()));
+        return game;
+    }
+
+    private Game removeAllHighlightedCards(Game game) {
+        game.setCards(game.getCards().stream().map(card -> card.setHighlighters(new HashMap<Integer,String>())).collect(Collectors.toList()));
+        return game;
+    }
+
+    private boolean isTurnValid(Player player, Game game) {
+        if (GameStatus.BLUE_TEAM_OPERATIVE_ROUND.equals(game.getGameStatus())) {
+            if(Team.BLUE.equals(player.getTeam()) && PlayerType.OPERATIVE.equals(player.getPlayerType())) {
+                return true;
+            }
+        }
+        if (GameStatus.RED_TEAM_OPERATIVE_ROUND.equals(game.getGameStatus())) {
+            if(Team.RED.equals(player.getTeam()) && PlayerType.OPERATIVE.equals(player.getPlayerType())) {
+                return true;
+            }
+        }
+        if (GameStatus.BLUE_TEAM_SPYMASTER_ROUND.equals(game.getGameStatus())) {
+            if(Team.BLUE.equals(player.getTeam()) && PlayerType.SPYMASTER.equals(player.getPlayerType())) {
+                return true;
+            }
+        }
+        if (GameStatus.RED_TEAM_SPYMASTER_ROUND.equals(game.getGameStatus())) {
+            if(Team.RED.equals(player.getTeam()) && PlayerType.SPYMASTER.equals(player.getPlayerType())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private GameDTO changeGameStatus(Game game, Player player, Card card) {
+        if(Team.BLUE.equals(player.getTeam()) && (CardColor.RED.equals(card.getCardColor()) || CardColor.NEUTRAL.equals(card.getCardColor()))) {
+            game.setGameStatus(GameStatus.RED_TEAM_SPYMASTER_ROUND);
+            game = removeAllHighlightedCards(game);
+        }
+        if(Team.RED.equals(player.getTeam()) && (CardColor.BLUE.equals(card.getCardColor()) || CardColor.NEUTRAL.equals(card.getCardColor()))) {
+            game.setGameStatus(GameStatus.BLUE_TEAM_SPYMASTER_ROUND);
+            game = removeAllHighlightedCards(game);
+
+        }
+        if(CardColor.BLACK.equals(card.getCardColor())) {
+            if (Team.RED.equals(player.getTeam())) {
+                game.setGameStatus(GameStatus.BLUE_TEAM_WON);
+            } else {
+                game.setGameStatus(GameStatus.RED_TEAM_WON);
+            }
+            game = removeAllHighlightedCards(game);
+        }
+        GameDTO tempGameDTO = createDTO(game, false);
+        if(tempGameDTO.getBlueCardsLeft() == 0) {
+            game.setGameStatus(GameStatus.BLUE_TEAM_WON);
+        } else if(tempGameDTO.getRedCardsLeft() == 0) {
+            game.setGameStatus(GameStatus.RED_TEAM_WON);
+        }
+        gameRepository.save(game);
+        return createDTO(game, false);
+    }
+
+    private boolean isValidPlayer(Player player, String token) {
+        return player.getToken().equals(token);
+    }
 }
