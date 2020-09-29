@@ -68,7 +68,6 @@ class App extends React.Component {
       localStorage.setItem('userId', user.id);
       localStorage.setItem('nickName', user.nickName);
       if (token !== undefined) {
-        console.log(`token undefined degil ve değeri ${token}`);
         localStorage.setItem('token', token);
       }
       routes = (

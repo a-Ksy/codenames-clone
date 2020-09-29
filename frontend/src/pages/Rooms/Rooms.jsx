@@ -6,9 +6,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Route, withRouter, Redirect } from 'react-router-dom';
 import {
-  createRoom, getRoomData, checkRoomSession, setUserData, getRoomsData,
+  createRoom, getRoomData, checkRoomSession, setUserData, getRoomsData, setToken,
 } from '../../store/actions/data';
 import Button from '../../components/Button/Button';
+import Modal from '../../components/Modal/Modal';
 import './Rooms.scss';
 
 class Rooms extends React.Component {
@@ -16,14 +17,18 @@ class Rooms extends React.Component {
     super(props);
     this.state = {
       roomName: '',
+      isKickedModalVisible: false,
     };
   }
 
   componentDidMount() {
     const {
-      room, user, retrieveSetUserData, token,
+      room, user, retrieveSetUserData, token, retrieveSetToken,
     } = this.props;
     const tempUser = user;
+    if (localStorage.getItem('token') !== null) {
+      retrieveSetToken(localStorage.getItem('token'));
+    }
     if (room === null && (tempUser.playerType !== 'SPECTATOR' || tempUser.team !== 'SPECTATOR')) {
       tempUser.playerType = 'SPECTATOR';
       tempUser.team = 'SPECTATOR';
@@ -35,13 +40,34 @@ class Rooms extends React.Component {
     const { roomName } = this.state;
     const { retrieveCreateRoom, user, token } = this.props;
     await retrieveCreateRoom(user.id, roomName, token);
-    history.push('/game');
+    const { room } = this.props;
+    if (room !== null && room !== undefined) {
+      history.push('/game');
+    }
   }
 
   handleJoinRoom = async (roomId, history) => {
-    const { retrieveRoomData, user, token } = this.props;
+    const {
+      retrieveRoomData, user, token, status,
+    } = this.props;
     await retrieveRoomData(user.id, roomId, token);
-    history.push('/game');
+    const { room } = this.props;
+    if (room !== null && room !== undefined && status !== 'KICKED_FROM_GAME') {
+      history.push('/game');
+    } else {
+      this.handleModal(true);
+    }
+  }
+
+  handleModalVisibility = (isModalVisible) => {
+    const { isKickedModalVisible } = this.state;
+    if (isKickedModalVisible) {
+      this.setState({ isKickedModalVisible: isModalVisible });
+    }
+  }
+
+  handleModal = (boolean) => {
+    this.setState({ isKickedModalVisible: boolean });
   }
 
   handleRefreshRooms = () => {
@@ -62,9 +88,18 @@ class Rooms extends React.Component {
 
   render() {
     const { rooms } = this.props;
+    const { isKickedModalVisible } = this.state;
 
     return (
       <div className="Rooms">
+        <Modal
+          title="You are not allowed to join"
+          paragraph="You were kicked from the game."
+          buttonTitle="Okay"
+          onClick={() => this.handleModal(false)}
+          show={isKickedModalVisible}
+          handleModalVisibility={this.handleModalVisibility}
+        />
         <div className="row">
           <div className="roomsColumn col-lg-8">
             <div className="roomsTitleRow row justify-content-between">
@@ -119,11 +154,13 @@ const mapStateToProps = (state) => ({
   rooms: state.data.rooms,
   room: state.data.room,
   token: state.data.token,
+  status: state.data.status,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   retrieveCreateRoom: (userId, roomName, token) => dispatch(createRoom(userId, roomName, token)),
   retrieveRoomData: (userId, roomId, token) => dispatch(getRoomData(userId, roomId, token)),
+  retrieveSetToken: (token) => dispatch(setToken(token)),
   retrieveSetUserData: (payload) => dispatch(setUserData(payload)),
   retrieveCheckRoomSession: (userId, roomId, token) => dispatch(checkRoomSession(userId, roomId, token)),
   retrieveRoomsData: (token) => dispatch(getRoomsData(token)),

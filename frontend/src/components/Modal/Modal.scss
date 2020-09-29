@@ -6,34 +6,36 @@
   z-index: 1040;
   .modal-backdrop {
     background-color: $backgroundLight;
-    opacity: 0.5;
+    opacity: 0.6;
     z-index: -4;
   }
   .modal-content {
     background-color: $backgroundLight;
     border-radius: 3px;
     outline: none;
-    border: none;
+    border: none; 
+    box-shadow:  10px 10px 20px $background, 
+             -10px -10px 20px $backgroundLight;    
     padding: 2.5rem;
-
+    
     .modal-header {
       border: none;
       outline: none;
       padding: 0;
       margin-bottom: 3rem;
-
+      
       .modal-title {
         color: $headline;
         font-weight: 600;
         font-size: 1.2rem;
       }
-
+      
       .close {
         color: $headline;
         text-shadow: none;
         opacity: 1;
       }
-
+      
       .close:hover {
         background-color: transparent;
         outline: none;

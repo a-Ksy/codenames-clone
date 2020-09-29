@@ -173,8 +173,15 @@ public class GameService {
         return createDTO(game, false);
     }
 
+    private boolean isValidPlayer(Player player, String token) {
+        if(!player.getToken().equals(token)) {
+            return false;
+        }
+        return true;
+    }
+
     /***Controller Methods***/
-    public GameDTO createNewGame(GameDTO gameDTO,Integer ownerId) {
+    public GameDTO createNewGame(GameDTO gameDTO,Integer ownerId, String token) {
         if(gameDTO == null || gameDTO.getGameName() == null || gameDTO.getGameName() == "") {
             return null;
         }
@@ -187,23 +194,32 @@ public class GameService {
         //Initializing owner
         Player owner = playerRepository.findOneById(ownerId);
         if(owner==null) return null;
+        if(!isValidPlayer(owner,token)) {
+            return null;
+        }
         newGame.setOwner(owner);
         List<HashMap<String,String>> logs = new ArrayList<>();
         List<Player> players = new ArrayList<>();
+        List<Player> blackListPlayers = new ArrayList<>();
         players.add(owner);
         newGame.setLogs(logs);
         newGame.setPlayers(players);
         newGame.setCards(cardService.generateCards());
         newGame.setClueWord("");
+        newGame.setBlackListPlayers(blackListPlayers);
 
         gameRepository.save(newGame);
         return createDTO(newGame, false);
     }
 
-    public GameDTO resetGame(GameDTO gameDTO,Integer ownerId) {
+    public GameDTO resetGame(GameDTO gameDTO,Integer ownerId, String token) {
         Game game = gameRepository.findOneById(gameDTO.getId());
-        if(game == null || game.getGameName() == null || game.getOwner() == null ||
+        Player owner = playerRepository.findOneById(ownerId);
+        if(game == null || owner == null || game.getGameName() == null || game.getOwner() == null ||
                 game.getOwner().getId() != ownerId)  {
+            return null;
+        }
+        if(!isValidPlayer(owner, token)) {
             return null;
         }
         List<Player> updatedPlayers = new ArrayList<>();
@@ -224,7 +240,7 @@ public class GameService {
         return createDTO(game, false);
     }
 
-    public  List<GameDTO> leaveGame(GameDTO gameDTO, int playerId){
+    public  List<GameDTO> leaveGame(GameDTO gameDTO, int playerId, String token){
         Game game = gameRepository.findOneById(gameDTO.getId());
 
         if(game == null || game.getGameName() == null)  {
@@ -235,6 +251,9 @@ public class GameService {
             return null;
         }
         Player leftPlayer = playerRepository.findOneById(playerId);
+        if(!isValidPlayer(leftPlayer, token)) {
+            return null;
+        }
         leftPlayer.setPlayerType(PlayerType.SPECTATOR);
         leftPlayer.setTeam(Team.SPECTATOR);
         playerRepository.save(leftPlayer);
@@ -255,12 +274,17 @@ public class GameService {
         return listGameDTOs();
     }
 
-    public GameDTO getGame(int gameId, int playerId) {
+    public GameDTO getGame(int gameId, int playerId, String token) {
         Game game = gameRepository.findOneById(gameId);
         Player player = playerRepository.findOneById(playerId);
         if(game == null || player  == null) return null;
 
-        //Adding player to the game if the player is not in the game.
+        if(!isValidPlayer(player, token)) {
+            return null;
+        }
+
+        if(game.getBlackListPlayers().contains(player)) return new GameDTO();
+
         if(!game.getPlayers().stream().anyMatch(pl -> Objects.equals(pl.getId(), playerId))) {
             List<Player> playerList = game.getPlayers();
             playerList.add(player);
@@ -270,10 +294,12 @@ public class GameService {
         return createDTO(game,player.getPlayerType() == PlayerType.SPYMASTER);
     }
 
-    public GameDTO giveClue(GameDTO gameDTO, int playerId) {
+    public GameDTO giveClue(GameDTO gameDTO, int playerId, String token) {
         Game game = gameRepository.findOneById(gameDTO.getId());
         Player player = playerRepository.findOneById(playerId);
-
+        if(!isValidPlayer(player, token)) {
+            return null;
+        }
         if(game == null || player  == null || player.getPlayerType() != PlayerType.SPYMASTER) return null;
 
         if(!game.getPlayers().stream().anyMatch(pl -> Objects.equals(pl.getId(), playerId))) {
@@ -303,31 +329,41 @@ public class GameService {
         return gameDTOS;
     }
 
-    public GameDTO checkGame(int playerId, int gameId) {
+    public GameDTO checkGame(int playerId, int gameId, String token) {
         Game game = gameRepository.findOneById(gameId);
         if(game == null) return null;
         if(game.getPlayers().stream().anyMatch(pl -> Objects.equals(pl.getId(), playerId))) {
             Player player = playerRepository.findOneById(playerId);
+            if(!isValidPlayer(player, token)) {
+                return null;
+            }
             return createDTO(game,player.getPlayerType() == PlayerType.SPYMASTER);
         }
         return null;
     }
 
-    public GameDTO changePlayerType(GameDTO gameDTO, Integer playerId, PlayerType playerType, Team team) {
+    public GameDTO changePlayerType(GameDTO gameDTO, Integer playerId, PlayerType playerType, Team team, String token) {
         Game game = gameRepository.findOneById(gameDTO.getId());
         if(game == null) return null;
         if(!game.getPlayers().stream().anyMatch(pl -> Objects.equals(pl.getId(), playerId))) return null;
         Player player = playerRepository.findOneById(playerId);
         if(player == null) return null;
+        if(!isValidPlayer(player,token)) {
+            return null;
+        }
+        if(PlayerType.SPYMASTER.equals(playerType)) {
+            GameDTO tempGameDTO = GameMapper.toGameDTO(game);
+            tempGameDTO = setDTOTeams(tempGameDTO);
+            if(Team.RED.equals(team) && tempGameDTO.getRedTeam().size() >= 1 ) return null;
+            if(Team.BLUE.equals(team) && tempGameDTO.getBlueTeam().size() >= 1) return null;
+        }
         player.setPlayerType(playerType);
         player.setTeam(team);
         playerRepository.save(player);
-        game = gameRepository.findOneById(gameDTO.getId());
         return createDTO(game,player.getPlayerType() == PlayerType.SPYMASTER);
     }
 
-    public GameDTO kickPlayer(GameDTO gameDTO, int playerId){
-        //headerda ownerın tokenı checklenmeli
+    public GameDTO kickPlayer(GameDTO gameDTO, int playerId, String token){
 
         Game game = gameRepository.findOneById(gameDTO.getId());
 
@@ -338,8 +374,13 @@ public class GameService {
         if(!game.getPlayers().stream().anyMatch(pl -> Objects.equals(pl.getId(), playerId))){
             return null;
         }
-
+        if(!isValidPlayer(game.getOwner(),token)) {
+            return null;
+        }
         Player leftPlayer = playerRepository.findOneById(playerId);
+        List<Player> updatedBlackListPlayers = game.getBlackListPlayers();
+        updatedBlackListPlayers.add(leftPlayer);
+        game.setBlackListPlayers(updatedBlackListPlayers);
         leftPlayer.setPlayerType(PlayerType.SPECTATOR);
         leftPlayer.setTeam(Team.SPECTATOR);
         playerRepository.save(leftPlayer);
@@ -354,7 +395,7 @@ public class GameService {
         return createDTO(game,game.getOwner().getPlayerType() == PlayerType.SPYMASTER);
     }
 
-    public GameDTO highlightCard(GameDTO gameDTO, int playerId, int cardId){
+    public GameDTO highlightCard(GameDTO gameDTO, int playerId, int cardId, String token){
         Game game = gameRepository.findOneById(gameDTO.getId());
         Player player = playerRepository.findOneById(playerId);
 
@@ -363,6 +404,9 @@ public class GameService {
         }
 
         if(!game.getPlayers().stream().anyMatch(pl -> Objects.equals(pl.getId(), playerId))){
+            return null;
+        }
+        if(!isValidPlayer(player,token)) {
             return null;
         }
         if(!isTurnValid(player,game)) return null;
@@ -392,7 +436,7 @@ public class GameService {
         return createDTO(game,player.getPlayerType() == PlayerType.SPYMASTER);
     }
 
-    public GameDTO endGuess(GameDTO gameDTO, int playerId) {
+    public GameDTO endGuess(GameDTO gameDTO, int playerId, String token) {
         Game game = gameRepository.findOneById(gameDTO.getId());
 
         if(game == null || game.getGameName() == null)  {
@@ -408,6 +452,10 @@ public class GameService {
         if(player == null && !isTurnValid(player,game)) {
             return null;
         }
+
+        if(!isValidPlayer(player, token)) {
+            return null;
+        }
         
         if(Team.BLUE.equals(player.getTeam())) {
             game.setGameStatus(GameStatus.RED_TEAM_SPYMASTER_ROUND);
@@ -421,7 +469,7 @@ public class GameService {
         return createDTO(game,player.getPlayerType() == PlayerType.SPYMASTER);
     }
 
-    public GameDTO selectCard(GameDTO gameDTO, int playerId, int cardId){
+    public GameDTO selectCard(GameDTO gameDTO, int playerId, int cardId, String token){
         Game game = gameRepository.findOneById(gameDTO.getId());
         Player player = playerRepository.findOneById(playerId);
 
@@ -433,7 +481,9 @@ public class GameService {
             return null;
         }
         if(!isTurnValid(player,game)) return null;
-
+        if(!isValidPlayer(player,token)) {
+            return null;
+        }
 
         Optional<Card> selectedCardOptional = game.getCards().stream().filter(card -> card.getId() == cardId).findFirst();
 

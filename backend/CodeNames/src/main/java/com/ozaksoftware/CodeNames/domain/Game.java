@@ -44,6 +44,9 @@ public class Game {
     @OneToMany
     private List<Player> players;
 
+    @OneToMany
+    private List<Player> blackListPlayers;
+
     @OneToMany(cascade = CascadeType.ALL)
     private List<Card> cards;
 

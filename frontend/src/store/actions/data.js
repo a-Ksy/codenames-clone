@@ -46,6 +46,11 @@ export const setKickedData = (payload) => ({
   payload,
 });
 
+export const setStatus = (payload) => ({
+  type: actionTypes.SET_STATUS,
+  payload,
+});
+
 export const createUser = (nickname) => (dispatch) => {
   dispatch({ type: actionTypes.SHOW_LOADING });
   apiCreateUser(
@@ -114,7 +119,7 @@ export const checkRoomSession = (userId, roomId, token) => (dispatch) => {
     roomId,
     token,
     (response) => {
-      dispatch(setRoomData(response.data));
+      dispatch(set(response.data));
     },
     (err) => {
     },
@@ -160,7 +165,7 @@ export const getRoomData = (userId, roomId, token) => (dispatch) => {
       dispatch(setRoomData(response.data));
     },
     (err) => {
-      console.log(`Error when getting room:\n${err}`);
+      dispatch(setStatus(err.response.data));
     },
   );
 };

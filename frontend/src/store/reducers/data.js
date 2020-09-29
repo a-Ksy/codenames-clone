@@ -8,6 +8,7 @@ const initialState = {
   loggedIn: false,
   isInGame: false,
   rooms: [],
+  status: '',
 };
 
 const dataReducer = (state = initialState, action) => {
@@ -28,6 +29,8 @@ const dataReducer = (state = initialState, action) => {
       return updateObject(state, { isInGame: false, room: null, rooms: action.payload });
     case actionTypes.SET_TOKEN:
       return updateObject(state, { token: action.payload });
+    case actionTypes.SET_STATUS:
+      return updateObject(state, { status: action.payload });
     default:
       return state;
   }
