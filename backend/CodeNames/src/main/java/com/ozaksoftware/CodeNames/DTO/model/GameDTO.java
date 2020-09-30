@@ -24,6 +24,7 @@ import java.util.Map;
 public class GameDTO {
     private int id;
     private String gameName;
+    private boolean hasPassword;
     private GameStatus gameStatus;
     private String clueWord;
     private int clueNumber;

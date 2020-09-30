@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.springframework.lang.Nullable;
 
 @Getter
 @Setter
@@ -15,4 +16,6 @@ import lombok.experimental.Accessors;
 public class GameRequest {
     private GameDTO gameDTO;
     private Integer playerId;
+    @Nullable
+    private String password;
 }

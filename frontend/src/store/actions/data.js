@@ -119,7 +119,7 @@ export const checkRoomSession = (userId, roomId, token) => (dispatch) => {
     roomId,
     token,
     (response) => {
-      dispatch(set(response.data));
+      dispatch(setRoomData(response.data));
     },
     (err) => {
     },

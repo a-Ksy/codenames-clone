@@ -50,9 +50,10 @@
   }
 
   @include media("<=desktop") {
-    .btn-custom {
-      font-size: 1rem;
-    }
+      margin-bottom: 1.5rem;
+      .btn-custom {
+        font-size: 0.8rem;
+      }
   }
 
   @include media("<=collapse") {

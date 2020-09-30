@@ -10,6 +10,7 @@ public class GameMapper {
     public static GameDTO toGameDTO(Game game) {
         return new GameDTO()
                 .setId(game.getId())
+                .setHasPassword(game.getPassword() != null)
                 .setOwner(PlayerMapper.toPlayerDTO(game.getOwner()))
                 .setCards(CardMapper.toCardDTOList(game.getCards()))
                 .setClueNumber(game.getClueNumber())

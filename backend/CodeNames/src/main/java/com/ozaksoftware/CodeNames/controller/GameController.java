@@ -7,12 +7,19 @@ import com.ozaksoftware.CodeNames.controller.request.GameRequest;
 import com.ozaksoftware.CodeNames.enums.ErrorMessage;
 import com.ozaksoftware.CodeNames.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.socket.messaging.SessionConnectedEvent;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -36,7 +43,7 @@ public class GameController {
         }
 
         return validateGameDTO(gameService.createNewGame(gameRequest.getGameDTO(),
-                gameRequest.getPlayerId(),getToken(headers)),false);
+                gameRequest.getPlayerId(),gameRequest.getPassword(),getToken(headers)),false);
     }
 
     @RequestMapping(value = "/games", method = RequestMethod.GET)
@@ -45,12 +52,16 @@ public class GameController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-        public ResponseEntity getGame(@RequestParam int gameId, @RequestParam int playerId, @RequestHeader HttpHeaders headers) {
+        public ResponseEntity getGame(@RequestParam int gameId, @RequestParam int playerId, String password, @RequestHeader HttpHeaders headers) {
         Optional<GameDTO> gameOptional = Optional.ofNullable(gameService.getGame(gameId,
-                playerId,getToken(headers)));
+                playerId,password,getToken(headers)));
 
         if(gameOptional.isPresent()){
-            if(gameOptional.get().getGameName() == null) {
+            if(gameOptional.get().getGameName() == ErrorMessage.INVALID_PASSWORD.toString()) {
+                return ResponseEntity.badRequest().body(ErrorMessage.INVALID_PASSWORD);
+            }
+
+            if(gameOptional.get().getGameName() == ErrorMessage.KICKED_FROM_GAME.toString()) {
                 return ResponseEntity.badRequest().body(ErrorMessage.KICKED_FROM_GAME);
             }
             this.simpMessagingTemplate.convertAndSend("/topic/updateGame/" + gameOptional.get().getId(), "UPDATE");
@@ -193,4 +204,5 @@ public class GameController {
     private String getToken(HttpHeaders headers) {
         return headers.getFirst("authorization");
     }
+
 }

@@ -33,8 +33,13 @@ class Game extends React.Component {
 
   componentDidMount() {
     const {
-      room, user, retrieveCheckRoomSession, retrieveSetUserData, retrieveKickedGame, token,
+      room, user, retrieveCheckRoomSession, retrieveSetUserData, retrieveKickedGame, token, retrieveLeaveGame,
     } = this.props;
+
+    const headers = {
+      playerId: user.id,
+    };
+
     this.client.configure({
       brokerURL: 'ws://localhost:8080/stomp',
       onConnect: () => {
@@ -50,8 +55,12 @@ class Game extends React.Component {
           retrieveCheckRoomSession(user.id, room.id, token);
         });
       },
+      onWebSocketClose: () => {
+        retrieveLeaveGame(user.id, room.id, token);
+      },
     });
 
+    this.client.connectHeaders = headers;
     this.client.activate();
   }
 

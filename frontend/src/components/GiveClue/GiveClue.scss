@@ -22,11 +22,20 @@
   }
 
   @include media("<=desktop") {
+    .title {
+      font-size: 0.9rem;
+    }
+
     .form-inline {
       .form-group {
         width: 80%;
+        .form-control {
+          margin-right: 1rem;
+          font-size: 0.8rem;
+        }
       }
     }
+    
   }
 
   @include media("<=collapse") {
@@ -44,15 +53,11 @@
   }
 
   @include media("<=tablet") {
-    .title {
-      font-size: 0.9rem;
-    }
 
     .form-inline {
       .form-group {
         .form-control {
           margin-right: 1rem;
-          font-size: 0.9rem;
         }
       }
     }

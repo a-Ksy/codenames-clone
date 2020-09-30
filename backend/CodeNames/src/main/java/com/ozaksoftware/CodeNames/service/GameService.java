@@ -11,29 +11,41 @@ import com.ozaksoftware.CodeNames.enums.*;
 import com.ozaksoftware.CodeNames.repository.GameRepository;
 import com.ozaksoftware.CodeNames.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.messaging.support.GenericMessage;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.socket.messaging.SessionConnectedEvent;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@EnableScheduling
 public class GameService {
     private final GameRepository gameRepository;
     private final PlayerRepository playerRepository;
 
     @Autowired
     CardService cardService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @Autowired
-    public GameService(GameRepository gameRepository, PlayerRepository playerRepository) {
+    public GameService(GameRepository gameRepository, PlayerRepository playerRepository, SimpMessagingTemplate simpMessagingTemplate) {
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     /***Controller Methods***/
-    public GameDTO createNewGame(GameDTO gameDTO,Integer ownerId, String token) {
+    public GameDTO createNewGame(GameDTO gameDTO,Integer ownerId, String password ,String token) {
         if(gameDTO == null || gameDTO.getGameName() == null || gameDTO.getGameName() == "") {
             return null;
         }
@@ -42,7 +54,9 @@ public class GameService {
         Game newGame = new Game();
         newGame.setGameName(gameDTO.getGameName());
         newGame.setGameStatus(GameStatus.BLUE_TEAM_SPYMASTER_ROUND);
-
+        if(password != null) {
+            newGame.setPassword(password);
+        }
         //Initializing owner
         Player owner = playerRepository.findOneById(ownerId);
         if(owner==null) return null;
@@ -125,7 +139,7 @@ public class GameService {
         return listGameDTOs();
     }
 
-    public GameDTO getGame(int gameId, int playerId, String token) {
+    public GameDTO getGame(int gameId, int playerId, String password,String token) {
         Game game = gameRepository.findOneById(gameId);
         Player player = playerRepository.findOneById(playerId);
         if(game == null || player  == null) return null;
@@ -133,8 +147,19 @@ public class GameService {
         if(!isValidPlayer(player, token)) {
             return null;
         }
+        if(game.getPassword() != null) {
+            if(!game.getPassword().equals(password)) {
+                GameDTO errorGameDTO = new GameDTO();
+                errorGameDTO.setGameName(ErrorMessage.INVALID_PASSWORD.toString());
+                return errorGameDTO;
+            }
+        }
 
-        if(game.getBlackListPlayers().contains(player)) return new GameDTO();
+        if(game.getBlackListPlayers().contains(player)) {
+            GameDTO errorGameDTO = new GameDTO();
+            errorGameDTO.setGameName(ErrorMessage.KICKED_FROM_GAME.toString());
+            return errorGameDTO;
+        }
 
         if(!game.getPlayers().stream().anyMatch(pl -> Objects.equals(pl.getId(), playerId))) {
             List<Player> playerList = game.getPlayers();
@@ -380,17 +405,19 @@ public class GameService {
         List<PlayerDTO> blueTeamSpymasterList = new ArrayList<>();
 
         for(PlayerDTO player : playerList) {
-            if(player.getTeam() == Team.RED) {
-                if(player.getPlayerType() == PlayerType.OPERATIVE) {
-                    redTeamOperativeList.add(player);
-                } else if (player.getPlayerType() == PlayerType.SPYMASTER) {
-                    redTeamSpymasterList.add(player);
-                }
-            } else if(player.getTeam() == Team.BLUE){
-                if(player.getPlayerType() == PlayerType.OPERATIVE) {
-                    blueTeamOperativeList.add(player);
-                } else if (player.getPlayerType() == PlayerType.SPYMASTER) {
-                    blueTeamSpymasterList.add(player);
+            if(player.isOnline()) {
+                if(player.getTeam() == Team.RED) {
+                    if(player.getPlayerType() == PlayerType.OPERATIVE) {
+                        redTeamOperativeList.add(player);
+                    } else if (player.getPlayerType() == PlayerType.SPYMASTER) {
+                        redTeamSpymasterList.add(player);
+                    }
+                } else if(player.getTeam() == Team.BLUE){
+                    if(player.getPlayerType() == PlayerType.OPERATIVE) {
+                        blueTeamOperativeList.add(player);
+                    } else if (player.getPlayerType() == PlayerType.SPYMASTER) {
+                        blueTeamSpymasterList.add(player);
+                    }
                 }
             }
         }
@@ -501,5 +528,53 @@ public class GameService {
 
     private boolean isValidPlayer(Player player, String token) {
         return player.getToken().equals(token);
+    }
+
+    @EventListener
+    public void onApplicationEvent(SessionConnectedEvent event) {
+        StompHeaderAccessor stompAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        GenericMessage connectHeader = (GenericMessage)stompAccessor.getHeader(SimpMessageHeaderAccessor.CONNECT_MESSAGE_HEADER);
+        Map<String, List<String>> nativeHeaders = (Map<String, List<String>>) connectHeader.getHeaders().get(SimpMessageHeaderAccessor.NATIVE_HEADERS);
+        String playerId = nativeHeaders.get("playerId").get(0);
+        String sessionId = stompAccessor.getSessionId();
+        Player player = playerRepository.findOneById(Integer.valueOf(playerId));
+        player.setOnline(true);
+        player.setSessionId(sessionId);
+        playerRepository.save(player);
+    }
+
+    @EventListener
+    public void onApplicationEvent(SessionDisconnectEvent event) {
+        StompHeaderAccessor stompAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        String sessionId = stompAccessor.getSessionId();
+        List<Game> games = (List<Game>) gameRepository.findAll();
+        for (Game game : games) {
+            for (Player player : game.getPlayers()) {
+                if (player.getSessionId().equals(sessionId)) {
+                    GameDTO gameDTO = GameMapper.toGameDTO(game);
+                    player.setOnline(false);
+                    player.setTeam(Team.SPECTATOR);
+                    player.setPlayerType(PlayerType.SPECTATOR);
+                    playerRepository.save(player);
+                    this.simpMessagingTemplate.convertAndSend("/topic/updateGame/" + game.getId(), "UPDATE");
+                    return;
+                }
+            }
+        }
+    }
+
+    @Scheduled(fixedRate = 600000)
+    public void scheduledRemoveAfk() {
+        List<Game> games = (List<Game>) gameRepository.findAll();
+        for (Game game : games) {
+            for (Player player : game.getPlayers()) {
+                if (!player.isOnline()) {
+                    GameDTO gameDTO = GameMapper.toGameDTO(game);
+                    leaveGame(gameDTO,player.getId(),player.getToken());
+                    this.simpMessagingTemplate.convertAndSend("/topic/updateGame/" + game.getId(), "UPDATE");
+                    return;
+                }
+            }
+        }
     }
 }

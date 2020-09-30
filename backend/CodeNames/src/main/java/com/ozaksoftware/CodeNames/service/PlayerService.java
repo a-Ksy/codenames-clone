@@ -39,6 +39,7 @@ public class PlayerService {
         newPlayer.setPlayerType(PlayerType.SPECTATOR);
         newPlayer.setTeam(Team.SPECTATOR);
         newPlayer.setToken("");
+        newPlayer.setOnline(true);
         playerRepository.save(newPlayer);
         String token = jwtAuthorizationFilter.getJWTToken(newPlayer.getNickName(), newPlayer.getId());
         newPlayer.setToken(token);
