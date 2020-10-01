@@ -24,6 +24,16 @@ class Rooms extends React.Component {
       isPrivate: false,
       isModalVisible: false,
     };
+
+    const initialState = {
+      roomName: '',
+      roomId: '',
+      roomPassword: null,
+      inputPassword: null,
+      hasPassword: false,
+      isPrivate: false,
+      isModalVisible: false,
+    };
   }
 
   componentDidMount() {
@@ -61,12 +71,18 @@ class Rooms extends React.Component {
       return;
     }
     const { inputPassword } = this.state;
+    if (inputPassword !== null && inputPassword !== '') {
+      document.getElementById('gamePasswordInput').value = '';
+    }
     await retrieveRoomData(user.id, roomId, inputPassword, token);
     const { room } = this.props;
     if (room !== null && room !== undefined && status !== 'KICKED_FROM_GAME' && status !== 'INVALID_PASSWORD') {
+      this.setState(initialState);
+      document.getElementById('gamePasswordInput').value = '';
       history.push('/game');
     } else {
       this.handleModal(true);
+      document.getElementById('gamePasswordInput').value = '';
     }
   }
 
@@ -74,6 +90,7 @@ class Rooms extends React.Component {
     const { isModalVisible } = this.state;
     if (isModalVisible) {
       this.setState({ isModalVisible: _isModalVisible });
+      document.getElementById('gamePasswordInput').value = '';
     }
   }
 
@@ -100,10 +117,9 @@ class Rooms extends React.Component {
   render() {
     const { rooms, status } = this.props;
     const {
-      isModalVisible, isPrivate, roomPassword, hasPassword, roomId,
+      isModalVisible, isPrivate, hasPassword, roomId,
     } = this.state;
     let modal;
-
     if (status === 'KICKED_FROM_GAME') {
       modal = (
         <Modal
@@ -129,12 +145,12 @@ class Rooms extends React.Component {
             <div>
               <label className="label">Password</label>
               <input
-                required
                 type="password"
-                id="roomPasswordInput"
+                id="gamePasswordInput"
                 placeholder="Enter the password"
                 onChange={(e) => this.setState({ inputPassword: e.target.value })}
               />
+              {(status === 'INVALID_PASSWORD' && document.getElementById('gamePasswordInput') !== null && document.getElementById('gamePasswordInput').value === '') && <p className="invalidPasswordText">Wrong password</p>}
             </div>
           </Modal>
         )}

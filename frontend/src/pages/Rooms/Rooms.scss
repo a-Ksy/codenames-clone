@@ -6,6 +6,13 @@
   display: flex;
   align-items: center;
 
+  .invalidPasswordText {
+    font-size: 0.8rem;
+    color: $primary;
+    font-weight: 500;
+    margin-bottom: 0;
+  }
+
   .roomsTitleRow {
     align-items: baseline;
 
