@@ -537,10 +537,19 @@ public class GameService {
         Map<String, List<String>> nativeHeaders = (Map<String, List<String>>) connectHeader.getHeaders().get(SimpMessageHeaderAccessor.NATIVE_HEADERS);
         String playerId = nativeHeaders.get("playerId").get(0);
         String sessionId = stompAccessor.getSessionId();
-        Player player = playerRepository.findOneById(Integer.valueOf(playerId));
-        player.setOnline(true);
-        player.setSessionId(sessionId);
-        playerRepository.save(player);
+        List<Game> games = (List<Game>) gameRepository.findAll();
+        for (Game game : games) {
+            for (Player player : game.getPlayers()) {
+                if (player.getId() == Integer.valueOf(playerId)) {
+                    player.setOnline(true);
+                    player.setSessionId(sessionId);
+                    playerRepository.save(player);
+                    this.simpMessagingTemplate.convertAndSend("/topic/updateGame/" + game.getId(), "UPDATE");
+                    return;
+                }
+            }
+        }
+
     }
 
     @EventListener
@@ -551,7 +560,6 @@ public class GameService {
         for (Game game : games) {
             for (Player player : game.getPlayers()) {
                 if (player.getSessionId().equals(sessionId)) {
-                    GameDTO gameDTO = GameMapper.toGameDTO(game);
                     player.setOnline(false);
                     player.setTeam(Team.SPECTATOR);
                     player.setPlayerType(PlayerType.SPECTATOR);

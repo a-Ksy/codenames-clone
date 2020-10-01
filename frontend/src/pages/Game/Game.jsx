@@ -118,9 +118,14 @@ class Game extends React.Component {
   }
 
   render() {
-    const { room, user } = this.props;
+    const {
+      room, user, retrieveCheckRoomSession, token, retrieveSetUserData,
+    } = this.props;
     const { isResetModalVisible, isLeaveModalVisible } = this.state;
     localStorage.setItem('gameId', room.id);
+    if (!room.players.filter((player) => player.id === user.id).online) {
+      console.log(room.players.filter((player) => player.id === user.id));
+    }
 
     let hintBox = ((room.gameStatus === 'BLUE_TEAM_OPERATIVE_ROUND' || room.gameStatus === 'RED_TEAM_OPERATIVE_ROUND')
       && <Clue />);
@@ -165,7 +170,7 @@ class Game extends React.Component {
                     </span>
                     {' '}
                     <span className="dropdownMenuPlayerType">
-                      {capitalizeFirstLetterOfCapitalized(player.playerType)}
+                      {player.online ? capitalizeFirstLetterOfCapitalized(player.playerType) : 'AFK' }
                     </span>
                     {' '}
                     <span className="dropdownMenuHost">

@@ -77,20 +77,24 @@ class Rooms extends React.Component {
     await retrieveRoomData(user.id, roomId, inputPassword, token);
     const { room } = this.props;
     if (room !== null && room !== undefined && status !== 'KICKED_FROM_GAME' && status !== 'INVALID_PASSWORD') {
-      this.setState(initialState);
-      document.getElementById('gamePasswordInput').value = '';
+      if (status === 'INVALID_PASSWORD') {
+        this.setState(initialState);
+        document.getElementById('gamePasswordInput').value = '';
+      }
       history.push('/game');
     } else {
       this.handleModal(true);
-      document.getElementById('gamePasswordInput').value = '';
     }
   }
 
   handleModalVisibility = (_isModalVisible) => {
     const { isModalVisible } = this.state;
+    const { status } = this.props;
     if (isModalVisible) {
       this.setState({ isModalVisible: _isModalVisible });
-      document.getElementById('gamePasswordInput').value = '';
+      if (status === 'INVALID_PASSWORD') {
+        document.getElementById('gamePasswordInput').value = '';
+      }
     }
   }
 
