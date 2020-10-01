@@ -63,22 +63,26 @@ export const apiGetRoomsData = (token, callback, onError) => {
   });
 };
 
-export const apiCreateRoom = (userId, roomName, token, callback, onError) => {
+export const apiCreateRoom = (userId, roomName, roomPassword, token, callback, onError) => {
   const data = {
     gameDTO: {
       gameName: roomName,
     },
     playerId: userId,
+    password: roomPassword,
   };
   apiCall(urls.CREATE_ROOM_URL, methods.POST, null, data, callback, onError, {
     Authorization: token,
   });
 };
 
-export const apiGetRoomData = (userId, roomId, token, callback, onError) => {
+export const apiGetRoomData = (userId, roomId, password, token, callback, onError) => {
   const params = new URLSearchParams();
   params.append('gameId', roomId);
   params.append('playerId', userId);
+  if (password !== null) {
+    params.append('password', password);
+  }
   apiCall(urls.ROOM_DATA_URL, methods.GET, params, null, callback, onError, {
     Authorization: token,
   });

@@ -18,7 +18,7 @@ const defaultProps = {
 function Modal(props) {
   const {
     // eslint-disable-next-line react/prop-types
-    title, buttonTitle, onClick, show, handleModalVisibility, paragraph,
+    title, buttonTitle, onClick, show, handleModalVisibility, paragraph, children,
   } = props;
   return (
     <div className={`modal fade ${show && 'show'}`} style={{ display: `${show ? 'block' : 'none'}` }}>
@@ -32,6 +32,7 @@ function Modal(props) {
           </div>
           <div className="modal-body">
             {paragraph !== '' && <p>{paragraph}</p>}
+            {children}
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary" onClick={() => handleModalVisibility(false)}>Close</button>

@@ -156,10 +156,11 @@ export const getKickedData = (token) => (dispatch) => {
   );
 };
 
-export const getRoomData = (userId, roomId, token) => (dispatch) => {
+export const getRoomData = (userId, roomId, password, token) => (dispatch) => {
   apiGetRoomData(
     userId,
     roomId,
+    password,
     token,
     (response) => {
       dispatch(setRoomData(response.data));
@@ -170,11 +171,12 @@ export const getRoomData = (userId, roomId, token) => (dispatch) => {
   );
 };
 
-export const createRoom = (userId, roomName, token) => (dispatch) => {
+export const createRoom = (userId, roomName, roomPassword, token) => (dispatch) => {
   dispatch({ type: actionTypes.SHOW_LOADING });
   apiCreateRoom(
     userId,
     roomName,
+    roomPassword,
     token,
     (response) => {
       dispatch(setRoomData(response.data));

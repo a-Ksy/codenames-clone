@@ -17,7 +17,12 @@ class Rooms extends React.Component {
     super(props);
     this.state = {
       roomName: '',
-      isKickedModalVisible: false,
+      roomId: '',
+      roomPassword: null,
+      inputPassword: null,
+      hasPassword: false,
+      isPrivate: false,
+      isModalVisible: false,
     };
   }
 
@@ -37,37 +42,43 @@ class Rooms extends React.Component {
   }
 
   handleCreateRoom = async (history) => {
-    const { roomName } = this.state;
+    const { roomName, roomPassword } = this.state;
     const { retrieveCreateRoom, user, token } = this.props;
-    await retrieveCreateRoom(user.id, roomName, token);
+    await retrieveCreateRoom(user.id, roomName, roomPassword, token);
     const { room } = this.props;
     if (room !== null && room !== undefined) {
       history.push('/game');
     }
   }
 
-  handleJoinRoom = async (roomId, history) => {
+  handleJoinRoom = async (roomId, hasPassword, history) => {
     const {
       retrieveRoomData, user, token, status,
     } = this.props;
-    await retrieveRoomData(user.id, roomId, token);
+    if (hasPassword) {
+      this.setState({ hasPassword, roomId });
+      this.handleModal(true);
+      return;
+    }
+    const { inputPassword } = this.state;
+    await retrieveRoomData(user.id, roomId, inputPassword, token);
     const { room } = this.props;
-    if (room !== null && room !== undefined && status !== 'KICKED_FROM_GAME') {
+    if (room !== null && room !== undefined && status !== 'KICKED_FROM_GAME' && status !== 'INVALID_PASSWORD') {
       history.push('/game');
     } else {
       this.handleModal(true);
     }
   }
 
-  handleModalVisibility = (isModalVisible) => {
-    const { isKickedModalVisible } = this.state;
-    if (isKickedModalVisible) {
-      this.setState({ isKickedModalVisible: isModalVisible });
+  handleModalVisibility = (_isModalVisible) => {
+    const { isModalVisible } = this.state;
+    if (isModalVisible) {
+      this.setState({ isModalVisible: _isModalVisible });
     }
   }
 
   handleModal = (boolean) => {
-    this.setState({ isKickedModalVisible: boolean });
+    this.setState({ isModalVisible: boolean });
   }
 
   handleRefreshRooms = () => {
@@ -87,19 +98,53 @@ class Rooms extends React.Component {
   }
 
   render() {
-    const { rooms } = this.props;
-    const { isKickedModalVisible } = this.state;
+    const { rooms, status } = this.props;
+    const {
+      isModalVisible, isPrivate, roomPassword, hasPassword, roomId,
+    } = this.state;
+    let modal;
 
-    return (
-      <div className="Rooms">
+    if (status === 'KICKED_FROM_GAME') {
+      modal = (
         <Modal
           title="You are not allowed to join"
           paragraph="You were kicked from the game."
           buttonTitle="Okay"
           onClick={() => this.handleModal(false)}
-          show={isKickedModalVisible}
+          show={isModalVisible}
           handleModalVisibility={this.handleModalVisibility}
         />
+      );
+    }
+    if (hasPassword) {
+      modal = (
+        <Route render={({ history }) => (
+          <Modal
+            title="This room is private"
+            buttonTitle="Submit"
+            onClick={() => this.handleJoinRoom(roomId, false, history)}
+            show={isModalVisible}
+            handleModalVisibility={this.handleModalVisibility}
+          >
+            <div>
+              <label className="label">Password</label>
+              <input
+                required
+                type="password"
+                id="roomPasswordInput"
+                placeholder="Enter the password"
+                onChange={(e) => this.setState({ inputPassword: e.target.value })}
+              />
+            </div>
+          </Modal>
+        )}
+        />
+      );
+    }
+
+    return (
+      <div className="Rooms">
+        {modal}
         <div className="row">
           <div className="roomsColumn col-lg-8">
             <div className="roomsTitleRow row justify-content-between">
@@ -123,8 +168,9 @@ class Rooms extends React.Component {
                     <td>{room.players.length}</td>
                     <td>{this.statusPrettier(room.gameStatus)}</td>
                     <Route render={({ history }) => (
-                      <td className="joinButton" role="gridcell" onClick={() => this.handleJoinRoom(room.id, history)}>
-                        <i className="fa fa-sign-in" aria-hidden="true" />
+                      <td className="joinButton" role="gridcell" onClick={() => this.handleJoinRoom(room.id, room.hasPassword, history)}>
+                        {room.hasPassword
+                        && <i className="fa fa-lock" aria-hidden="true" />}
                         Join
                       </td>
                     )}
@@ -138,6 +184,18 @@ class Rooms extends React.Component {
             <h1 className="title">Create a room</h1>
             <label className="label">Room Name</label>
             <input required type="text" id="roomNameInput" placeholder="Enter a room name" onChange={(e) => this.setState({ roomName: e.target.value })} />
+            <label className="form-check-label" htmlFor="roomPrivateInput">
+              <input type="checkbox" value="" id="roomPrivateInput" onClick={() => this.setState({ isPrivate: !isPrivate })} />
+              Private room
+            </label>
+            {isPrivate
+              && (
+              <div>
+                <label className="label">Password</label>
+                <input required type="password" id="roomPasswordInput" placeholder="Enter a password" onChange={(e) => this.setState({ roomPassword: e.target.value })} />
+              </div>
+              )}
+
             <Route render={({ history }) => (
               <Button title="create a room" onClick={() => this.handleCreateRoom(history)} />
             )}
@@ -158,8 +216,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  retrieveCreateRoom: (userId, roomName, token) => dispatch(createRoom(userId, roomName, token)),
-  retrieveRoomData: (userId, roomId, token) => dispatch(getRoomData(userId, roomId, token)),
+  retrieveCreateRoom: (userId, roomName, password, token) => dispatch(createRoom(userId, roomName, password, token)),
+  retrieveRoomData: (userId, roomId, password, token) => dispatch(getRoomData(userId, roomId, password, token)),
   retrieveSetToken: (token) => dispatch(setToken(token)),
   retrieveSetUserData: (payload) => dispatch(setUserData(payload)),
   retrieveCheckRoomSession: (userId, roomId, token) => dispatch(checkRoomSession(userId, roomId, token)),
