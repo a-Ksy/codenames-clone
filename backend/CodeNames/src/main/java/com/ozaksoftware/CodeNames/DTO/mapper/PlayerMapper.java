@@ -11,6 +11,7 @@ public class PlayerMapper {
         return new PlayerDTO()
                 .setId(player.getId())
                 .setNickName(player.getNickName())
+                .setOnline(player.isOnline())
                 .setPlayerType(player.getPlayerType())
                 .setTeam(player.getTeam());
     }

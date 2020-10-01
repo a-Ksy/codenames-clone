@@ -17,6 +17,7 @@ import lombok.experimental.Accessors;
 public class PlayerDTO {
     private int id;
     private String nickName;
+    private boolean isOnline;
     private PlayerType playerType;
     private Team team;
 }

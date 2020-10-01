@@ -34,19 +34,25 @@
   }
 
   @include media("<=desktop") {
-    .cardsLeft {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
+    
+    .titleBox {
+      margin-bottom: 1.25rem;
+      .cardsLeft {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+  
+      .playerTitle {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+      }
+  
+      .playerNickname {
+        font-size: 0.7rem;
+      }
 
-    .playerTitle {
-      font-size: 1rem;
-      margin-bottom: 1rem;
     }
-
-    .playerNickname {
-      font-size: 0.9rem;
-    }
+    
   }
 
   @include media("<collapse") {

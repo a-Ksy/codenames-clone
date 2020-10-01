@@ -17,7 +17,7 @@
 .Button.TeamCard {
   transition: 0.3s ease;
   font-size: 0.9rem;
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 0.5rem;
   margin-top: 0.5rem;
 }
 
@@ -40,10 +40,8 @@
 
 .Button.Clue {
   margin: 0;
-  padding: 0.25rem;
+  padding: 0.25rem 0.5rem;
   font-size: 1rem;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
 }
 
 button:active,
@@ -59,12 +57,19 @@ button:hover {
 
 @include media("<=desktop") {
   .Button {
-    font-size: 1rem;
+    font-size: 0.8rem;
+  }
+
+  .Button.Leave, .Button.Reset {
+    font-size: 0.8rem;
   }
 
   .Button.TeamCard {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .Button.Clue {
+    margin: 0;
     font-size: 0.8rem;
   }
 }
@@ -85,9 +90,6 @@ button:hover {
     font-size: 0.7rem;
   }
 
-  .Button.Clue {
-    font-size: 0.9rem;
-  }
 }
 
 @include media("<=phone") {

@@ -2,7 +2,6 @@ package com.ozaksoftware.CodeNames.domain;
 
 import com.ozaksoftware.CodeNames.enums.CardColor;
 import com.ozaksoftware.CodeNames.enums.CardStatus;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,10 +9,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.annotations.Check;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Entity
 @Getter

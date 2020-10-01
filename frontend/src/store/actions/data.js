@@ -31,6 +31,11 @@ export const setUserData = (payload) => ({
   payload,
 });
 
+export const setToken = (payload) => ({
+  type: actionTypes.SET_TOKEN,
+  payload,
+});
+
 export const setRoomsData = (payload) => ({
   type: actionTypes.SET_ROOMS_DATA,
   payload,
@@ -41,13 +46,20 @@ export const setKickedData = (payload) => ({
   payload,
 });
 
+export const setStatus = (payload) => ({
+  type: actionTypes.SET_STATUS,
+  payload,
+});
+
 export const createUser = (nickname) => (dispatch) => {
   dispatch({ type: actionTypes.SHOW_LOADING });
   apiCreateUser(
     nickname,
     (response1) => {
+      dispatch(setToken(response1.headers.token));
       dispatch(setUserData(response1.data));
       apiGetRoomsData(
+        response1.headers.token,
         (response2) => {
           dispatch(setRoomsData(response2.data));
           dispatch({ type: actionTypes.HIDE_LOADING });
@@ -65,14 +77,16 @@ export const createUser = (nickname) => (dispatch) => {
   );
 };
 
-export const checkSession = (userId, nickName) => (dispatch) => {
+export const checkSession = (userId, nickName, token) => (dispatch) => {
   dispatch({ type: actionTypes.SHOW_LOADING });
   apiCheckSession(
     userId,
     nickName,
+    token,
     (response) => {
       dispatch(setUserData(response.data));
       apiGetRoomsData(
+        token,
         (response2) => {
           dispatch(setRoomsData(response2.data));
           dispatch({ type: actionTypes.HIDE_LOADING });
@@ -99,10 +113,11 @@ export const setLeaveData = (payload) => ({
   payload,
 });
 
-export const checkRoomSession = (userId, roomId) => (dispatch) => {
+export const checkRoomSession = (userId, roomId, token) => (dispatch) => {
   apiCheckRoomSession(
     userId,
     roomId,
+    token,
     (response) => {
       dispatch(setRoomData(response.data));
     },
@@ -111,11 +126,11 @@ export const checkRoomSession = (userId, roomId) => (dispatch) => {
   );
 };
 
-export const getRoomsData = () => (dispatch) => {
+export const getRoomsData = (token) => (dispatch) => {
   dispatch({ type: actionTypes.SHOW_LOADING });
   apiGetRoomsData(
+    token,
     (response) => {
-      console.log(response);
       dispatch(setRoomsData(response.data));
       dispatch({ type: actionTypes.HIDE_LOADING });
     },
@@ -126,9 +141,10 @@ export const getRoomsData = () => (dispatch) => {
   );
 };
 
-export const getKickedData = () => (dispatch) => {
+export const getKickedData = (token) => (dispatch) => {
   dispatch({ type: actionTypes.SHOW_LOADING });
   apiGetRoomsData(
+    token,
     (response) => {
       dispatch(setKickedData(response.data));
       dispatch({ type: actionTypes.HIDE_LOADING });
@@ -140,24 +156,28 @@ export const getKickedData = () => (dispatch) => {
   );
 };
 
-export const getRoomData = (userId, roomId) => (dispatch) => {
+export const getRoomData = (userId, roomId, password, token) => (dispatch) => {
   apiGetRoomData(
     userId,
     roomId,
+    password,
+    token,
     (response) => {
       dispatch(setRoomData(response.data));
     },
     (err) => {
-      console.log(`Error when getting room:\n${err}`);
+      dispatch(setStatus(err.response.data));
     },
   );
 };
 
-export const createRoom = (userId, roomName) => (dispatch) => {
+export const createRoom = (userId, roomName, roomPassword, token) => (dispatch) => {
   dispatch({ type: actionTypes.SHOW_LOADING });
   apiCreateRoom(
     userId,
     roomName,
+    roomPassword,
+    token,
     (response) => {
       dispatch(setRoomData(response.data));
       dispatch({ type: actionTypes.HIDE_LOADING });
@@ -169,13 +189,13 @@ export const createRoom = (userId, roomName) => (dispatch) => {
   );
 };
 
-export const changePlayerType = (roomId, playerId, playerType, team, client) => (dispatch) => {
+export const changePlayerType = (roomId, playerId, playerType, team, token) => (dispatch) => {
   apiChangePlayerType(
     roomId,
     playerId,
     playerType,
     team,
-    client,
+    token,
     (response) => {
       dispatch(setRoomData(response.data));
     },
@@ -185,10 +205,11 @@ export const changePlayerType = (roomId, playerId, playerType, team, client) => 
   );
 };
 
-export const resetGame = (roomId, playerId) => (dispatch) => {
+export const resetGame = (roomId, playerId, token) => (dispatch) => {
   apiResetGame(
     roomId,
     playerId,
+    token,
     (response) => {
       dispatch(setRoomData(response.data));
     },
@@ -198,12 +219,13 @@ export const resetGame = (roomId, playerId) => (dispatch) => {
   );
 };
 
-export const giveClue = (roomId, clueWord, clueNumber, playerId) => (dispatch) => {
+export const giveClue = (roomId, clueWord, clueNumber, playerId, token) => (dispatch) => {
   apiGiveClue(
     roomId,
     clueWord,
     clueNumber,
     playerId,
+    token,
     (response) => {
       dispatch(setRoomData(response.data));
     },
@@ -213,11 +235,12 @@ export const giveClue = (roomId, clueWord, clueNumber, playerId) => (dispatch) =
   );
 };
 
-export const leaveGame = (roomId, playerId) => (dispatch) => {
+export const leaveGame = (roomId, playerId, token) => (dispatch) => {
   dispatch({ type: actionTypes.SHOW_LOADING });
   apiLeaveGame(
     roomId,
     playerId,
+    token,
     (response) => {
       dispatch(setLeaveData(response.data));
       dispatch({ type: actionTypes.HIDE_LOADING });
@@ -229,11 +252,12 @@ export const leaveGame = (roomId, playerId) => (dispatch) => {
   );
 };
 
-export const highlightCard = (roomId, playerId, cardId) => (dispatch) => {
+export const highlightCard = (roomId, playerId, cardId, token) => (dispatch) => {
   apiHighlightCard(
     roomId,
     playerId,
     cardId,
+    token,
     (response) => {
       dispatch(setRoomData(response.data));
     },
@@ -243,11 +267,12 @@ export const highlightCard = (roomId, playerId, cardId) => (dispatch) => {
   );
 };
 
-export const selectCard = (roomId, playerId, cardId) => (dispatch) => {
+export const selectCard = (roomId, playerId, cardId, token) => (dispatch) => {
   apiSelectCard(
     roomId,
     playerId,
     cardId,
+    token,
     (response) => {
       dispatch(setRoomData(response.data));
     },
@@ -257,10 +282,11 @@ export const selectCard = (roomId, playerId, cardId) => (dispatch) => {
   );
 };
 
-export const kickPlayer = (roomId, playerId) => (dispatch) => {
+export const kickPlayer = (roomId, playerId, token) => (dispatch) => {
   apiKickPlayer(
     roomId,
     playerId,
+    token,
     (response) => {
       dispatch(setRoomData(response.data));
     },
@@ -270,10 +296,11 @@ export const kickPlayer = (roomId, playerId) => (dispatch) => {
   );
 };
 
-export const endGuess = (roomId, playerId) => (dispatch) => {
+export const endGuess = (roomId, playerId, token) => (dispatch) => {
   apiEndGuess(
     roomId,
     playerId,
+    token,
     (response) => {
       dispatch(setRoomData(response.data));
     },

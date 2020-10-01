@@ -26,6 +26,15 @@ public class Player {
     @Column(name = "nick_name",nullable = false)
     private String nickName;
 
+    @Column(name = "is_online",nullable = false)
+    private boolean isOnline;
+
+    @Column(name = "token",nullable = false)
+    private String token;
+
+    @Column(name = "session_id",nullable = true)
+    private String sessionId;
+
     @Enumerated(EnumType.STRING)
     private PlayerType playerType;
 

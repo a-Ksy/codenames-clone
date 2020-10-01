@@ -10,14 +10,15 @@ public class GameMapper {
     public static GameDTO toGameDTO(Game game) {
         return new GameDTO()
                 .setId(game.getId())
-                .setOwner(game.getOwner())
+                .setHasPassword(game.getPassword() != null)
+                .setOwner(PlayerMapper.toPlayerDTO(game.getOwner()))
                 .setCards(CardMapper.toCardDTOList(game.getCards()))
                 .setClueNumber(game.getClueNumber())
                 .setClueWord(game.getClueWord())
                 .setGameName(game.getGameName())
                 .setLogs(game.getLogs())
                 .setGameStatus(game.getGameStatus())
-                .setPlayers(game.getPlayers());
+                .setPlayers(PlayerMapper.toPlayerDTOList(game.getPlayers()));
     }
     public static List<GameDTO> toGameDTOList(List<Game> gameList) {
         return gameList.stream().map(game -> toGameDTO(game)).collect(Collectors.toList());

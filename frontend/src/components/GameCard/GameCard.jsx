@@ -32,17 +32,17 @@ function GameCard(props) {
 
   const handleHighlightCard = () => {
     const {
-      retrieveHighlightCard,
+      retrieveHighlightCard, token,
     } = props;
-    retrieveHighlightCard(room.id, user.id, id);
+    retrieveHighlightCard(room.id, user.id, id, token);
   };
 
   const handleSelectCard = (event) => {
     const {
-      retrieveSelectCard,
+      retrieveSelectCard, token,
     } = props;
     event.stopPropagation();
-    retrieveSelectCard(room.id, user.id, id);
+    retrieveSelectCard(room.id, user.id, id, token);
   };
 
   let button = null;
@@ -105,11 +105,12 @@ GameCard.defaultProps = defaultProps;
 const mapStateToProps = (state) => ({
   user: state.data.user,
   room: state.data.room,
+  token: state.data.token,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  retrieveHighlightCard: (roomId, playerId, cardId) => dispatch(highlightCard(roomId, playerId, cardId)),
-  retrieveSelectCard: (roomId, playerId, cardId) => dispatch(selectCard(roomId, playerId, cardId)),
+  retrieveHighlightCard: (roomId, playerId, cardId, token) => dispatch(highlightCard(roomId, playerId, cardId, token)),
+  retrieveSelectCard: (roomId, playerId, cardId, token) => dispatch(selectCard(roomId, playerId, cardId, token)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(GameCard));

@@ -6,6 +6,13 @@
   display: flex;
   align-items: center;
 
+  .invalidPasswordText {
+    font-size: 0.8rem;
+    color: $primary;
+    font-weight: 500;
+    margin-bottom: 0;
+  }
+
   .roomsTitleRow {
     align-items: baseline;
 
@@ -41,9 +48,8 @@
     color: $paragraph;
   }
 
-  .fa-sign-in {
+  .fa-lock {
     margin-right: 0.5rem;
-    font-size: 1.2rem;
   }
 
   .joinButton {
@@ -62,7 +68,7 @@
 
   label {
     font-size: 1rem;
-    margin-bottom: 0.5rem;
+    width:100%;
   }
 
   input {
@@ -70,7 +76,15 @@
     border: none;
     outline: none;
     font-size: 1rem;
-    margin-bottom: 3rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .Button {
+    margin-top: 0.5rem;
+  }
+
+  #roomPrivateInput{
+    margin-right: 0.5rem;
   }
 
   .roomsColumn {
